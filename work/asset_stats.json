@@ -18,7 +18,7 @@
   "parts": 24,
   "lights": 0,
   "home": [
-   11.0,
+   20.0,
    0.0,
    0.0
   ]
@@ -30,7 +30,7 @@
   "parts": 22,
   "lights": 0,
   "home": [
-   22.0,
+   40.0,
    0.0,
    0.0
   ]
@@ -42,7 +42,7 @@
   "parts": 12,
   "lights": 0,
   "home": [
-   33.0,
+   60.0,
    0.0,
    0.0
   ]
@@ -54,7 +54,7 @@
   "parts": 8,
   "lights": 0,
   "home": [
-   44.0,
+   80.0,
    0.0,
    0.0
   ]
@@ -66,7 +66,7 @@
   "parts": 11,
   "lights": 0,
   "home": [
-   55.0,
+   100.0,
    0.0,
    0.0
   ]
@@ -78,7 +78,7 @@
   "parts": 3,
   "lights": 0,
   "home": [
-   66.0,
+   120.0,
    0.0,
    0.0
   ]
@@ -90,7 +90,7 @@
   "parts": 9,
   "lights": 0,
   "home": [
-   77.0,
+   140.0,
    0.0,
    0.0
   ]
@@ -102,8 +102,8 @@
   "parts": 5,
   "lights": 0,
   "home": [
+   160.0,
    0.0,
-   -11.0,
    0.0
   ]
  },
@@ -114,8 +114,8 @@
   "parts": 10,
   "lights": 0,
   "home": [
-   11.0,
-   -11.0,
+   0.0,
+   -20.0,
    0.0
   ]
  },
@@ -126,8 +126,8 @@
   "parts": 8,
   "lights": 0,
   "home": [
-   22.0,
-   -11.0,
+   20.0,
+   -20.0,
    0.0
   ]
  },
@@ -138,8 +138,8 @@
   "parts": 8,
   "lights": 0,
   "home": [
-   33.0,
-   -11.0,
+   40.0,
+   -20.0,
    0.0
   ]
  },
@@ -150,8 +150,8 @@
   "parts": 6,
   "lights": 0,
   "home": [
-   44.0,
-   -11.0,
+   60.0,
+   -20.0,
    0.0
   ]
  },
@@ -162,8 +162,8 @@
   "parts": 8,
   "lights": 0,
   "home": [
-   55.0,
-   -11.0,
+   80.0,
+   -20.0,
    0.0
   ]
  },
@@ -174,8 +174,8 @@
   "parts": 1,
   "lights": 0,
   "home": [
-   66.0,
-   -11.0,
+   100.0,
+   -20.0,
    0.0
   ]
  },
@@ -186,8 +186,8 @@
   "parts": 1,
   "lights": 0,
   "home": [
-   77.0,
-   -11.0,
+   120.0,
+   -20.0,
    0.0
   ]
  },
@@ -198,8 +198,8 @@
   "parts": 2,
   "lights": 0,
   "home": [
-   0.0,
-   -22.0,
+   140.0,
+   -20.0,
    0.0
   ]
  },
@@ -210,8 +210,8 @@
   "parts": 1,
   "lights": 0,
   "home": [
-   11.0,
-   -22.0,
+   160.0,
+   -20.0,
    0.0
   ]
  },
@@ -222,8 +222,8 @@
   "parts": 13,
   "lights": 0,
   "home": [
-   22.0,
-   -22.0,
+   0.0,
+   -40.0,
    0.0
   ]
  },
@@ -234,8 +234,8 @@
   "parts": 8,
   "lights": 0,
   "home": [
-   33.0,
-   -22.0,
+   20.0,
+   -40.0,
    0.0
   ]
  },
@@ -246,8 +246,8 @@
   "parts": 12,
   "lights": 0,
   "home": [
-   44.0,
-   -22.0,
+   40.0,
+   -40.0,
    0.0
   ]
  },
@@ -258,8 +258,8 @@
   "parts": 7,
   "lights": 0,
   "home": [
-   55.0,
-   -22.0,
+   60.0,
+   -40.0,
    0.0
   ]
  },
@@ -270,8 +270,8 @@
   "parts": 3,
   "lights": 0,
   "home": [
-   66.0,
-   -22.0,
+   80.0,
+   -40.0,
    0.0
   ]
  },
@@ -282,8 +282,8 @@
   "parts": 14,
   "lights": 0,
   "home": [
-   77.0,
-   -22.0,
+   100.0,
+   -40.0,
    0.0
   ]
  },
@@ -294,8 +294,8 @@
   "parts": 7,
   "lights": 0,
   "home": [
-   0.0,
-   -33.0,
+   120.0,
+   -40.0,
    0.0
   ]
  },
@@ -306,8 +306,8 @@
   "parts": 7,
   "lights": 1,
   "home": [
-   11.0,
-   -33.0,
+   140.0,
+   -40.0,
    0.0
   ]
  },
@@ -318,8 +318,8 @@
   "parts": 13,
   "lights": 0,
   "home": [
-   22.0,
-   -33.0,
+   160.0,
+   -40.0,
    0.0
   ]
  },
@@ -330,8 +330,8 @@
   "parts": 2,
   "lights": 0,
   "home": [
-   33.0,
-   -33.0,
+   0.0,
+   -60.0,
    0.0
   ]
  },
@@ -342,8 +342,8 @@
   "parts": 11,
   "lights": 0,
   "home": [
-   44.0,
-   -33.0,
+   20.0,
+   -60.0,
    0.0
   ]
  },
@@ -354,8 +354,8 @@
   "parts": 5,
   "lights": 2,
   "home": [
-   55.0,
-   -33.0,
+   40.0,
+   -60.0,
    0.0
   ]
  },
@@ -366,8 +366,8 @@
   "parts": 3,
   "lights": 1,
   "home": [
-   66.0,
-   -33.0,
+   60.0,
+   -60.0,
    0.0
   ]
  },
@@ -378,8 +378,8 @@
   "parts": 25,
   "lights": 1,
   "home": [
-   77.0,
-   -33.0,
+   80.0,
+   -60.0,
    0.0
   ]
  },
@@ -390,8 +390,8 @@
   "parts": 10,
   "lights": 0,
   "home": [
-   0.0,
-   -44.0,
+   100.0,
+   -60.0,
    0.0
   ]
  },
@@ -402,8 +402,8 @@
   "parts": 2,
   "lights": 0,
   "home": [
-   11.0,
-   -44.0,
+   120.0,
+   -60.0,
    0.0
   ]
  },
@@ -414,8 +414,8 @@
   "parts": 6,
   "lights": 0,
   "home": [
-   22.0,
-   -44.0,
+   140.0,
+   -60.0,
    0.0
   ]
  },
@@ -426,8 +426,8 @@
   "parts": 9,
   "lights": 0,
   "home": [
-   33.0,
-   -44.0,
+   160.0,
+   -60.0,
    0.0
   ]
  },
@@ -438,8 +438,8 @@
   "parts": 3,
   "lights": 0,
   "home": [
-   44.0,
-   -44.0,
+   0.0,
+   -80.0,
    0.0
   ]
  },
@@ -450,8 +450,8 @@
   "parts": 1,
   "lights": 0,
   "home": [
-   55.0,
-   -44.0,
+   20.0,
+   -80.0,
    0.0
   ]
  },
@@ -462,8 +462,8 @@
   "parts": 1,
   "lights": 0,
   "home": [
-   66.0,
-   -44.0,
+   40.0,
+   -80.0,
    0.0
   ]
  },
@@ -474,8 +474,500 @@
   "parts": 26,
   "lights": 0,
   "home": [
-   77.0,
-   -44.0,
+   60.0,
+   -80.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_Trailer_C_Double",
+  "cat": "WK_ARCH_Trailer_C_Double",
+  "tris": 428,
+  "parts": 29,
+  "lights": 0,
+  "home": [
+   80.0,
+   -80.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_Trailer_D_Camper",
+  "cat": "WK_ARCH_Trailer_D_Camper",
+  "tris": 924,
+  "parts": 22,
+  "lights": 0,
+  "home": [
+   100.0,
+   -80.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_LaundryBlock",
+  "cat": "WK_ARCH_LaundryBlock",
+  "tris": 380,
+  "parts": 25,
+  "lights": 2,
+  "home": [
+   120.0,
+   -80.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_HitchTongue",
+  "cat": "WK_STR_HitchTongue",
+  "tris": 488,
+  "parts": 16,
+  "lights": 0,
+  "home": [
+   140.0,
+   -80.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_ACWindowUnit",
+  "cat": "WK_STR_ACWindowUnit",
+  "tris": 332,
+  "parts": 17,
+  "lights": 0,
+  "home": [
+   160.0,
+   -80.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_SwampCooler",
+  "cat": "WK_STR_SwampCooler",
+  "tris": 560,
+  "parts": 34,
+  "lights": 0,
+  "home": [
+   0.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_PropaneTank",
+  "cat": "WK_STR_PropaneTank",
+  "tris": 664,
+  "parts": 9,
+  "lights": 0,
+  "home": [
+   20.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DOOR_ScreenDoor",
+  "cat": "WK_DOOR_ScreenDoor",
+  "tris": 126,
+  "parts": 10,
+  "lights": 0,
+  "home": [
+   40.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DOOR_ShedDouble",
+  "cat": "WK_DOOR_ShedDouble",
+  "tris": 228,
+  "parts": 17,
+  "lights": 0,
+  "home": [
+   60.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WND_WindowBoarded",
+  "cat": "WK_WND_WindowBoarded",
+  "tris": 188,
+  "parts": 13,
+  "lights": 0,
+  "home": [
+   80.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WND_WindowTVLit",
+  "cat": "WK_WND_WindowTVLit",
+  "tris": 110,
+  "parts": 10,
+  "lights": 1,
+  "home": [
+   100.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WALL_ChainlinkCorner",
+  "cat": "WK_WALL_ChainlinkCorner",
+  "tris": 372,
+  "parts": 9,
+  "lights": 0,
+  "home": [
+   120.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WALL_PicketFence4m",
+  "cat": "WK_WALL_PicketFence4m",
+  "tris": 516,
+  "parts": 43,
+  "lights": 0,
+  "home": [
+   140.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WALL_CinderWall2m",
+  "cat": "WK_WALL_CinderWall2m",
+  "tris": 48,
+  "parts": 4,
+  "lights": 0,
+  "home": [
+   160.0,
+   -100.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FLR_DirtPad",
+  "cat": "WK_FLR_DirtPad",
+  "tris": 12,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   0.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_TER_RoadCorner",
+  "cat": "WK_TER_RoadCorner",
+  "tris": 230,
+  "parts": 20,
+  "lights": 0,
+  "home": [
+   20.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_TER_RoadTee",
+  "cat": "WK_TER_RoadTee",
+  "tris": 148,
+  "parts": 14,
+  "lights": 0,
+  "home": [
+   40.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_TER_Ditch",
+  "cat": "WK_TER_Ditch",
+  "tris": 72,
+  "parts": 15,
+  "lights": 0,
+  "home": [
+   60.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FUR_PlasticTable",
+  "cat": "WK_FUR_PlasticTable",
+  "tris": 476,
+  "parts": 8,
+  "lights": 0,
+  "home": [
+   80.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FUR_Recliner",
+  "cat": "WK_FUR_Recliner",
+  "tris": 612,
+  "parts": 11,
+  "lights": 0,
+  "home": [
+   100.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FUR_KettleGrill",
+  "cat": "WK_FUR_KettleGrill",
+  "tris": 1080,
+  "parts": 11,
+  "lights": 0,
+  "home": [
+   120.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_MailboxCluster",
+  "cat": "WK_PRP_MailboxCluster",
+  "tris": 852,
+  "parts": 23,
+  "lights": 0,
+  "home": [
+   140.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_PayPhone",
+  "cat": "WK_PRP_PayPhone",
+  "tris": 426,
+  "parts": 21,
+  "lights": 1,
+  "home": [
+   160.0,
+   -120.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_ShoppingCart",
+  "cat": "WK_PRP_ShoppingCart",
+  "tris": 776,
+  "parts": 36,
+  "lights": 0,
+  "home": [
+   0.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_KidBike",
+  "cat": "WK_PRP_KidBike",
+  "tris": 1672,
+  "parts": 26,
+  "lights": 0,
+  "home": [
+   20.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_LeaningLadder",
+  "cat": "WK_PRP_LeaningLadder",
+  "tris": 212,
+  "parts": 17,
+  "lights": 0,
+  "home": [
+   40.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_ClothesLine",
+  "cat": "WK_PRP_ClothesLine",
+  "tris": 1890,
+  "parts": 27,
+  "lights": 0,
+  "home": [
+   60.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_OldTV",
+  "cat": "WK_PRP_OldTV",
+  "tris": 294,
+  "parts": 12,
+  "lights": 0,
+  "home": [
+   80.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_MilkCrates",
+  "cat": "WK_PRP_MilkCrates",
+  "tris": 228,
+  "parts": 19,
+  "lights": 0,
+  "home": [
+   100.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_LGT_FloodLight",
+  "cat": "WK_LGT_FloodLight",
+  "tris": 340,
+  "parts": 8,
+  "lights": 2,
+  "home": [
+   120.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_LGT_NeonOpen",
+  "cat": "WK_LGT_NeonOpen",
+  "tris": 58,
+  "parts": 5,
+  "lights": 1,
+  "home": [
+   140.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_LGT_FireBarrel",
+  "cat": "WK_LGT_FireBarrel",
+  "tris": 912,
+  "parts": 20,
+  "lights": 2,
+  "home": [
+   160.0,
+   -140.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_SGN_LotNumber",
+  "cat": "WK_SGN_LotNumber",
+  "tris": 40,
+  "parts": 5,
+  "lights": 0,
+  "home": [
+   0.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_SGN_SpeedLimit5",
+  "cat": "WK_SGN_SpeedLimit5",
+  "tris": 80,
+  "parts": 5,
+  "lights": 0,
+  "home": [
+   20.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_SGN_StopSign",
+  "cat": "WK_SGN_StopSign",
+  "tris": 80,
+  "parts": 5,
+  "lights": 0,
+  "home": [
+   40.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_VEG_PineTree",
+  "cat": "WK_VEG_PineTree",
+  "tris": 112,
+  "parts": 26,
+  "lights": 0,
+  "home": [
+   60.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_VEG_WeedClump",
+  "cat": "WK_VEG_WeedClump",
+  "tris": 10,
+  "parts": 5,
+  "lights": 0,
+  "home": [
+   80.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DCL_TireTracks",
+  "cat": "WK_DCL_TireTracks",
+  "tris": 2,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   100.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DCL_LitterScatter",
+  "cat": "WK_DCL_LitterScatter",
+  "tris": 2,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   120.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_HERO_Pickup79",
+  "cat": "WK_HERO_Pickup79",
+  "tris": 1500,
+  "parts": 37,
+  "lights": 0,
+  "home": [
+   140.0,
+   -160.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_HERO_MotorhomeRV",
+  "cat": "WK_HERO_MotorhomeRV",
+  "tris": 1488,
+  "parts": 43,
+  "lights": 1,
+  "home": [
+   160.0,
+   -160.0,
    0.0
   ]
  }
