@@ -3625,6 +3625,10 @@ function getGlobalLichenPBR() {
   return _cachedLichenPBR;
 }
 
+function getGlobalStonePBR() {
+  return getGlobalLichenPBR();
+}
+
 let _cachedConcretePBR = null;
 function getGlobalConcretePBR() {
   if (!_cachedConcretePBR) {
