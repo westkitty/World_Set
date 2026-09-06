@@ -89,14 +89,7 @@ def main():
     cam_data.lens = 40
 
     anchors = [bpy.data.objects.get(s['name']) for s in stats]
-    last = int(os.environ.get('THUMB_LAST', '0'))
-    only = [x for x in os.environ.get('THUMB_ONLY', '').split(',') if x]
-    wanted = set(s['name'] for s in (stats[-last:] if last else stats))
-    if only:
-        wanted = set(s['name'] for s in stats if any(x.lower() in s['name'].lower() for x in only))
     for a, s in zip(anchors, stats):
-        if s['name'] not in wanted:
-            continue
         if a is None:
             print('missing', s['name'])
             continue

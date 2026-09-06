@@ -23,13 +23,12 @@ stats.sort(key=lambda s: (CATS.index(s['cat']), s['name']))
 
 # ---- contact sheet
 TW, PAD, LAB = 300, 14, 54
-cols = 6
+cols = 5
 rows = (len(stats) + cols - 1) // cols
 sheet = Image.new('RGB', (cols * (TW + PAD) + PAD, rows * (TW + LAB + PAD) + PAD + 70),
                   (10, 13, 20))
 d = ImageDraw.Draw(sheet)
-d.text((PAD + 4, 14), 'WORLD KIT — STARLIGHT ESTATES · 1995 TRAILER PARK AT NIGHT · '
-       f'{len(stats)} ASSETS · {sum(s["tris"] for s in stats):,} TRIS',
+d.text((PAD + 4, 14), 'WORLD KIT — STARLIGHT ESTATES · 1995 TRAILER PARK AT NIGHT · 40 ASSETS',
        font=ImageFont.truetype(FB, 22), fill=(235, 220, 190))
 for i, s in enumerate(stats):
     x = PAD + (i % cols) * (TW + PAD)
@@ -59,12 +58,9 @@ h1{{font-size:26px;margin:0}}p.sub{{color:#9aa7bd}}
 .n{{padding:10px 12px 2px;font-weight:600;font-size:13px;color:#ffebc8}}
 .m{{padding:0 12px 12px;font-size:12px;color:#9aa7bd}}
 img.hero{{width:100%;border-radius:10px;border:1px solid #232c40;margin-top:16px}}
-a.vw{{display:inline-block;margin-top:14px;padding:9px 16px;border-radius:8px;background:#ffb43f;
-color:#20160a;font-weight:700;text-decoration:none;font-size:13px}}
 </style></head><body>
 <h1>WORLD KIT — STARLIGHT ESTATES</h1>
-<p class="sub">1995 trailer park at night · {len(stats)} modular assets · 1 m = 1 unit · origins at ground-projected base center · fronts face +Y</p>
-<p><a class="vw" href="../viewer/index.html">▶ open the interactive kit viewer (3D)</a></p>
+<p class="sub">1995 trailer park at night · 40 modular assets · 1 m = 1 unit · origins at ground-projected base center · fronts face +Y</p>
 <img class="hero" src="../renders/showcase_hero.png">
 <div class="grid">{''.join(cards)}</div>
 <p class="sub">Materials: see material_swatches.png · Library: blend/WK_Starlight_Library.blend ·

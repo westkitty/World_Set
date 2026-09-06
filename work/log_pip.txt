@@ -1,0 +1,46 @@
+Collecting bpy
+  Downloading bpy-5.0.1-cp311-cp311-manylinux_2_28_x86_64.whl (374.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 374.3/374.3 MB 78.2 MB/s eta 0:00:00
+Collecting numpy
+  Downloading numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 344.0 MB/s eta 0:00:00
+Collecting pillow
+  Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 355.7 MB/s eta 0:00:00
+Collecting imageio
+  Downloading imageio-2.37.4-py3-none-any.whl (318 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 318.0/318.0 kB 439.3 MB/s eta 0:00:00
+Collecting imageio-ffmpeg
+  Downloading imageio_ffmpeg-0.6.0-py3-none-manylinux2014_x86_64.whl (29.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.5/29.5 MB 185.5 MB/s eta 0:00:00
+Collecting cython
+  Downloading cython-3.3.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 232.4 MB/s eta 0:00:00
+Collecting numpy
+  Downloading numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.3/18.3 MB 260.2 MB/s eta 0:00:00
+Collecting requests
+  Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.1/73.1 kB 319.0 MB/s eta 0:00:00
+Collecting zstandard
+  Downloading zstandard-0.25.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.6/5.6 MB 349.7 MB/s eta 0:00:00
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.5.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (262 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 262.3/262.3 kB 491.8 MB/s eta 0:00:00
+Collecting idna<4,>=2.5
+  Downloading idna-3.19-py3-none-any.whl (68 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.5/68.5 kB 297.6 MB/s eta 0:00:00
+Collecting urllib3<3,>=1.26
+  Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.1/131.1 kB 428.2 MB/s eta 0:00:00
+Collecting certifi>=2023.5.7
+  Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.0/137.0 kB 453.4 MB/s eta 0:00:00
+Installing collected packages: zstandard, urllib3, pillow, numpy, imageio-ffmpeg, idna, cython, charset_normalizer, certifi, requests, imageio, bpy
+Successfully installed bpy-5.0.1 certifi-2026.7.22 charset_normalizer-3.5.1 cython-3.3.0 idna-3.19 imageio-2.37.4 imageio-ffmpeg-0.6.0 numpy-1.26.4 pillow-12.3.0 requests-2.34.2 urllib3-2.7.0 zstandard-0.25.0
+PIP_EXIT:0
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ImportError: libXrender.so.1: cannot open shared object file: No such file or directory
+PIP_DONE
