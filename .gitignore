@@ -1,0 +1,8 @@
+# Build / render artifacts - regenerable with `python tools/wk.py --stage all`
+dist/
+
+# Toolchain (installed by tools/bootstrap_env.sh, never committed)
+.venv/
+.wk_xstubs/
+__pycache__/
+*.pyc
