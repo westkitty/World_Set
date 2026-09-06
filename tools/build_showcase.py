@@ -75,81 +75,89 @@ class Lot:
 
 # --------------------------------------------------------------- home types
 def dress_single_a(L, lit=(True, False, True), tv=False):
-    """12 x 3.6 single-wide, mint. Door at local +4.2, front face y = +1.8."""
+    """12 x 3.6 single-wide, mint. Door at local +4.2, front face y = +1.8.
+
+    Glazing, doors and wall fittings mount 0.05 PROUD of the shell face: the
+    shells carry painted recesses rather than boolean openings, so anything
+    placed flush disappears inside the wall.
+    """
     L.put('WK_ARCH_Trailer_A', 0, 0)
-    L.put('WK_DOOR_TrailerDoor', 4.2, 1.78, 0.6)
+    L.put('WK_DOOR_TrailerDoor', 4.2, 1.85, 0.6)
     L.put('WK_STR_PorchSteps', 4.2, 0.55, 0)
     for i, wx in enumerate((-4.2, -1.2, 1.6)):
         if tv and i == 1:
-            L.put('WK_WND_WindowTVLit', wx, 1.78, 1.44)
-            L.spill(wx, 3.0, 1.9, 22, (0.45, 0.62, 1.0))
+            L.put('WK_WND_WindowTVLit', wx, 1.85, 1.44)
+            L.spill(wx, 3.0, 1.9, 66, (0.45, 0.62, 1.0))
         elif lit[i % len(lit)]:
-            L.put('WK_WND_WindowLit', wx, 1.78, 1.44)
-            L.spill(wx, 3.0, 1.9, 20, (1.0, 0.62, 0.32))
+            L.put('WK_WND_WindowLit', wx, 1.85, 1.44)
+            L.spill(wx, 3.0, 1.9, 60, (1.0, 0.62, 0.32))
         else:
-            L.put('WK_WND_WindowDark', wx, 1.78, 1.44)
+            L.put('WK_WND_WindowDark', wx, 1.85, 1.44)
     for wx in (-3.0, 2.0):
-        L.put('WK_WND_WindowDark', wx, -1.78, 1.44, spin=PI)
-    L.put('WK_WND_WindowLit', 6.02, 0.0, 1.49, spin=-PI / 2)
-    L.spill(7.4, 0.0, 1.9, 14, (1.0, 0.62, 0.32))
-    L.put('WK_WND_WindowDark', -6.02, 0.0, 1.49, spin=PI / 2)
+        L.put('WK_WND_WindowDark', wx, -1.85, 1.44, spin=PI)
+    L.put('WK_WND_WindowLit', 6.09, 0.0, 1.49, spin=-PI / 2)
+    L.spill(7.4, 0.0, 1.9, 42, (1.0, 0.62, 0.32))
+    L.put('WK_WND_WindowDark', -6.09, 0.0, 1.49, spin=PI / 2)
     for px in (-4.5, 0.0, 4.5):               # piers under the belly
         L.put('WK_STR_CinderPier', px, 1.4, 0)
         L.put('WK_STR_CinderPier', px, -1.4, 0)
-    L.put('WK_LGT_PorchLight', 4.95, 1.74, 2.0)
-    L.spill(4.95, 2.4, 1.9, 26, (1.0, 0.70, 0.42))
+    L.put('WK_LGT_PorchLight', 4.95, 1.84, 2.0)
+    L.spill(4.95, 2.4, 1.9, 78, (1.0, 0.70, 0.42))
     L.put('WK_STR_TVAntenna', -2.5, 0.0, 3.14)
-    L.put('WK_STR_ACWindowUnit', -4.2, 1.86, 1.44)
+    L.put('WK_STR_ACWindowUnit', -4.2, 1.92, 1.44)
 
 
 def dress_single_b(L, office=False, boarded=False):
     """10 x 3.2 single-wide, sand. Door at local -1.4, front face y = +1.6."""
     L.put('WK_ARCH_Trailer_B', 0, 0)
-    L.put('WK_DOOR_ScreenDoor' if not office else 'WK_DOOR_TrailerDoor', -1.4, 1.58, 0.6)
+    L.put('WK_DOOR_ScreenDoor' if not office else 'WK_DOOR_TrailerDoor', -1.4, 1.65, 0.6)
     L.put('WK_STR_PorchSteps', -1.4, 0.4, 0)
     for wx in (-3.4, 0.6):
         if boarded and wx < 0:
-            L.put('WK_WND_WindowBoarded', wx, 1.58, 1.44)
+            L.put('WK_WND_WindowBoarded', wx, 1.65, 1.44)
         else:
-            L.put('WK_WND_WindowLit', wx, 1.58, 1.44)
-            L.spill(wx, 2.8, 1.9, 24, (1.0, 0.66, 0.38))
+            L.put('WK_WND_WindowLit', wx, 1.65, 1.44)
+            L.spill(wx, 2.8, 1.9, 72, (1.0, 0.66, 0.38))
     for wx in (-1.4, 2.6):
-        L.put('WK_WND_WindowDark', wx, -1.58, 1.44, spin=PI)
+        L.put('WK_WND_WindowDark', wx, -1.65, 1.44, spin=PI)
     L.put('WK_STR_Dish', -2.0, 0.0, 3.14)
-    L.put('WK_LGT_PorchLight', -0.65, 1.54, 2.0)
-    L.spill(-0.65, 2.2, 1.9, 24, (1.0, 0.70, 0.42))
+    L.put('WK_LGT_PorchLight', -0.65, 1.64, 2.0)
+    L.spill(-0.65, 2.2, 1.9, 72, (1.0, 0.70, 0.42))
     for px in (-3.5, 0.0, 3.5):
         L.put('WK_STR_CinderPier', px, 1.2, 0)
         L.put('WK_STR_CinderPier', px, -1.2, 0)
     if office:
         L.put('WK_PRP_VendingMachine', 3.9, 1.4, 0)
-        L.spill(3.9, 2.4, 1.2, 26, (0.75, 0.87, 1.0))
+        L.spill(3.9, 2.4, 1.2, 78, (0.75, 0.87, 1.0))
         L.put('WK_SGN_LotNumber', 5.4, 2.6, 0)
 
 
 def dress_double_c(L, tv=True):
     """14 x 7 double-wide. Doors at local -4.6 / +3.4, front face y = +3.5."""
     L.put('WK_ARCH_Trailer_C_Double', 0, 0)
+    # NB: the shell's front face is at y = 3.5 and its recesses are 0.18 deep,
+    # so glazing must sit ~0.04 inside the face - any deeper and the fascia
+    # swallows it and the home reads as a blank slab from across the street.
     for dx in (-4.6, 3.4):
-        L.put('WK_DOOR_TrailerDoor', dx, 3.4, 0.62)
+        L.put('WK_DOOR_TrailerDoor', dx, 3.55, 0.62)
         L.put('WK_STR_PorchSteps', dx, 2.2, 0)
     wins = ((-6.0, 'lit'), (-2.4, 'tv' if tv else 'lit'), (0.6, 'dark'), (5.4, 'lit'))
     for wx, kind in wins:
         if kind == 'lit':
-            L.put('WK_WND_WindowLit', wx, 3.4, 1.51)
-            L.spill(wx, 4.6, 2.0, 22, (1.0, 0.64, 0.34))
+            L.put('WK_WND_WindowLit', wx, 3.55, 1.51)
+            L.spill(wx, 4.6, 2.0, 66, (1.0, 0.64, 0.34))
         elif kind == 'tv':
-            L.put('WK_WND_WindowTVLit', wx, 3.4, 1.51)
-            L.spill(wx, 4.6, 2.0, 26, (0.45, 0.62, 1.0))
+            L.put('WK_WND_WindowTVLit', wx, 3.55, 1.51)
+            L.spill(wx, 4.6, 2.0, 78, (0.45, 0.62, 1.0))
         else:
-            L.put('WK_WND_WindowDark', wx, 3.4, 1.51)
+            L.put('WK_WND_WindowDark', wx, 3.55, 1.51)
     for wx in (-4.0, 1.0, 4.6):
-        L.put('WK_WND_WindowDark', wx, -3.4, 1.51, spin=PI)
-    L.put('WK_LGT_PorchLight', -3.9, 3.36, 2.05)
-    L.spill(-3.9, 4.2, 1.95, 26, (1.0, 0.70, 0.42))
+        L.put('WK_WND_WindowDark', wx, -3.55, 1.51, spin=PI)
+    L.put('WK_LGT_PorchLight', -3.9, 3.56, 2.05)
+    L.spill(-3.9, 4.2, 1.95, 78, (1.0, 0.70, 0.42))
     L.put('WK_STR_SwampCooler', 5.6, 2.2, 3.28)
     L.put('WK_STR_TVAntenna', -5.5, -1.0, 3.28)
-    L.put('WK_STR_ACWindowUnit', 0.6, 3.5, 1.5)
+    L.put('WK_STR_ACWindowUnit', 0.6, 3.62, 1.5)
     for px in (-5.5, 0.0, 5.5):
         for py in (-3.0, 0.0, 3.0):
             L.put('WK_STR_CinderPier', px, py, 0)
@@ -162,7 +170,7 @@ def dress_camper_d(L):
     L.put('WK_FUR_PlasticTable', -1.2, 3.2, 0)
     L.put('WK_FUR_LawnChair', 0.4, 3.6, 0, spin=2.1)
     L.put('WK_PRP_MilkCrates', 2.2, 2.4, 0)
-    L.spill(0.4, 1.6, 1.9, 18, (1.0, 0.68, 0.4))
+    L.spill(0.4, 1.6, 1.9, 54, (1.0, 0.68, 0.4))
 
 
 def dress_rv(L):
@@ -171,7 +179,7 @@ def dress_rv(L):
     L.put('WK_STR_PropaneTank', 3.4, 2.2, 0)
     L.put('WK_FUR_KettleGrill', 1.4, 3.0, 0)
     L.put('WK_PRP_MilkCrates', 2.6, 3.4, 0)
-    L.spill(0.4, 2.4, 2.2, 20, (1.0, 0.72, 0.42))
+    L.spill(0.4, 2.4, 2.2, 60, (1.0, 0.72, 0.42))
 
 
 def dress_yard(L, kind=0, w=9.0, d=7.0):
@@ -295,8 +303,8 @@ def layout():
     laundry.put('WK_PRP_MailboxCluster', -3.4, 4.2, 0, spin=0.1)
     laundry.put('WK_PRP_Dumpster', -4.6, -1.6, 0, spin=0.4)
     laundry.put('WK_LGT_FloodLight', 4.2, -1.8, 0, spin=-0.6)
-    laundry.spill(3.4, 2.6, 2.4, 40, (1.0, 0.36, 0.72))
-    laundry.spill(0.0, 2.6, 1.9, 30, (1.0, 0.82, 0.6))
+    laundry.spill(3.4, 2.6, 2.4, 120, (1.0, 0.36, 0.72))
+    laundry.spill(0.0, 2.6, 1.9, 90, (1.0, 0.82, 0.6))
     laundry.put('WK_DCL_LitterScatter', 2.0, 4.6, 0)
 
     court = [(11.0, 9.0, PI / 2, 'A', 0), (11.0, 22.0, PI / 2, 'B', 1),
@@ -347,14 +355,15 @@ def layout():
     inst('WK_SGN_Trespass', (41.0, 4.0, 0), rot_z=-PI / 2)
 
     # ---------------- utility spine ----------------------------------------
-    for x in (-36, -20, -4, 12, 28, 40):
+    # Sodium lamps are deliberately sparse: a 1995 park lights the junctions
+    # and lets the lots between them fall into porch-light darkness. Pools sit
+    # ~16-18 m apart so the street reads in bright/dark beats, not floodlight.
+    for x in (-34, -2, 30):
         inst('WK_LGT_StreetLamp', (x, -4.4, 0))
-    for x in (-28, -12, 20, 36):
+    for x in (-18, 14):
         inst('WK_LGT_StreetLamp', (x, 4.4, 0), rot_z=PI)
-    for y in (10, 22):
-        inst('WK_LGT_StreetLamp', (4.4, y, 0), rot_z=-PI / 2)
-    for x in (12, 26):
-        inst('WK_LGT_StreetLamp', (x, 36.4, 0), rot_z=PI)
+    inst('WK_LGT_StreetLamp', (4.4, 16, 0), rot_z=-PI / 2)
+    inst('WK_LGT_StreetLamp', (20, 36.4, 0), rot_z=PI)
     for x in (-38, -26, -14, -2, 10, 22, 34):
         inst('WK_PRP_TelephonePole', (x, -6.4, 0), rot_z=0.03 * x)
     for x in (-32, -20, -8, 4, 16, 28):
@@ -473,13 +482,20 @@ def skycams():
         o.location = loc
         trackto(o, marker(name + '_Look', look))
         return o
+    # Scouted at 640x360 (tools/scout.py) before committing to 1080p renders.
     cams = {
-        'hero': cam('CAM_Hero', (-33.5, -3.4, 2.2), (-8, 9, 2.2), 30),
-        'street': cam('CAM_Street', (33, -3.6, 1.75), (-16, 4, 2.2), 50),
+        # the marquee reads first, then the lit homes lead the eye east
+        'hero': cam('CAM_Hero', (-42.5, -6.5, 1.95), (-21, 7, 3.0), 26),
+        # long lens down Main Street: stop sign, string lights, both rows
+        'street': cam('CAM_Street', (14, -3.4, 1.7), (-22, 4, 2.4), 40),
+        # the laundromat: neon, vending, payphone, washer on the apron
         'court': cam('CAM_Court', (4.6, 5.0, 2.15), (-7.4, 15.6, 2.0), 35),
-        'yard': cam('CAM_Yard', (-13.6, -2.2, 2.35), (-25.0, -10.5, 1.9), 35),
-        'fire': cam('CAM_Fire', (12, -8.5, 2.3), (-14, 8, 2.4), 35),
-        'aerial': cam('CAM_Aerial', (-30, -30, 30), (0, 14, 0), 28),
+        # a dressed lot: boarded window, screen door, pickup, grill
+        'yard': cam('CAM_Yard', (-16, -1.6, 1.9), (-26.5, -9.5, 1.6), 30),
+        # burn-barrel corner, TV-lit window against warm glass
+        'fire': cam('CAM_Fire', (9, -2.5, 1.7), (1, -9, 1.6), 35),
+        # the whole plan: Main Street, Sunset Court, Sunset Row
+        'aerial': cam('CAM_Aerial', (-34, -34, 34), (2, 12, 0), 24),
     }
     pano_cd = bpy.data.cameras.new('CAM_Pano')
     pano_cd.type = 'PANO'

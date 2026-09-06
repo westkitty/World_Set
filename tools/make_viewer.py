@@ -201,6 +201,10 @@ main.on{display:flex}
 #canwrap{flex:1;position:relative;background:radial-gradient(80% 80% at 50% 40%,#121a26,#05070c 75%)}
 canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 canvas:active{cursor:grabbing}
+#nowebgl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:10px;color:var(--dim);font-size:12px;letter-spacing:.08em}
+#nowebgl img{max-width:62%;max-height:66%;border:1px solid var(--line);border-radius:10px}
+#nowebgl b{color:var(--ink)}
 #tools{position:absolute;left:14px;top:14px;display:flex;gap:6px;flex-wrap:wrap}
 #tools button{background:#0f1622cc;border:1px solid var(--line);color:var(--dim);
   padding:6px 11px;border-radius:7px;font-size:11.5px;cursor:pointer;backdrop-filter:blur(4px)}
@@ -312,7 +316,24 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   document.querySelectorAll('main').forEach(m => m.classList.toggle('on', m.id === b.dataset.tab));
 });
 
-const V = WKViewer.create($('#cv'));
+// The live 3D panel is a bonus: if the browser has no WebGL2 (headless,
+// blocked GPU, ancient browser) everything else must still work, so fall back
+// to a no-op stand-in and let the rendered thumbnail carry the preview.
+let V, WEBGL = true;
+try {
+  V = WKViewer.create($('#cv'));
+} catch (err) {
+  WEBGL = false;
+  console.warn('3D preview unavailable:', err && err.message);
+  V = {spin: false, grid: false, wire: false, yaw: 0, pitch: 0, dist: 4,
+       target: [0, 0, 0], onspin: null, load: () => Promise.resolve(null)};
+  $('#cv').style.display = 'none';
+  const note = document.createElement('div');
+  note.id = 'nowebgl';
+  note.innerHTML = '<img id="nogl_img" alt=""><div><b>WebGL2 unavailable</b> — ' +
+                   'showing the rendered thumbnail</div>';
+  $('#canwrap').appendChild(note);
+}
 V.onspin = on => $('#bspin').classList.toggle('on', on);
 $('#bspin').onclick = e => { V.spin = !V.spin; e.target.classList.toggle('on', V.spin); };
 $('#bgrid').onclick = e => { V.grid = !V.grid; e.target.classList.toggle('on', V.grid); };
@@ -373,6 +394,14 @@ async function select(a){
      <div class="row"><span>scale</span><b>1 unit = 1 m</b></div>
      <div style="margin-top:8px"><a class="dl" href="../glb/${a.name}.glb" download>↓ download ${a.name}.glb</a></div>`;
   fit(a);
+  if (!WEBGL) {
+    const im = $('#nogl_img');
+    if (im) im.src = '../catalog/thumbs/' + a.name + '.png';
+    $('#hud').innerHTML = `<b>${a.tris.toLocaleString()}</b> triangles<br>` +
+      `<b>${a.parts}</b> parts · <b>${a.mats.length}</b> materials<br>` +
+      `<b>${a.dim[0]}×${a.dim[1]}×${a.dim[2]}</b> m`;
+    return;
+  }
   try {
     const st = await V.load('../glb/' + a.name + '.glb');
     $('#hud').innerHTML = `<b>${st.tris.toLocaleString()}</b> triangles<br>` +
