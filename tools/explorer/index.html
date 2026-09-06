@@ -52,14 +52,40 @@
   .panelbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
   .panelbox h3{margin:0 0 8px;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut)}
   .panelbox ul{margin:0;padding-left:18px} .panelbox li{margin:4px 0}
-  /* 360 viewer */
-  #pano{height:440px;border-radius:12px;border:1px solid var(--line);cursor:grab;
-        background-image:url('/wk/renders/environment_360.png');
-        background-size:auto 100%;background-repeat:repeat-x;background-position:0 50%;
-        position:relative;overflow:hidden;touch-action:none}
-  #pano:active{cursor:grabbing}
-  #pano .hint{position:absolute;left:12px;bottom:10px;background:rgba(0,0,0,.55);color:var(--ink);
-              font-size:12px;padding:4px 10px;border-radius:999px;pointer-events:none}
+  /* 360 viewer (WebGL equirectangular) */
+  #pano-view{height:460px;border-radius:12px;border:1px solid var(--line);position:relative;
+        overflow:hidden;touch-action:none;background:#0b0d0f;cursor:grab}
+  #pano-view:active{cursor:grabbing}
+  #pano-view canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #pano-view .hint{position:absolute;left:12px;bottom:10px;background:rgba(0,0,0,.55);color:var(--ink);
+              font-size:12px;padding:4px 10px;border-radius:999px;pointer-events:none;z-index:3}
+  #pano-compass{position:absolute;right:12px;top:12px;width:46px;height:46px;border-radius:50%;
+              background:rgba(0,0,0,.45);border:1px solid var(--line);z-index:3;display:grid;place-items:center}
+  #pano-needle{width:2px;height:34px;background:linear-gradient(var(--oxide) 50%,var(--mut) 50%);
+              transform-origin:50% 50%;border-radius:2px}
+  .pano-hot{position:absolute;transform:translate(-50%,-50%);z-index:2;cursor:pointer;pointer-events:auto}
+  .pano-hot .dot{display:block;width:14px;height:14px;border-radius:50%;background:var(--amber);
+              box-shadow:0 0 0 3px rgba(255,180,94,.25),0 0 12px rgba(255,180,94,.7)}
+  .pano-hot .lbl{position:absolute;left:20px;top:-6px;white-space:nowrap;background:rgba(0,0,0,.7);
+              color:var(--ink);font-size:11.5px;padding:3px 8px;border-radius:6px;opacity:0;transition:opacity .15s}
+  .pano-hot:hover .lbl{opacity:1}
+  /* 3D GLB overlay */
+  #glb-overlay{position:fixed;inset:0;background:rgba(8,10,13,.97);display:none;z-index:80}
+  #glb-overlay.on{display:block}
+  #glb-overlay canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #glb-head{position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;
+              justify-content:space-between;padding:0 16px;background:linear-gradient(#000b,#0000);z-index:2}
+  #glb-title{font-weight:700;color:var(--ink);font-size:15px}
+  #glb-close{background:none;border:1px solid var(--line);color:var(--mut);width:32px;height:32px;
+              border-radius:8px;cursor:pointer;font-size:16px}
+  #glb-close:hover{color:var(--ink)}
+  #glb-hint{position:absolute;bottom:14px;left:0;right:0;text-align:center;color:var(--mut);
+              font-size:12px;z-index:2;pointer-events:none}
+  #glb-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+              color:var(--mut);z-index:3;font-size:14px}
+  .btn3d{margin-top:10px;background:var(--teal);color:#04231f;border:none;border-radius:8px;
+         padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}
+  .btn3d:hover{filter:brightness(1.1)}
   video{width:100%;border-radius:12px;border:1px solid var(--line);background:#000}
   /* assets */
   .filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
@@ -162,7 +188,11 @@
   <section id="pano">
     <h2>360° environment</h2>
     <p class="sub">Equirectangular capture from the open floor SE of the evaporator. Drag to look around.</p>
-    <div id="pano"><div class="hint">drag to look around</div></div>
+    <div id="pano-view">
+      <canvas id="pano-canvas"></canvas>
+      <div id="pano-compass"><div id="pano-needle"></div></div>
+      <div class="hint">Drag to look around · Scroll to zoom · Click a marker</div>
+    </div>
   </section>
 
   <!-- ============ WALKTHROUGH ============ -->
@@ -245,15 +275,103 @@ $('#reusegrid').innerHTML=REUSE.map(([n,c])=>`
     onclick="openLB(this.src,'','<b>${c}</b>')">
   <div class="meta"><b>${c.split(' — ')[0]}</b><p>${c.split(' — ')[1]}</p></div></div>`).join('');
 
-/* ---------- 360 drag ---------- */
-(()=>{const p=$('#pano');let drag=false,lx=0,pos=0,vel=0.35,raf;
- const step=()=>{if(!drag){pos-=vel;p.style.backgroundPosition=`${pos}px 50%`;}raf=requestAnimationFrame(step)};
- step();
- p.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;p.setPointerCapture(e.pointerId)});
- p.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lx;lx=e.clientX;pos+=dx;
-   p.style.backgroundPosition=`${pos}px 50%`});
- addEventListener('pointerup',()=>drag=false);
-})();
+/* ---------- 360 WebGL equirectangular viewer ---------- */
+const D2R=Math.PI/180;
+const PANO_HOTSPOTS=[
+  {lon:0,  lat:6,  label:'Evaporator tower — hero anchor'},
+  {lon:58, lat:4,  label:'Pipe spine + cable trays'},
+  {lon:125,lat:-6, label:'Control shed + signage'},
+  {lon:205,lat:12, label:'Catwalk junction'},
+  {lon:300,lat:-2, label:'Dune edge / open sky'},
+];
+const PANO_FS=`precision highp float;
+uniform sampler2D uTex;uniform vec2 uRes;uniform float uYaw,uPitch,uTan,uAspect;
+void main(){
+  vec2 ndc=(gl_FragCoord.xy/uRes)*2.0-1.0;
+  vec3 dl=normalize(vec3(ndc.x*uTan*uAspect, ndc.y*uTan, -1.0));
+  float cp=cos(uPitch),sp=sin(uPitch);
+  vec3 d1=vec3(dl.x, cp*dl.y - sp*dl.z, sp*dl.y + cp*dl.z);
+  float cy=cos(uYaw),sy=sin(uYaw);
+  vec3 d=vec3(cy*d1.x + sy*d1.z, d1.y, -sy*d1.x + cy*d1.z);
+  float lon=atan(d.x,-d.z);
+  float lat=asin(clamp(d.y,-1.0,1.0));
+  vec2 uv=vec2(lon/6.2831853+0.5, 0.5-lat/3.14159265);
+  gl_FragColor=texture2D(uTex,uv);
+}`;
+const P={gl:null,tex:null,ready:false,yaw:0,pitch:0.05,fov:75,auto:true,drag:false,px:0,py:0,raf:null,hot:[]};
+function panoTan(){return Math.tan(P.fov/2*D2R);}
+function panoProject(lon,lat,yaw,pitch,tanH,aspect,W,H){
+  const d0=Math.cos(lat)*Math.sin(lon), d1=Math.sin(lat), d2=-Math.cos(lat)*Math.cos(lon);
+  const cy=Math.cos(yaw),sy=Math.sin(yaw);
+  const x1=cy*d0-sy*d2, y1=d1, z1=sy*d0+cy*d2;
+  const cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const x2=x1, y2=cp*y1+sp*z1, z2=-sp*y1+cp*z1;
+  if(z2>=-1e-4) return null;
+  const nx=x2/(-z2)/(tanH*aspect), ny=y2/(-z2)/tanH;
+  if(nx<-1.15||nx>1.15||ny<-1.15||ny>1.15) return null;
+  return {x:(nx*0.5+0.5)*W, y:(0.5-ny*0.5)*H};
+}
+function initPano(url){
+  const view=$('#pano-view'), cv=$('#pano-canvas');
+  if(!P.gl){
+    const gl=cv.getContext('webgl')||cv.getContext('experimental-webgl');
+    if(!gl){view.querySelector('.hint').textContent='WebGL unavailable';return;}
+    P.gl=gl;
+    const mk=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);return s;};
+    const prog=gl.createProgram();
+    gl.attachShader(prog,mk(gl.VERTEX_SHADER,'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));
+    gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,PANO_FS));
+    gl.linkProgram(prog);gl.useProgram(prog);P.prog=prog;
+    const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(prog,'a');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    P.u={tex:gl.getUniformLocation(prog,'uTex'),res:gl.getUniformLocation(prog,'uRes'),
+         yaw:gl.getUniformLocation(prog,'uYaw'),pitch:gl.getUniformLocation(prog,'uPitch'),
+         tan:gl.getUniformLocation(prog,'uTan'),aspect:gl.getUniformLocation(prog,'uAspect')};
+    P.tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,P.tex);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    gl.uniform1i(P.u.tex,0);
+    view.addEventListener('pointerdown',e=>{P.drag=true;P.auto=false;P.px=e.clientX;P.py=e.clientY;view.setPointerCapture(e.pointerId);});
+    view.addEventListener('pointermove',e=>{if(!P.drag)return;const dx=e.clientX-P.px,dy=e.clientY-P.py;P.px=e.clientX;P.py=e.clientY;
+      P.yaw-=dx*0.0045;P.pitch+=dy*0.0045;P.pitch=Math.max(-1.35,Math.min(1.35,P.pitch));});
+    addEventListener('pointerup',()=>P.drag=false);
+    view.addEventListener('wheel',e=>{e.preventDefault();P.auto=false;P.fov*=(1+Math.sign(e.deltaY)*0.08);
+      P.fov=Math.max(30,Math.min(100,P.fov));},{passive:false});
+    [...view.querySelectorAll('.pano-hot')].forEach(n=>n.remove());
+    P.hot=PANO_HOTSPOTS.map(h=>{
+      const el=document.createElement('div');el.className='pano-hot';
+      el.innerHTML='<span class="dot"></span><span class="lbl">'+h.label+'</span>';
+      el.onclick=()=>{P.yaw=-h.lon*D2R;P.pitch=h.lat*D2R;P.auto=false;};
+      view.appendChild(el);return {el,lon:h.lon*D2R,lat:h.lat*D2R};
+    });
+  }
+  const gl=P.gl,img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>{gl.bindTexture(gl.TEXTURE_2D,P.tex);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);P.ready=true;};
+  img.onerror=()=>{view.querySelector('.hint').textContent='360 image failed to load';};
+  img.src=url;
+  if(!P.raf)panoLoop();
+}
+function panoLoop(){
+  P.raf=requestAnimationFrame(panoLoop);
+  const gl=P.gl;if(!gl)return;
+  const cv=$('#pano-canvas'),W=cv.clientWidth,H=cv.clientHeight;if(!W||!H)return;
+  if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}
+  if(P.auto&&!P.drag)P.yaw+=0.0016;
+  const tanH=panoTan(),aspect=W/H;
+  gl.viewport(0,0,W,H);gl.useProgram(P.prog);
+  gl.uniform2f(P.u.res,W,H);gl.uniform1f(P.u.yaw,P.yaw);gl.uniform1f(P.u.pitch,P.pitch);
+  gl.uniform1f(P.u.tan,tanH);gl.uniform1f(P.u.aspect,aspect);
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,P.tex);
+  gl.drawArrays(gl.TRIANGLES,0,3);
+  const nd=$('#pano-needle');if(nd)nd.style.transform='rotate('+(-P.yaw/D2R)+'deg)';
+  P.hot.forEach(h=>{const p=panoProject(h.lon,h.lat,P.yaw,P.pitch,tanH,aspect,W,H);
+    if(p){h.el.style.display='block';h.el.style.left=p.x+'px';h.el.style.top=p.y+'px';}
+    else h.el.style.display='none';});
+}
 
 /* ---------- assets from manifest ---------- */
 let MAN=[];
@@ -297,10 +415,18 @@ function renderAssets(){
 }
 function assetHTML(name){
   const m=MAN.find(x=>x.asset_name===name)||{};const d=m.dimensions_m||{};
+  const has3d=m.filename&&/\.glb$/i.test(m.filename);
   return `<b>${name}</b><br>${m.purpose||''}<br>
     <span style="color:var(--mut)">category ${m.category} · tier ${m.tier} · family ${m.material_family}<br>
     ${d.w?d.w.toFixed(2)+' × '+(d.d||0).toFixed(2)+' × '+(d.h||0).toFixed(2)+' m':''} · grid ${m.snap_grid_m} m ·
-    file ${m.filename}</span>`;
+    file ${m.filename}</span>`+
+    (has3d?`<br><button class="btn3d" onclick="openGLBFor('${name}')">▶ Load 3D model (GLB)</button>`:'');
+}
+function openGLBFor(name){
+  const m=MAN.find(x=>x.asset_name===name);
+  if(!m||!m.filename||!/\.glb$/i.test(m.filename)){alert('No 3D model exported for this entry.');return;}
+  if(!window.WK3D){alert('3D viewer not available.');return;}
+  window.WK3D.openGLB('/wk/export/'+m.filename,m.asset_name);
 }
 
 /* ---------- docs with mini markdown ---------- */
@@ -351,6 +477,90 @@ function md2html(src){
   return out.join('\n');
 }
 loadDoc('WORLD_DNA.md');
+initPano('/wk/renders/environment_360.png');
+</script>
+
+<div id="glb-overlay">
+  <div id="glb-head"><span id="glb-title"></span><button id="glb-close" title="close">✕</button></div>
+  <canvas id="glb-canvas"></canvas>
+  <div id="glb-loading">Loading model…</div>
+  <div id="glb-hint">Drag to orbit · Scroll to zoom · Auto-rotates until you interact</div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from '/vendor/GLTFLoader.js';
+
+const overlay=document.getElementById('glb-overlay');
+const canvas=document.getElementById('glb-canvas');
+const loadingEl=document.getElementById('glb-loading');
+let renderer,scene,camera,ctrl,currentModel,rafId=null;
+const loader=new GLTFLoader();
+
+function makeOrbit(cam,dom){
+  const s={theta:0.6,phi:1.15,radius:4,target:new THREE.Vector3(),auto:true,drag:false,px:0,py:0};
+  s.apply=()=>{const sp=Math.sin(s.phi);
+    cam.position.set(s.target.x+s.radius*sp*Math.sin(s.theta),
+                     s.target.y+s.radius*Math.cos(s.phi),
+                     s.target.z+s.radius*sp*Math.cos(s.theta));
+    cam.lookAt(s.target);};
+  dom.addEventListener('pointerdown',e=>{s.drag=true;s.auto=false;s.px=e.clientX;s.py=e.clientY;dom.setPointerCapture(e.pointerId);});
+  dom.addEventListener('pointermove',e=>{if(!s.drag)return;const dx=e.clientX-s.px,dy=e.clientY-s.py;s.px=e.clientX;s.py=e.clientY;
+    s.theta-=dx*0.008;s.phi=Math.max(0.15,Math.min(Math.PI-0.15,s.phi-dy*0.008));s.apply();});
+  addEventListener('pointerup',()=>s.drag=false);
+  dom.addEventListener('wheel',e=>{e.preventDefault();s.auto=false;s.radius=Math.max(0.4,Math.min(80,s.radius*(1+Math.sign(e.deltaY)*0.1)));s.apply();},{passive:false});
+  return s;
+}
+function ensure(){
+  if(renderer)return;
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x11141a);
+  camera=new THREE.PerspectiveCamera(45,1,0.05,300);
+  scene.add(new THREE.HemisphereLight(0xbcd4e6,0x2a2620,0.9));
+  const key=new THREE.DirectionalLight(0xfff2e0,1.7);key.position.set(4,6,3);scene.add(key);
+  const fill=new THREE.DirectionalLight(0x9fb8d8,0.5);fill.position.set(-5,2,-2);scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xffd9a8,0.6);rim.position.set(0,3,-6);scene.add(rim);
+  scene.add(new THREE.GridHelper(20,20,0x333a40,0x22272b));
+  ctrl=makeOrbit(camera,canvas);
+  addEventListener('resize',resize);
+}
+function resize(){const w=overlay.clientWidth,h=overlay.clientHeight;if(!w||!h)return;
+  renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+function frameModel(obj){
+  const box=new THREE.Box3().setFromObject(obj),size=box.getSize(new THREE.Vector3()),
+        center=box.getCenter(new THREE.Vector3());
+  obj.position.sub(center);
+  const maxDim=Math.max(size.x,size.y,size.z)||1;
+  ctrl.radius=maxDim/(2*Math.tan(camera.fov*Math.PI/360))*1.6;
+  ctrl.target.set(0,0,0);ctrl.theta=0.6;ctrl.phi=1.15;ctrl.auto=true;ctrl.apply();
+}
+function loop(){rafId=requestAnimationFrame(loop);
+  if(ctrl.auto){ctrl.theta+=0.004;ctrl.apply();}
+  renderer.render(scene,camera);}
+function clearModel(){if(!currentModel)return;scene.remove(currentModel);
+  currentModel.traverse(o=>{if(o.geometry)o.geometry.dispose();
+    if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());});
+  currentModel=null;}
+function openGLB(url,title){
+  ensure();overlay.classList.add('on');
+  document.getElementById('glb-title').textContent=title||'';
+  loadingEl.textContent='Loading model…';loadingEl.style.display='flex';
+  resize();if(!rafId)loop();
+  clearModel();
+  loader.load(url,gltf=>{currentModel=gltf.scene;scene.add(currentModel);frameModel(currentModel);
+    loadingEl.style.display='none';},undefined,err=>{loadingEl.textContent='Failed to load model.';console.error(err);});
+}
+function closeGLB(){overlay.classList.remove('on');if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
+document.getElementById('glb-close').onclick=closeGLB;
+overlay.onclick=e=>{if(e.target===overlay)closeGLB();};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('on'))closeGLB();});
+window.WK3D={openGLB};
 </script>
 </body>
 </html>

@@ -9,7 +9,7 @@ os.environ.setdefault("LD_LIBRARY_PATH", os.path.expanduser("~/.wk_xstubs"))
 
 from world_kit import pipeline
 
-ORDER = ["assets", "showcase", "stills", "pano", "walk", "catalog"]
+ORDER = ["assets", "reuse", "showcase", "stills", "pano", "walk", "catalog"]
 
 for stage in ORDER:
     t0 = time.time()
