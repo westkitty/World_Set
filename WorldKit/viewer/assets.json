@@ -2166,12 +2166,12 @@
   "assets": 81,
   "tris": 35212,
   "mats": 74,
-  "instances": 866,
+  "instances": 859,
   "lights": 58,
   "footprint": "86 \u00d7 63 m"
  },
  "showcase": {
-  "instances": 866,
+  "instances": 859,
   "spill_lights": 58,
   "extent": {
    "x": [

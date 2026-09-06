@@ -390,5 +390,109 @@ varying vec3 vC; void main(){ vC=aCol; gl_Position=uMVP*vec4(aPos,1.0); }`;
     return V;
   }
 
-  global.WKViewer = { create: (c) => new Viewer(c), parseGLB };
+  /* ------------------------------------------------------- equirect pano */
+  /* A real 360 viewer: one fullscreen triangle, and the fragment shader turns
+     each pixel into a view ray and samples the equirectangular map. Yaw/pitch
+     are camera angles, so the projection stays correct instead of sliding a
+     flat image sideways.                                                    */
+  const PANO_VS = `#version 300 es
+  out vec2 vNdc;
+  void main(){ vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2) * 2.0 - 1.0;
+    vNdc = p; gl_Position = vec4(p, 0.0, 1.0); }`;
+
+  const PANO_FS = `#version 300 es
+  precision highp float;
+  in vec2 vNdc; out vec4 outC;
+  uniform sampler2D uTex; uniform vec2 uRes; uniform float uYaw, uPitch, uFov;
+  const float PI = 3.14159265359;
+  void main(){
+    float asp = uRes.x / uRes.y;
+    float t = tan(uFov * 0.5);
+    vec3 d = normalize(vec3(vNdc.x * t * asp, vNdc.y * t, -1.0));
+    float cy = cos(uYaw), sy = sin(uYaw), cp = cos(uPitch), sp = sin(uPitch);
+    d = mat3(1.0, 0.0, 0.0, 0.0, cp, sp, 0.0, -sp, cp) * d;      // pitch
+    d = mat3(cy, 0.0, -sy, 0.0, 1.0, 0.0, sy, 0.0, cy) * d;      // yaw
+    vec2 uv = vec2(atan(d.x, -d.z) / (2.0 * PI) + 0.5, acos(clamp(d.y, -1.0, 1.0)) / PI);
+    outC = texture(uTex, uv);
+  }`;
+
+  function Pano(canvas, url) {
+    const gl = canvas.getContext('webgl2', { antialias: true });
+    if (!gl) throw new Error('WebGL unavailable');
+    const P = { yaw: 0.4, pitch: 0.0, fov: 1.15, drift: true, ready: false };
+    const prog = gl.createProgram();
+    for (const [t, src] of [[gl.VERTEX_SHADER, PANO_VS], [gl.FRAGMENT_SHADER, PANO_FS]]) {
+      const sh = gl.createShader(t);
+      gl.shaderSource(sh, src); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(prog, sh);
+    }
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    gl.useProgram(prog);
+    const u = {};
+    ['uTex', 'uRes', 'uYaw', 'uPitch', 'uFov'].forEach(n => u[n] = gl.getUniformLocation(prog, n));
+    const vao = gl.createVertexArray();
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                  new Uint8Array([12, 16, 26, 255]));
+    const im = new Image();
+    im.onload = () => {
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      P.ready = true;
+    };
+    im.src = url;
+
+    let drag = null;
+    canvas.addEventListener('pointerdown', e => {
+      drag = { x: e.clientX, y: e.clientY }; P.drift = false;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    const stop = () => { drag = null; };
+    canvas.addEventListener('pointerup', stop);
+    canvas.addEventListener('pointercancel', stop);
+    canvas.addEventListener('pointermove', e => {
+      if (!drag) return;
+      P.yaw -= (e.clientX - drag.x) * 0.0032 * P.fov;
+      P.pitch = Math.max(-1.45, Math.min(1.45, P.pitch - (e.clientY - drag.y) * 0.0032 * P.fov));
+      drag = { x: e.clientX, y: e.clientY };
+    });
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      P.fov = Math.max(0.35, Math.min(2.0, P.fov * (1 + Math.sign(e.deltaY) * 0.1)));
+    }, { passive: false });
+    canvas.addEventListener('dblclick', () => { P.drift = !P.drift; });
+
+    function frame() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(1, (canvas.clientWidth * dpr) | 0);
+      const h = Math.max(1, (canvas.clientHeight * dpr) | 0);
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      if (P.drift) P.yaw += 0.0006;
+      gl.viewport(0, 0, w, h);
+      gl.useProgram(prog);
+      gl.bindVertexArray(vao);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.uniform1i(u.uTex, 0);
+      gl.uniform2f(u.uRes, w, h);
+      gl.uniform1f(u.uYaw, P.yaw);
+      gl.uniform1f(u.uPitch, P.pitch);
+      gl.uniform1f(u.uFov, P.fov);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    return P;
+  }
+
+  global.WKViewer = { create: (c) => new Viewer(c), pano: (c, url) => Pano(c, url), parseGLB };
 })(window);

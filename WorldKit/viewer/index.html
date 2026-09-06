@@ -82,7 +82,13 @@ a.dl{color:var(--hot);text-decoration:none;font-size:12px}
 .shots figcaption{padding:8px 12px;font-size:11.5px;color:var(--dim);letter-spacing:.06em}
 #panowrap{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:11px;
   height:330px;background:#05070c;cursor:ew-resize}
-#panoimg{position:absolute;top:0;left:0;height:100%;max-width:none;user-select:none;
+#panocv{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;
+  touch-action:none;background:#05070c}
+#panocv:active{cursor:grabbing}
+#panohint{position:absolute;left:12px;bottom:10px;font-size:11px;letter-spacing:.08em;
+  color:var(--dim);background:#0b1119aa;border:1px solid var(--line);border-radius:7px;
+  padding:5px 9px;pointer-events:none}
+#panoimg{display:none;position:absolute;top:0;left:0;height:100%;max-width:none;user-select:none;
   -webkit-user-drag:none}
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 2px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 15px;min-width:120px}
@@ -135,7 +141,7 @@ video{width:100%;max-width:1100px;border:1px solid var(--line);border-radius:11p
   <h2>HERO RENDERS · CYCLES 1920×1080</h2>
   <div class="shots" id="shots"></div>
   <h2>360° ENVIRONMENT PANORAMA · EQUIRECTANGULAR · DRAG TO PAN</h2>
-  <div id="panowrap"><img id="panoimg" src="../renders/pano_360.png" alt="360 panorama"></div>
+  <div id="panowrap"><canvas id="panocv"></canvas><img id="panoimg" src="../renders/pano_360.png" alt="360 panorama"><div id="panohint">drag to look · scroll to zoom · double-click to stop the drift</div></div>
   <h2>THE KIT IN THE SCENE</h2>
   <p class="note">Everything in these frames is an instance of the same 81 library assets —
   no bespoke geometry was modelled for the shot. Assets are linked as collection instances, so
@@ -261,19 +267,27 @@ async function select(a){
 
 $('#search').oninput = e => { S.q = e.target.value.trim().toLowerCase(); list(); };
 
-// ---- panorama drag-pan
+// ---- 360 panorama: true equirect projection in WebGL, flat drag-pan fallback
 (function(){
+  try {
+    WKViewer.pano($('#panocv'), '../renders/pano_360.png');
+    return;
+  } catch (err) {
+    console.warn('equirect viewer unavailable:', err && err.message);
+  }
+  $('#panocv').style.display = 'none';
   const w = $('#panowrap'), im = $('#panoimg');
+  im.style.display = 'block';
+  $('#panohint').textContent = 'drag to pan (flat fallback — no WebGL2)';
   let down = false, x0 = 0, sl = 0;
   w.addEventListener('pointerdown', e => { down = true; x0 = e.clientX; sl = im.offsetLeft; });
   addEventListener('pointerup', () => down = false);
   w.addEventListener('pointermove', e => {
     if (!down) return;
-    let l = sl + (e.clientX - x0);
     const min = w.clientWidth - im.clientWidth;
-    im.style.left = Math.max(min, Math.min(0, l)) + 'px';
+    im.style.left = Math.max(min, Math.min(0, sl + (e.clientX - x0))) + 'px';
   });
-  let auto = setInterval(() => {
+  setInterval(() => {
     if (down) return;
     const min = w.clientWidth - im.clientWidth;
     let l = im.offsetLeft - 0.5;
@@ -283,12 +297,12 @@ $('#search').oninput = e => { S.q = e.target.value.trim().toLowerCase(); list();
 })();
 
 const SHOTS = [
-  ['showcase_hero.png', 'HERO · west end of Main Street, 30 mm'],
-  ['showcase_street.png', 'MAIN STREET · long lens down the row, 50 mm'],
-  ['showcase_court.png', 'SUNSET COURT · laundromat + vending, 35 mm'],
-  ['showcase_yard.png', 'LOT 4 · yard detail, screen door + grill, 35 mm'],
-  ['showcase_fire.png', 'BURN BARREL · string lights + stop sign, 35 mm'],
-  ['showcase_aerial.png', 'AERIAL · whole park layout, 28 mm']
+  ['showcase_hero.png', 'HERO · the marquee at the west entry, 26 mm'],
+  ['showcase_street.png', 'MAIN STREET · looking west from the junction, 40 mm'],
+  ['showcase_court.png', 'SUNSET COURT · laundromat, neon + vending, 35 mm'],
+  ['showcase_yard.png', 'LOT 6 · boarded window, screen door, pickup, 30 mm'],
+  ['showcase_fire.png', 'BURN BARREL · TV-lit glass and warm glass, 35 mm'],
+  ['showcase_aerial.png', 'AERIAL · the whole plan from the south-west, 24 mm']
 ];
 
 fetch('assets.json').then(r => r.json()).then(d => {
