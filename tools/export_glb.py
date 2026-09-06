@@ -6,6 +6,7 @@ import json
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bpy  # noqa: E402
+from mathutils import Matrix  # noqa: E402
 
 LIB = '/home/user/World_Set/WorldKit/blend/WK_Starlight_Library.blend'
 OUTDIR = '/home/user/World_Set/WorldKit/glb'
@@ -21,8 +22,16 @@ def main():
         if a is None:
             print('missing', s['name'])
             continue
+        # Assets are authored at the world origin and parented to an anchor that
+        # sits at the asset's slot in the library layout. Zero the anchor AND
+        # clear the parent inverses so the exported root sits at (0,0,0) with the
+        # geometry centred on it and the contact plane at y=0 (engine-ready).
         home = a.location.copy()
+        inverses = [(k, k.matrix_parent_inverse.copy()) for k in a.children_recursive]
         a.location = (0, 0, 0)
+        for k, _ in inverses:
+            if k.parent is a:
+                k.matrix_parent_inverse = Matrix.Identity(4)
         bpy.context.view_layer.update()
         bpy.ops.object.select_all(action='DESELECT')
         a.select_set(True)
@@ -36,6 +45,9 @@ def main():
             export_cameras=False, export_animations=False, export_skins=False,
             export_morph=False, use_visible=False, use_renderable=True)
         a.location = home
+        for k, mi in inverses:
+            k.matrix_parent_inverse = mi
+        bpy.context.view_layer.update()
         print('glb', s['name'], os.path.getsize(out) // 1024, 'KB')
 
 

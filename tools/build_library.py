@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""WORLD KIT — build the asset-library .blend (materials + 40 assets)."""
+"""WORLD KIT v2 — build the asset-library .blend (materials + 81 assets)."""
 import os
 import sys
 import json
@@ -9,6 +9,7 @@ import bpy  # noqa: E402
 from kit_lib import pack_all, tri_count, children_recursive  # noqa: E402
 import assets_a  # noqa: E402
 import assets_b  # noqa: E402
+import assets_c  # noqa: E402
 
 OUT = '/home/user/World_Set/WorldKit/blend/WK_Starlight_Library.blend'
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -37,6 +38,32 @@ BUILDERS = [
     ('WK_VEG', assets_b.b_veg_tuft),
     ('WK_DCL', assets_b.b_dcl_oil), ('WK_DCL', assets_b.b_dcl_puddle),
     ('WK_HERO', assets_b.b_hero_sedan),
+    # ---------------------------------------------------------------- v2
+    ('WK_ARCH', assets_c.b_arch_trailer_c_double),
+    ('WK_ARCH', assets_c.b_arch_trailer_d_camper),
+    ('WK_ARCH', assets_c.b_arch_laundry_block),
+    ('WK_STR', assets_c.b_str_hitch), ('WK_STR', assets_c.b_str_ac_window),
+    ('WK_STR', assets_c.b_str_swamp_cooler), ('WK_STR', assets_c.b_str_propane),
+    ('WK_DOOR', assets_c.b_door_screen), ('WK_DOOR', assets_c.b_door_shed_double),
+    ('WK_WND', assets_c.b_wnd_boarded), ('WK_WND', assets_c.b_wnd_tv_lit),
+    ('WK_WALL', assets_c.b_wall_chainlink_corner), ('WK_WALL', assets_c.b_wall_picket),
+    ('WK_WALL', assets_c.b_wall_cinder),
+    ('WK_FLR', assets_c.b_flr_dirt),
+    ('WK_TER', assets_c.b_ter_road_corner), ('WK_TER', assets_c.b_ter_road_tee),
+    ('WK_TER', assets_c.b_ter_ditch),
+    ('WK_FUR', assets_c.b_fur_plastic_table), ('WK_FUR', assets_c.b_fur_recliner),
+    ('WK_FUR', assets_c.b_fur_kettle_grill),
+    ('WK_PRP', assets_c.b_prp_mailbox_cluster), ('WK_PRP', assets_c.b_prp_payphone),
+    ('WK_PRP', assets_c.b_prp_shopping_cart), ('WK_PRP', assets_c.b_prp_kid_bike),
+    ('WK_PRP', assets_c.b_prp_leaning_ladder), ('WK_PRP', assets_c.b_prp_clothesline),
+    ('WK_PRP', assets_c.b_prp_old_tv), ('WK_PRP', assets_c.b_prp_milk_crates),
+    ('WK_LGT', assets_c.b_lgt_flood), ('WK_LGT', assets_c.b_lgt_neon_open),
+    ('WK_LGT', assets_c.b_lgt_fire_barrel),
+    ('WK_SGN', assets_c.b_sgn_lot_number), ('WK_SGN', assets_c.b_sgn_speed),
+    ('WK_SGN', assets_c.b_sgn_stop),
+    ('WK_VEG', assets_c.b_veg_pine), ('WK_VEG', assets_c.b_veg_weed_clump),
+    ('WK_DCL', assets_c.b_dcl_tire_tracks), ('WK_DCL', assets_c.b_dcl_litter),
+    ('WK_HERO', assets_c.b_hero_pickup79), ('WK_HERO', assets_c.b_hero_motorhome),
 ]
 
 
@@ -47,10 +74,11 @@ def main():
     bpy.context.scene.unit_settings.system = 'METRIC'
     bpy.context.scene.unit_settings.scale_length = 1.0
     assets_a.build_materials()
+    assets_c.build_materials_v2()
     print(f'materials: {len(bpy.data.materials)}')
 
     anchors = []
-    cols, spacing = 8, 11.0
+    cols, spacing = 9, 20.0
     for i, (cat, fn) in enumerate(BUILDERS):
         home = ((i % cols) * spacing, -(i // cols) * spacing, 0)
         if only and not any(fn.__name__ == 'b_' + s.lower().replace('wk_', '') or

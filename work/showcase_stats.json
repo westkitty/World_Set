@@ -1,0 +1,23 @@
+{
+ "instances": 866,
+ "spill_lights": 58,
+ "extent": {
+  "x": [
+   -43,
+   43
+  ],
+  "y": [
+   -18,
+   45
+  ]
+ },
+ "cameras": [
+  "CAM_Aerial",
+  "CAM_Court",
+  "CAM_Fire",
+  "CAM_Hero",
+  "CAM_Pano",
+  "CAM_Street",
+  "CAM_Yard"
+ ]
+}
