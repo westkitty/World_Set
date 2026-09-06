@@ -41,11 +41,20 @@ def render_thumbnails(built, out_dir, report):
     sc.render.engine = "CYCLES"; sc.cycles.device = "CPU"
     sc.cycles.samples = 32; sc.cycles.use_denoising = True
     sc.render.resolution_x = 512; sc.render.resolution_y = 512
+    # the walk stage leaves FFMPEG selected; stills need a single-frame format
+    sc.render.image_settings.file_format = "PNG"
+
+    # Collection-level hide_render overrides object flags, so un-hide every
+    # collection and isolate purely at the object level.  This also suppresses
+    # the startup scene's default Cube/Light that would otherwise photobomb.
+    for c in bpy.data.collections:
+        c.hide_render = False
+    all_objs = [o for o in bpy.data.objects if o.type in {"MESH", "LIGHT"}]
 
     for name in built:
-        for other_name, o in built.items():
-            o.hide_render = other_name != name
         obj = built[name]
+        for o in all_objs:
+            o.hide_render = (o is not obj) and o.name not in ("CAT_SUN", "CAT_FILL")
         c = obj.location + (Vector(obj.bound_box[0]) + Vector(obj.bound_box[6])) / 2
         r = max(obj.dimensions) / 2
         cam.location = c + Vector((1.0, -1.0, 0.6)).normalized() * (r * 3.0 + 0.5)
