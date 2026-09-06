@@ -1020,11 +1020,11 @@
   }
 
 </style>
-<!-- Three.js + Loaders from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- Three.js + Loaders (Local Offline-First Bundle) -->
+<script src="web/libs/three.min.js"></script>
+<script src="web/libs/GLTFLoader.js"></script>
+<script src="web/libs/PointerLockControls.js"></script>
+<script src="web/libs/OrbitControls.js"></script>
 </head>
 <body class="ui-hidden">
 <div id="header-hover-trigger"></div>
@@ -1103,6 +1103,16 @@
   <div class="spinner"></div>
   <div class="loader-text" id="loaderStatus">INITIALIZING SUBTERRANEAN ENVIRONMENT...</div>
 </div>
+<script>
+  // Failsafe: Ensure black loading screen never persists indefinitely
+  setTimeout(function() {
+    var l = document.getElementById('loader');
+    if (l && l.style.display !== 'none') {
+      l.style.opacity = '0';
+      setTimeout(function() { if (l) l.style.display = 'none'; }, 400);
+    }
+  }, 2500);
+</script>
 
 <!-- 3D VIEWPORT CANVAS CONTAINER -->
 <div id="viewport-container">
@@ -19090,8 +19100,16 @@ fetch('ASSET_MANIFEST.json')
   .catch(err => console.error("Manifest load error:", err));
 
 // Robust Boot Sequence: triggers whether DOM is already interactive, completed, or loading
+let bootRetries = 0;
 function bootWorldKit() {
   if (typeof THREE === 'undefined') {
+    bootRetries++;
+    if (bootRetries > 50) {
+      console.error("Three.js library failed to load in time. Releasing loader.");
+      const loaderEl = document.getElementById('loader');
+      if (loaderEl) loaderEl.style.display = 'none';
+      return;
+    }
     setTimeout(bootWorldKit, 40);
     return;
   }
