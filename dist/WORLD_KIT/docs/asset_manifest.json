@@ -1,0 +1,761 @@
+{
+  "kit": "WK-BRINEFALL-001",
+  "name": "WORLD KIT - Brinefall Saltlight Station",
+  "assets": [
+    {
+      "asset_name": "WK_ARCH_BAY_VAULT_A_01",
+      "category": "01_ARCHITECTURE",
+      "tier": "FOUNDATION",
+      "purpose": "Primary structural bay: board-formed concrete shell with two segmental arch ribs, springing corbels and a coffered crown. Everything in the world is built from this piece.",
+      "dimensions_m": {
+        "w": 4.04,
+        "d": 4.04,
+        "h": 1.92
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "architecture/WK_ARCH_BAY_VAULT_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_ARCH_BAY_FLAT_A_01",
+      "category": "01_ARCHITECTURE",
+      "tier": "FOUNDATION",
+      "purpose": "Open-plan bay with a flat slab soffit and exposed beam grid. Used for working floors where the vault would block crane access.",
+      "dimensions_m": {
+        "w": 4.04,
+        "d": 4.04,
+        "h": 0.8
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "architecture/WK_ARCH_BAY_FLAT_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_ARCH_BAY_OCULUS_A_01",
+      "category": "01_ARCHITECTURE",
+      "tier": "VARIATION",
+      "purpose": "Vault bay with a 2.4 m square roof opening and a raised steel curb, so tall equipment and daylight can pass between levels.",
+      "dimensions_m": {
+        "w": 4.04,
+        "d": 4.04,
+        "h": 2.0
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "architecture/WK_ARCH_BAY_OCULUS_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_ARCH_COLUMN_A_01",
+      "category": "01_ARCHITECTURE",
+      "tier": "FOUNDATION",
+      "purpose": "Octagonal cast column with a splayed base and a corbelled capital. Carries every arch in the station.",
+      "dimensions_m": {
+        "w": 0.95,
+        "d": 0.95,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "architecture/WK_ARCH_COLUMN_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_STANDARD_A_01",
+      "category": "02_WALLS",
+      "tier": "FOUNDATION",
+      "purpose": "4.0 m straight wall, 3.6 m high, 0.4 m thick, board-formed face with a tile dado and a concrete cap.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.5,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE"
+      ],
+      "filename": "walls/WK_WALL_STANDARD_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_STANDARD_B_01",
+      "category": "02_WALLS",
+      "tier": "VARIATION",
+      "purpose": "Same wall with a recessed service panel and conduit chase. Breaks the rhythm of STANDARD_A without changing a single dimension.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.56,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE",
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "walls/WK_WALL_STANDARD_B_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_CORNER_INNER_A_01",
+      "category": "02_WALLS",
+      "tier": "FOUNDATION",
+      "purpose": "Inside 90 degree corner. Two wall faces meet on the 4.0 m grid with shared thickness so both return flush.",
+      "dimensions_m": {
+        "w": 4.05,
+        "d": 4.05,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE"
+      ],
+      "filename": "walls/WK_WALL_CORNER_INNER_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_CORNER_OUTER_A_01",
+      "category": "02_WALLS",
+      "tier": "FOUNDATION",
+      "purpose": "Outside 90 degree corner with a quoin block at the arris. Completes the enclosure grammar together with CORNER_INNER.",
+      "dimensions_m": {
+        "w": 4.31,
+        "d": 4.45,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE"
+      ],
+      "filename": "walls/WK_WALL_CORNER_OUTER_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_DOORWAY_A_01",
+      "category": "02_WALLS",
+      "tier": "FOUNDATION",
+      "purpose": "Wall module carrying the standard 1.2 x 2.4 m opening with a cast surround. Pairs with WK_DOOR_FRAME_A_01 / WK_DOOR_LEAF_A_01.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.5,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "walls/WK_WALL_DOORWAY_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_WINDOW_A_01",
+      "category": "02_WALLS",
+      "tier": "FOUNDATION",
+      "purpose": "Wall module with a segmental arched opening at the standard sill. The only route daylight takes into the station.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.56,
+        "h": 3.6
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "walls/WK_WALL_WINDOW_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_WALL_BREACH_A_01",
+      "category": "02_WALLS",
+      "tier": "VARIATION",
+      "purpose": "Storm-breached wall: spalled arris, exposed rebar stubs and a rubble apron. The kit's damaged state, and the reason saltbush exists.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.83,
+        "h": 3.94
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_AGED",
+        "MK_CERAMIC_TILE"
+      ],
+      "filename": "walls/WK_WALL_BREACH_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_FLOOR_SLAB_A_01",
+      "category": "03_FLOORS",
+      "tier": "FOUNDATION",
+      "purpose": "Primary 4.0 m floor slab, 0.3 m thick, with a tile inlay field and a kerbed edge. The ground plane of the whole kit.",
+      "dimensions_m": {
+        "w": 4.04,
+        "d": 4.0,
+        "h": 0.35
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE"
+      ],
+      "filename": "floors/WK_FLOOR_SLAB_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_FLOOR_SLAB_B_01",
+      "category": "03_FLOORS",
+      "tier": "FOUNDATION",
+      "purpose": "Steel grating deck on a bearers-and-bolts frame. Lets the brine glow through and defines the working platforms.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 4.0,
+        "h": 0.34
+      },
+      "material_family": [
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "floors/WK_FLOOR_SLAB_B_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_FLOOR_TRANSITION_A_01",
+      "category": "03_FLOORS",
+      "tier": "VARIATION",
+      "purpose": "Slab-to-grating transition with a bolted nosing plate. Makes mixed floors read as deliberate rather than accidental.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 4.0,
+        "h": 0.39
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_CERAMIC_TILE",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "floors/WK_FLOOR_TRANSITION_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_FLOOR_CHANNEL_A_01",
+      "category": "03_FLOORS",
+      "tier": "VARIATION",
+      "purpose": "Slab with a 0.6 m brine channel and a removable grate run down its centre line. Carries water, cyan light and sightlines.",
+      "dimensions_m": {
+        "w": 4.04,
+        "d": 4.0,
+        "h": 0.45
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_AGED",
+        "MK_WATER_BRINE"
+      ],
+      "filename": "floors/WK_FLOOR_CHANNEL_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_DOOR_FRAME_A_01",
+      "category": "04_DOORS_WINDOWS",
+      "tier": "FOUNDATION",
+      "purpose": "Riveted steel frame and head for the 1.2 x 2.4 m opening, with a threshold plate and hinge gudgeons.",
+      "dimensions_m": {
+        "w": 1.6,
+        "d": 0.44,
+        "h": 2.53
+      },
+      "material_family": [
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_AGED",
+        "MK_BRASS"
+      ],
+      "filename": "doors_windows/WK_DOOR_FRAME_A_01.glb",
+      "snap_grid_m": 0.1,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_DOOR_LEAF_A_01",
+      "category": "04_DOORS_WINDOWS",
+      "tier": "FOUNDATION",
+      "purpose": "Timber-faced steel leaf with a brass porthole and a lever latch. Pivots on its hinge edge, so it can be posed open or ajar.",
+      "dimensions_m": {
+        "w": 1.2,
+        "d": 0.21,
+        "h": 2.4
+      },
+      "material_family": [
+        "MK_STEEL_PAINTED",
+        "MK_TIMBER",
+        "MK_BRASS",
+        "MK_GLASS"
+      ],
+      "filename": "doors_windows/WK_DOOR_LEAF_A_01.glb",
+      "snap_grid_m": 0.1,
+      "origin": "hinge edge at floor level, pivot on Z"
+    },
+    {
+      "asset_name": "WK_WINDOW_ARCH_A_01",
+      "category": "04_DOORS_WINDOWS",
+      "tier": "FOUNDATION",
+      "purpose": "Segmental arched glazing unit: steel mullions, wired glass, salt-etched lower pane and a sloped sill that sheds spray.",
+      "dimensions_m": {
+        "w": 1.8,
+        "d": 0.3,
+        "h": 2.23
+      },
+      "material_family": [
+        "MK_STEEL_AGED",
+        "MK_GLASS",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "doors_windows/WK_WINDOW_ARCH_A_01.glb",
+      "snap_grid_m": 0.1,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_STRUCT_BEAM_A_01",
+      "category": "05_STRUCTURAL",
+      "tier": "FOUNDATION",
+      "purpose": "4.0 m riveted I-beam with end gussets. Spans a bay, carries catwalks and defines the horizontal rhythm.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.33,
+        "h": 0.46
+      },
+      "material_family": [
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "structural/WK_STRUCT_BEAM_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_STRUCT_CATWALK_A_01",
+      "category": "05_STRUCTURAL",
+      "tier": "FOUNDATION",
+      "purpose": "4.0 m grating catwalk, 1.2 m wide, with rails both sides and a kickplate. The main circulation module above floor level.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 1.2,
+        "h": 1.27
+      },
+      "material_family": [
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_PAINTED"
+      ],
+      "filename": "structural/WK_STRUCT_CATWALK_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_STRUCT_PLATFORM_A_01",
+      "category": "05_STRUCTURAL",
+      "tier": "FOUNDATION",
+      "purpose": "4.0 x 4.0 m mezzanine deck with edge kerbs and bearer pockets. The upper working floor.",
+      "dimensions_m": {
+        "w": 4.04,
+        "d": 4.04,
+        "h": 0.4
+      },
+      "material_family": [
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "structural/WK_STRUCT_PLATFORM_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_STRUCT_RAILING_A_01",
+      "category": "05_STRUCTURAL",
+      "tier": "VARIATION",
+      "purpose": "2.0 m rail segment: two horizontals, a 0.15 m kickplate and chamfered post caps. Fits every deck edge.",
+      "dimensions_m": {
+        "w": 2.0,
+        "d": 0.05,
+        "h": 1.02
+      },
+      "material_family": [
+        "MK_STEEL_PAINTED",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "structural/WK_STRUCT_RAILING_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_STRUCT_STAIR_SPIRAL_A_01",
+      "category": "05_STRUCTURAL",
+      "tier": "FOUNDATION",
+      "purpose": "Helical stair, one full 3.6 m storey in 20 risers, inside a 4.0 m shaft. The kit's only vertical circulation that fits a single bay.",
+      "dimensions_m": {
+        "w": 3.52,
+        "d": 3.52,
+        "h": 4.81
+      },
+      "material_family": [
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_PAINTED",
+        "MK_TIMBER"
+      ],
+      "filename": "structural/WK_STRUCT_STAIR_SPIRAL_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_STRUCT_PIPE_RUN_A_01",
+      "category": "05_STRUCTURAL",
+      "tier": "VARIATION",
+      "purpose": "4.0 m brine pipe run: 0.22 m ceramic-lined pipe, two collars and wall brackets. Runs along walls and under catwalks.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.34,
+        "h": 0.4
+      },
+      "material_family": [
+        "MK_STEEL_PAINTED",
+        "MK_BRASS",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "structural/WK_STRUCT_PIPE_RUN_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_FURN_BENCH_A_01",
+      "category": "06_FURNITURE",
+      "tier": "DETAIL",
+      "purpose": "Salt-stained work bench: cast legs, timber top, a lower slat shelf and a brass vise mount. The only furniture the station ever had.",
+      "dimensions_m": {
+        "w": 2.0,
+        "d": 0.7,
+        "h": 1.03
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_TIMBER",
+        "MK_STEEL_AGED",
+        "MK_BRASS"
+      ],
+      "filename": "furniture/WK_FURN_BENCH_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_PROP_BARREL_A_01",
+      "category": "07_PROPS",
+      "tier": "DETAIL",
+      "purpose": "Brine barrel: lathed stave profile, three steel hoops, a bung and a stencilled batch mark. Reads at any distance.",
+      "dimensions_m": {
+        "w": 0.71,
+        "d": 0.71,
+        "h": 0.9
+      },
+      "material_family": [
+        "MK_TIMBER",
+        "MK_STEEL_AGED",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "props/WK_PROP_BARREL_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_PROP_CRATE_A_01",
+      "category": "07_PROPS",
+      "tier": "DETAIL",
+      "purpose": "Slatted packing crate with chamfered battens and steel corner straps.",
+      "dimensions_m": {
+        "w": 0.88,
+        "d": 0.68,
+        "h": 0.62
+      },
+      "material_family": [
+        "MK_TIMBER",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "props/WK_PROP_CRATE_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_PROP_VALVE_A_01",
+      "category": "07_PROPS",
+      "tier": "DETAIL",
+      "purpose": "Flanged brine valve on a stub stand: brass body, cast wheel with a mechanically meaningful pivot, gauge boss.",
+      "dimensions_m": {
+        "w": 0.4,
+        "d": 0.4,
+        "h": 0.8
+      },
+      "material_family": [
+        "MK_BRASS",
+        "MK_STEEL_AGED",
+        "MK_STEEL_PAINTED",
+        "MK_STEEL_PRIMER"
+      ],
+      "filename": "props/WK_PROP_VALVE_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "flange centre at floor level"
+    },
+    {
+      "asset_name": "WK_LIGHT_LAMP_WALL_A_01",
+      "category": "08_LIGHTS",
+      "tier": "DETAIL",
+      "purpose": "Caged sodium wall lamp: cast bracket, brass cap, wired guard and an emissive tube. The only warm light source in the world.",
+      "dimensions_m": {
+        "w": 0.31,
+        "d": 0.42,
+        "h": 0.28
+      },
+      "material_family": [
+        "MK_STEEL_PRIMER",
+        "MK_BRASS",
+        "MK_EMISSIVE_AMBER",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "lights/WK_LIGHT_LAMP_WALL_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_LIGHT_LAMP_PENDANT_A_01",
+      "category": "08_LIGHTS",
+      "tier": "DETAIL",
+      "purpose": "Suspended enamel-shade pendant with a chain and an emissive core. Hangs over benches and consoles.",
+      "dimensions_m": {
+        "w": 0.51,
+        "d": 0.51,
+        "h": 0.74
+      },
+      "material_family": [
+        "MK_STEEL_PAINTED",
+        "MK_STEEL_AGED",
+        "MK_EMISSIVE_AMBER"
+      ],
+      "filename": "lights/WK_LIGHT_LAMP_PENDANT_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "ceiling attach point"
+    },
+    {
+      "asset_name": "WK_SIGN_PLAQUE_A_01",
+      "category": "09_SIGNAGE",
+      "tier": "DETAIL",
+      "purpose": "Vitreous enamel station plaque: white body, brine-teal capitals, four bolt holes, chipped rim. Carries the world's name.",
+      "dimensions_m": {
+        "w": 0.7,
+        "d": 0.04,
+        "h": 0.44
+      },
+      "material_family": [
+        "MK_SIGNAGE_ENAMEL",
+        "MK_STEEL_PAINTED",
+        "MK_BRASS"
+      ],
+      "filename": "signage/WK_SIGN_PLAQUE_A_01.glb",
+      "snap_grid_m": 0.1,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_SIGN_DIRECTIONAL_A_01",
+      "category": "09_SIGNAGE",
+      "tier": "DETAIL",
+      "purpose": "Directional board with a cast arrow and a destination plate. Mounts to a wall or a railing post.",
+      "dimensions_m": {
+        "w": 0.62,
+        "d": 0.05,
+        "h": 0.2
+      },
+      "material_family": [
+        "MK_SIGNAGE_ENAMEL",
+        "MK_STEEL_PAINTED",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "signage/WK_SIGN_DIRECTIONAL_A_01.glb",
+      "snap_grid_m": 0.1,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_SIGN_WARNING_A_01",
+      "category": "09_SIGNAGE",
+      "tier": "DETAIL",
+      "purpose": "Ochre hazard placard with a black triangle and a two-line warning. Marks live brine and unstable floor.",
+      "dimensions_m": {
+        "w": 0.4,
+        "d": 0.05,
+        "h": 0.4
+      },
+      "material_family": [
+        "MK_SIGNAGE_ENAMEL",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "signage/WK_SIGN_WARNING_A_01.glb",
+      "snap_grid_m": 0.1,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_VEG_SALTBUSH_A_01",
+      "category": "10_VEGETATION",
+      "tier": "DETAIL",
+      "purpose": "Low grey-green saltbush cluster, never taller than 0.6 m. Marks neglect: breaches, unused edges, cracked slab.",
+      "dimensions_m": {
+        "w": 0.89,
+        "d": 0.89,
+        "h": 0.54
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT"
+      ],
+      "filename": "vegetation/WK_VEG_SALTBUSH_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_DECAL_WATERLINE_A_01",
+      "category": "11_DECALS",
+      "tier": "DETAIL",
+      "purpose": "4.0 x 1.6 m waterline stain sheet: tide band, salt bloom and downward streaks. Applied at the historic high-water mark.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 0.0,
+        "h": 1.6
+      },
+      "material_family": [
+        "MK_DECAL_OVERLAY_WATERLINE"
+      ],
+      "filename": "decals/WK_DECAL_WATERLINE_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_DECAL_CRACK_A_01",
+      "category": "11_DECALS",
+      "tier": "DETAIL",
+      "purpose": "4.0 x 4.0 m crack and spall sheet for slabs and walls: hairline crazing plus two structural cracks with exposed aggregate.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 4.0,
+        "h": 0.0
+      },
+      "material_family": [
+        "MK_DECAL_OVERLAY_CRACK"
+      ],
+      "filename": "decals/WK_DECAL_CRACK_A_01.glb",
+      "snap_grid_m": 1.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_TERRAIN_WATER_A_01",
+      "category": "12_TERRAIN",
+      "tier": "FOUNDATION",
+      "purpose": "4.0 m brine water pane: translucent, cyan emissive, faintly rippled. The ground under the station.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 4.0,
+        "h": 0.09
+      },
+      "material_family": [
+        "MK_WATER_BRINE",
+        "MK_EMISSIVE_CYAN"
+      ],
+      "filename": "terrain/WK_TERRAIN_WATER_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_HERO_EVAPORATOR_A_01",
+      "category": "13_HERO",
+      "tier": "HERO",
+      "purpose": "Great evaporator tank: 4.4 m riveted shell, banded courses, a laddered access cage, a brass relief stack and a cyan sight glass. The reason the station exists.",
+      "dimensions_m": {
+        "w": 3.11,
+        "d": 3.11,
+        "h": 4.34
+      },
+      "material_family": [
+        "MK_STEEL_PAINTED",
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_AGED",
+        "MK_BRASS",
+        "MK_EMISSIVE_CYAN"
+      ],
+      "filename": "hero/WK_HERO_EVAPORATOR_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_HERO_BEACON_A_01",
+      "category": "13_HERO",
+      "tier": "HERO",
+      "purpose": "Signal beacon: tapering cast shaft, a glazed lantern with a brass fresnel ring, a gallery rail and a finial. The identity of the world.",
+      "dimensions_m": {
+        "w": 3.19,
+        "d": 3.19,
+        "h": 10.4
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_PAINTED",
+        "MK_BRASS",
+        "MK_GLASS",
+        "MK_EMISSIVE_AMBER",
+        "MK_STEEL_AGED"
+      ],
+      "filename": "hero/WK_HERO_BEACON_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    },
+    {
+      "asset_name": "WK_HERO_SLUICE_A_01",
+      "category": "13_HERO",
+      "tier": "HERO",
+      "purpose": "Sluice gate assembly: cast portal, counterweighted steel leaf, chain and windlass. Where the tide is let into the works.",
+      "dimensions_m": {
+        "w": 4.0,
+        "d": 1.2,
+        "h": 6.0
+      },
+      "material_family": [
+        "MK_CONCRETE_STRUCT",
+        "MK_STEEL_PRIMER",
+        "MK_STEEL_AGED",
+        "MK_BRASS",
+        "MK_STEEL_PAINTED"
+      ],
+      "filename": "hero/WK_HERO_SLUICE_A_01.glb",
+      "snap_grid_m": 4.0,
+      "origin": "footprint centre at floor level (z=0)"
+    }
+  ]
+}
