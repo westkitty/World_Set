@@ -1,0 +1,482 @@
+[
+ {
+  "name": "WK_ARCH_Trailer_A",
+  "cat": "WK_ARCH_Trailer_A",
+  "tris": 292,
+  "parts": 21,
+  "lights": 0,
+  "home": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_Trailer_B",
+  "cat": "WK_ARCH_Trailer_B",
+  "tris": 328,
+  "parts": 24,
+  "lights": 0,
+  "home": [
+   11.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_Porch",
+  "cat": "WK_ARCH_Porch",
+  "tris": 264,
+  "parts": 22,
+  "lights": 0,
+  "home": [
+   22.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_Shed",
+  "cat": "WK_ARCH_Shed",
+  "tris": 144,
+  "parts": 12,
+  "lights": 0,
+  "home": [
+   33.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_ARCH_Carport",
+  "cat": "WK_ARCH_Carport",
+  "tris": 256,
+  "parts": 8,
+  "lights": 0,
+  "home": [
+   44.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_PorchSteps",
+  "cat": "WK_STR_PorchSteps",
+  "tris": 132,
+  "parts": 11,
+  "lights": 0,
+  "home": [
+   55.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_CinderPier",
+  "cat": "WK_STR_CinderPier",
+  "tris": 36,
+  "parts": 3,
+  "lights": 0,
+  "home": [
+   66.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_TVAntenna",
+  "cat": "WK_STR_TVAntenna",
+  "tris": 428,
+  "parts": 9,
+  "lights": 0,
+  "home": [
+   77.0,
+   0.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_STR_Dish",
+  "cat": "WK_STR_Dish",
+  "tris": 204,
+  "parts": 5,
+  "lights": 0,
+  "home": [
+   0.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DOOR_TrailerDoor",
+  "cat": "WK_DOOR_TrailerDoor",
+  "tris": 238,
+  "parts": 10,
+  "lights": 0,
+  "home": [
+   11.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WND_WindowLit",
+  "cat": "WK_WND_WindowLit",
+  "tris": 86,
+  "parts": 8,
+  "lights": 0,
+  "home": [
+   22.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WND_WindowDark",
+  "cat": "WK_WND_WindowDark",
+  "tris": 86,
+  "parts": 8,
+  "lights": 0,
+  "home": [
+   33.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WALL_Chainlink4m",
+  "cat": "WK_WALL_Chainlink4m",
+  "tris": 318,
+  "parts": 6,
+  "lights": 0,
+  "home": [
+   44.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_WALL_ChainlinkGate",
+  "cat": "WK_WALL_ChainlinkGate",
+  "tris": 166,
+  "parts": 8,
+  "lights": 0,
+  "home": [
+   55.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FLR_GravelPad",
+  "cat": "WK_FLR_GravelPad",
+  "tris": 12,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   66.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FLR_ConcretePad",
+  "cat": "WK_FLR_ConcretePad",
+  "tris": 12,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   77.0,
+   -11.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_TER_RoadStraight",
+  "cat": "WK_TER_RoadStraight",
+  "tris": 14,
+  "parts": 2,
+  "lights": 0,
+  "home": [
+   0.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_TER_GrassPatch",
+  "cat": "WK_TER_GrassPatch",
+  "tris": 12,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   11.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FUR_LawnChair",
+  "cat": "WK_FUR_LawnChair",
+  "tris": 316,
+  "parts": 13,
+  "lights": 0,
+  "home": [
+   22.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FUR_PicnicTable",
+  "cat": "WK_FUR_PicnicTable",
+  "tris": 96,
+  "parts": 8,
+  "lights": 0,
+  "home": [
+   33.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_FUR_PorchCouch",
+  "cat": "WK_FUR_PorchCouch",
+  "tris": 688,
+  "parts": 12,
+  "lights": 0,
+  "home": [
+   44.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_TrashCan",
+  "cat": "WK_PRP_TrashCan",
+  "tris": 252,
+  "parts": 7,
+  "lights": 0,
+  "home": [
+   55.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_TireStack",
+  "cat": "WK_PRP_TireStack",
+  "tris": 1728,
+  "parts": 3,
+  "lights": 0,
+  "home": [
+   66.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_Flamingo",
+  "cat": "WK_PRP_Flamingo",
+  "tris": 2576,
+  "parts": 14,
+  "lights": 0,
+  "home": [
+   77.0,
+   -22.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_WashingMachine",
+  "cat": "WK_PRP_WashingMachine",
+  "tris": 300,
+  "parts": 7,
+  "lights": 0,
+  "home": [
+   0.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_VendingMachine",
+  "cat": "WK_PRP_VendingMachine",
+  "tris": 74,
+  "parts": 7,
+  "lights": 1,
+  "home": [
+   11.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_TelephonePole",
+  "cat": "WK_PRP_TelephonePole",
+  "tris": 420,
+  "parts": 13,
+  "lights": 0,
+  "home": [
+   22.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_WireSpan",
+  "cat": "WK_PRP_WireSpan",
+  "tris": 1560,
+  "parts": 2,
+  "lights": 0,
+  "home": [
+   33.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_PRP_Dumpster",
+  "cat": "WK_PRP_Dumpster",
+  "tris": 388,
+  "parts": 11,
+  "lights": 0,
+  "home": [
+   44.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_LGT_StreetLamp",
+  "cat": "WK_LGT_StreetLamp",
+  "tris": 154,
+  "parts": 5,
+  "lights": 2,
+  "home": [
+   55.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_LGT_PorchLight",
+  "cat": "WK_LGT_PorchLight",
+  "tris": 36,
+  "parts": 3,
+  "lights": 1,
+  "home": [
+   66.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_LGT_StringLights",
+  "cat": "WK_LGT_StringLights",
+  "tris": 2364,
+  "parts": 25,
+  "lights": 1,
+  "home": [
+   77.0,
+   -33.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_SGN_PylonSign",
+  "cat": "WK_SGN_PylonSign",
+  "tris": 160,
+  "parts": 10,
+  "lights": 0,
+  "home": [
+   0.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_SGN_Trespass",
+  "cat": "WK_SGN_Trespass",
+  "tris": 14,
+  "parts": 2,
+  "lights": 0,
+  "home": [
+   11.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_VEG_ScrubBush",
+  "cat": "WK_VEG_ScrubBush",
+  "tris": 396,
+  "parts": 6,
+  "lights": 0,
+  "home": [
+   22.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_VEG_DeadTree",
+  "cat": "WK_VEG_DeadTree",
+  "tris": 188,
+  "parts": 9,
+  "lights": 0,
+  "home": [
+   33.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_VEG_GrassTuft",
+  "cat": "WK_VEG_GrassTuft",
+  "tris": 6,
+  "parts": 3,
+  "lights": 0,
+  "home": [
+   44.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DCL_OilStain",
+  "cat": "WK_DCL_OilStain",
+  "tris": 2,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   55.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_DCL_Puddle",
+  "cat": "WK_DCL_Puddle",
+  "tris": 2,
+  "parts": 1,
+  "lights": 0,
+  "home": [
+   66.0,
+   -44.0,
+   0.0
+  ]
+ },
+ {
+  "name": "WK_HERO_Sedan86",
+  "cat": "WK_HERO_Sedan86",
+  "tris": 1496,
+  "parts": 26,
+  "lights": 0,
+  "home": [
+   77.0,
+   -44.0,
+   0.0
+  ]
+ }
+]
