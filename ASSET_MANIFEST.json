@@ -1,0 +1,632 @@
+{
+  "kit_name": "WORLD KIT \u2014 SITE-44 SUB-AQUIFER RESEARCH COMPLEX",
+  "version": "1.0.0",
+  "total_assets": 34,
+  "categories": [
+    "lights",
+    "architecture",
+    "hero",
+    "signage",
+    "doors_windows",
+    "props",
+    "utilities",
+    "structural",
+    "walls",
+    "furniture",
+    "floors"
+  ],
+  "author": "Antigravity Environment Systems",
+  "spec_reference": "WORLD_DNA.md",
+  "grammar_reference": "MODULAR_GRAMMAR.md",
+  "assets": [
+    {
+      "name": "WK_CEIL_COFFER_A_01",
+      "category": "architecture",
+      "filename": "WK_CEIL_COFFER_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/architecture/WK_CEIL_COFFER_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        4.0,
+        0.4
+      ],
+      "vertices": 88,
+      "polygons": 66,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted"
+      ]
+    },
+    {
+      "name": "WK_CEIL_GIRDER_B_01",
+      "category": "architecture",
+      "filename": "WK_CEIL_GIRDER_B_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/architecture/WK_CEIL_GIRDER_B_01.glb",
+      "dimensions_m": [
+        2.7,
+        4.0,
+        0.6
+      ],
+      "vertices": 128,
+      "polygons": 90,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Galvanized_Grate",
+        "MAT_Rubber_Conduit"
+      ]
+    },
+    {
+      "name": "WK_DOOR_BULKHEAD_A_01",
+      "category": "doors_windows",
+      "filename": "WK_DOOR_BULKHEAD_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/doors_windows/WK_DOOR_BULKHEAD_A_01.glb",
+      "dimensions_m": [
+        2.1,
+        0.4,
+        2.65
+      ],
+      "vertices": 80,
+      "polygons": 56,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Rubber_Conduit",
+        "MAT_Hazard_Stripes",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_DOOR_SLAB_A_01",
+      "category": "doors_windows",
+      "filename": "WK_DOOR_SLAB_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/doors_windows/WK_DOOR_SLAB_A_01.glb",
+      "dimensions_m": [
+        1.8,
+        0.189,
+        2.4
+      ],
+      "vertices": 96,
+      "polygons": 66,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Hazard_Stripes",
+        "MAT_Reinforced_Glass",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_WINDOW_PORTAL_A_01",
+      "category": "doors_windows",
+      "filename": "WK_WINDOW_PORTAL_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/doors_windows/WK_WINDOW_PORTAL_A_01.glb",
+      "dimensions_m": [
+        2.0,
+        0.28,
+        1.6
+      ],
+      "vertices": 144,
+      "polygons": 92,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Reinforced_Glass",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_FLOOR_CATWALK_C_01",
+      "category": "floors",
+      "filename": "WK_FLOOR_CATWALK_C_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/floors/WK_FLOOR_CATWALK_C_01.glb",
+      "dimensions_m": [
+        2.0,
+        4.0,
+        0.2
+      ],
+      "vertices": 80,
+      "polygons": 60,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Galvanized_Grate",
+        "MAT_Hazard_Stripes"
+      ]
+    },
+    {
+      "name": "WK_FLOOR_GRATE_B_01",
+      "category": "floors",
+      "filename": "WK_FLOOR_GRATE_B_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/floors/WK_FLOOR_GRATE_B_01.glb",
+      "dimensions_m": [
+        4.0,
+        4.0,
+        0.3
+      ],
+      "vertices": 64,
+      "polygons": 48,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Galvanized_Grate"
+      ]
+    },
+    {
+      "name": "WK_FLOOR_SLAB_A_01",
+      "category": "floors",
+      "filename": "WK_FLOOR_SLAB_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/floors/WK_FLOOR_SLAB_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        4.0,
+        0.3
+      ],
+      "vertices": 56,
+      "polygons": 42,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted"
+      ]
+    },
+    {
+      "name": "WK_FLOOR_TRIM_A_01",
+      "category": "floors",
+      "filename": "WK_FLOOR_TRIM_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/floors/WK_FLOOR_TRIM_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        0.35,
+        0.16
+      ],
+      "vertices": 16,
+      "polygons": 12,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Galvanized_Grate"
+      ]
+    },
+    {
+      "name": "WK_FURN_BENCH_A_01",
+      "category": "furniture",
+      "filename": "WK_FURN_BENCH_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/furniture/WK_FURN_BENCH_A_01.glb",
+      "dimensions_m": [
+        1.8,
+        0.659,
+        1.01
+      ],
+      "vertices": 96,
+      "polygons": 66,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Galvanized_Grate",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_FURN_CONSOLE_A_01",
+      "category": "furniture",
+      "filename": "WK_FURN_CONSOLE_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/furniture/WK_FURN_CONSOLE_A_01.glb",
+      "dimensions_m": [
+        2.0,
+        0.9,
+        1.35
+      ],
+      "vertices": 144,
+      "polygons": 96,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Emissive_Cyan_UI",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_HERO_CORE_A_01",
+      "category": "hero",
+      "filename": "WK_HERO_CORE_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/hero/WK_HERO_CORE_A_01.glb",
+      "dimensions_m": [
+        3.593,
+        3.593,
+        4.65
+      ],
+      "vertices": 376,
+      "polygons": 226,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Emissive_Cyan_UI",
+        "MAT_Reinforced_Glass",
+        "MAT_Hazard_Stripes",
+        "MAT_Brass_Valves",
+        "MAT_Amber_Strobe",
+        "MAT_Rubber_Conduit"
+      ]
+    },
+    {
+      "name": "WK_HERO_PORTAL_RING_A_01",
+      "category": "hero",
+      "filename": "WK_HERO_PORTAL_RING_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/hero/WK_HERO_PORTAL_RING_A_01.glb",
+      "dimensions_m": [
+        7.098,
+        2.2,
+        7.21
+      ],
+      "vertices": 904,
+      "polygons": 640,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Emissive_Cyan_UI",
+        "MAT_Hazard_Stripes",
+        "MAT_Brass_Valves",
+        "MAT_Amber_Strobe",
+        "MAT_Rubber_Conduit"
+      ]
+    },
+    {
+      "name": "WK_LIGHT_CAGE_A_01",
+      "category": "lights",
+      "filename": "WK_LIGHT_CAGE_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/lights/WK_LIGHT_CAGE_A_01.glb",
+      "dimensions_m": [
+        0.24,
+        0.24,
+        0.34
+      ],
+      "vertices": 120,
+      "polygons": 74,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Reinforced_Glass",
+        "MAT_Fluorescent_Glow"
+      ]
+    },
+    {
+      "name": "WK_LIGHT_STROBE_A_01",
+      "category": "lights",
+      "filename": "WK_LIGHT_STROBE_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/lights/WK_LIGHT_STROBE_A_01.glb",
+      "dimensions_m": [
+        0.2,
+        0.2,
+        0.355
+      ],
+      "vertices": 80,
+      "polygons": 46,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Amber_Strobe"
+      ]
+    },
+    {
+      "name": "WK_LIGHT_TROFFER_A_01",
+      "category": "lights",
+      "filename": "WK_LIGHT_TROFFER_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/lights/WK_LIGHT_TROFFER_A_01.glb",
+      "dimensions_m": [
+        2.1,
+        0.7,
+        0.2
+      ],
+      "vertices": 24,
+      "polygons": 18,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Fluorescent_Glow"
+      ]
+    },
+    {
+      "name": "WK_PROP_CANISTER_A_01",
+      "category": "props",
+      "filename": "WK_PROP_CANISTER_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/props/WK_PROP_CANISTER_A_01.glb",
+      "dimensions_m": [
+        0.548,
+        0.548,
+        1.425
+      ],
+      "vertices": 200,
+      "polygons": 118,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Brass_Valves",
+        "MAT_Hazard_Stripes"
+      ]
+    },
+    {
+      "name": "WK_PROP_CRATE_A_01",
+      "category": "props",
+      "filename": "WK_PROP_CRATE_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/props/WK_PROP_CRATE_A_01.glb",
+      "dimensions_m": [
+        1.2,
+        1.193,
+        1.0
+      ],
+      "vertices": 48,
+      "polygons": 36,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Hazard_Stripes",
+        "MAT_Sign_Hazard"
+      ]
+    },
+    {
+      "name": "WK_PROP_EXTINGUISHER_01",
+      "category": "props",
+      "filename": "WK_PROP_EXTINGUISHER_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/props/WK_PROP_EXTINGUISHER_01.glb",
+      "dimensions_m": [
+        0.249,
+        0.26,
+        0.8
+      ],
+      "vertices": 72,
+      "polygons": 44,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Rubber_Conduit",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_PROP_JUNCTION_A_01",
+      "category": "props",
+      "filename": "WK_PROP_JUNCTION_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/props/WK_PROP_JUNCTION_A_01.glb",
+      "dimensions_m": [
+        0.66,
+        0.305,
+        0.78
+      ],
+      "vertices": 48,
+      "polygons": 34,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Sign_Hazard",
+        "MAT_Brass_Valves"
+      ]
+    },
+    {
+      "name": "WK_SIGN_HAZARD_A_01",
+      "category": "signage",
+      "filename": "WK_SIGN_HAZARD_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/signage/WK_SIGN_HAZARD_A_01.glb",
+      "dimensions_m": [
+        0.6,
+        0.02,
+        0.52
+      ],
+      "vertices": 8,
+      "polygons": 6,
+      "materials": [
+        "MAT_Sign_Hazard"
+      ]
+    },
+    {
+      "name": "WK_SIGN_SECTOR_A_01",
+      "category": "signage",
+      "filename": "WK_SIGN_SECTOR_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/signage/WK_SIGN_SECTOR_A_01.glb",
+      "dimensions_m": [
+        1.82,
+        0.098,
+        0.62
+      ],
+      "vertices": 80,
+      "polygons": 52,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Sign_Sector"
+      ]
+    },
+    {
+      "name": "WK_STRUCT_BEAM_A_01",
+      "category": "structural",
+      "filename": "WK_STRUCT_BEAM_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/structural/WK_STRUCT_BEAM_A_01.glb",
+      "dimensions_m": [
+        0.42,
+        4.0,
+        0.5
+      ],
+      "vertices": 72,
+      "polygons": 54,
+      "materials": [
+        "MAT_Heavy_Steel_Painted"
+      ]
+    },
+    {
+      "name": "WK_STRUCT_COLUMN_A_01",
+      "category": "structural",
+      "filename": "WK_STRUCT_COLUMN_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/structural/WK_STRUCT_COLUMN_A_01.glb",
+      "dimensions_m": [
+        1.2,
+        1.0,
+        4.0
+      ],
+      "vertices": 136,
+      "polygons": 94,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted"
+      ]
+    },
+    {
+      "name": "WK_STRUCT_RAILING_2M_01",
+      "category": "structural",
+      "filename": "WK_STRUCT_RAILING_2M_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/structural/WK_STRUCT_RAILING_2M_01.glb",
+      "dimensions_m": [
+        2.02,
+        0.12,
+        1.105
+      ],
+      "vertices": 120,
+      "polygons": 74,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Hazard_Stripes"
+      ]
+    },
+    {
+      "name": "WK_STRUCT_RAILING_A_01",
+      "category": "structural",
+      "filename": "WK_STRUCT_RAILING_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/structural/WK_STRUCT_RAILING_A_01.glb",
+      "dimensions_m": [
+        4.02,
+        0.12,
+        1.105
+      ],
+      "vertices": 152,
+      "polygons": 94,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Hazard_Stripes"
+      ]
+    },
+    {
+      "name": "WK_STRUCT_STAIRS_A_01",
+      "category": "structural",
+      "filename": "WK_STRUCT_STAIRS_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/structural/WK_STRUCT_STAIRS_A_01.glb",
+      "dimensions_m": [
+        2.1,
+        4.2,
+        1.98
+      ],
+      "vertices": 192,
+      "polygons": 144,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Galvanized_Grate"
+      ]
+    },
+    {
+      "name": "WK_UTIL_PIPE_RUN_A_01",
+      "category": "utilities",
+      "filename": "WK_UTIL_PIPE_RUN_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/utilities/WK_UTIL_PIPE_RUN_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        0.245,
+        0.42
+      ],
+      "vertices": 168,
+      "polygons": 104,
+      "materials": [
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Brass_Valves",
+        "MAT_Rubber_Conduit"
+      ]
+    },
+    {
+      "name": "WK_WALL_CORNER_IN_A_01",
+      "category": "walls",
+      "filename": "WK_WALL_CORNER_IN_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/walls/WK_WALL_CORNER_IN_A_01.glb",
+      "dimensions_m": [
+        2.145,
+        2.145,
+        4.0
+      ],
+      "vertices": 88,
+      "polygons": 60,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Rubber_Conduit"
+      ]
+    },
+    {
+      "name": "WK_WALL_CORNER_OUT_A_01",
+      "category": "walls",
+      "filename": "WK_WALL_CORNER_OUT_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/walls/WK_WALL_CORNER_OUT_A_01.glb",
+      "dimensions_m": [
+        2.145,
+        2.15,
+        4.0
+      ],
+      "vertices": 56,
+      "polygons": 42,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Hazard_Stripes"
+      ]
+    },
+    {
+      "name": "WK_WALL_DOORFRAME_A_01",
+      "category": "walls",
+      "filename": "WK_WALL_DOORFRAME_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/walls/WK_WALL_DOORFRAME_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        0.29,
+        4.0
+      ],
+      "vertices": 64,
+      "polygons": 48,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted"
+      ]
+    },
+    {
+      "name": "WK_WALL_PANEL_B_01",
+      "category": "walls",
+      "filename": "WK_WALL_PANEL_B_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/walls/WK_WALL_PANEL_B_01.glb",
+      "dimensions_m": [
+        4.0,
+        0.29,
+        4.0
+      ],
+      "vertices": 88,
+      "polygons": 66,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Rubber_Conduit",
+        "MAT_Emissive_Cyan_UI"
+      ]
+    },
+    {
+      "name": "WK_WALL_SOLID_A_01",
+      "category": "walls",
+      "filename": "WK_WALL_SOLID_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/walls/WK_WALL_SOLID_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        0.29,
+        4.0
+      ],
+      "vertices": 56,
+      "polygons": 42,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Rubber_Conduit"
+      ]
+    },
+    {
+      "name": "WK_WALL_WINDOW_A_01",
+      "category": "walls",
+      "filename": "WK_WALL_WINDOW_A_01.glb",
+      "rel_path": "WORLD_KIT_EXPORT/walls/WK_WALL_WINDOW_A_01.glb",
+      "dimensions_m": [
+        4.0,
+        0.32,
+        4.0
+      ],
+      "vertices": 184,
+      "polygons": 122,
+      "materials": [
+        "MAT_Concrete_Brutalist",
+        "MAT_Heavy_Steel_Painted",
+        "MAT_Reinforced_Glass",
+        "MAT_Brass_Valves"
+      ]
+    }
+  ]
+}

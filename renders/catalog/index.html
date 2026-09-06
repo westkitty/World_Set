@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WORLD KIT — Site-44 Modular Environment Library</title>
+<style>
+  :root {
+    --bg-dark: #0f1115;
+    --card-bg: #181c22;
+    --card-border: #262c36;
+    --accent-yellow: #f5b700;
+    --accent-cyan: #1be7ff;
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.5;
+  }
+  header {
+    padding: 2.5rem 3rem 1.5rem;
+    background: linear-gradient(180deg, #161a22 0%, #0f1115 100%);
+    border-bottom: 2px solid var(--accent-yellow);
+  }
+  h1 { margin: 0 0 0.5rem 0; font-size: 2rem; color: var(--accent-yellow); letter-spacing: 1px; }
+  .subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 900px; }
+  .nav-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .tab-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover, .tab-btn.active {
+    background: var(--accent-yellow);
+    color: #000;
+    border-color: var(--accent-yellow);
+  }
+  .section-title {
+    padding: 1.5rem 3rem 0.5rem;
+    font-size: 1.4rem;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 3rem 2.5rem;
+  }
+  .gallery-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .gallery-card img, .gallery-card video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .gallery-info {
+    padding: 1rem;
+  }
+  .gallery-info h3 { margin: 0 0 0.25rem; font-size: 1.1rem; color: var(--accent-yellow); }
+  .gallery-info p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+  
+  .asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 3rem 4rem;
+  }
+  .asset-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .asset-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-cyan);
+  }
+  .asset-thumb {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #08090b;
+    object-fit: contain;
+    display: block;
+  }
+  .asset-body {
+    padding: 1rem;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 3px;
+    text-transform: uppercase;
+    background: #222b35;
+    color: var(--accent-cyan);
+    margin-bottom: 0.5rem;
+  }
+  .asset-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    word-break: break-all;
+    color: #fff;
+  }
+  .specs-table {
+    width: 100%;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-collapse: collapse;
+    margin-bottom: 0.75rem;
+  }
+  .specs-table td { padding: 2px 0; }
+  .specs-table td:first-child { color: #64748b; width: 45%; }
+  .download-btn {
+    display: block;
+    text-align: center;
+    background: #1e2630;
+    border: 1px solid var(--card-border);
+    color: var(--accent-cyan);
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .download-btn:hover {
+    background: var(--accent-cyan);
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>WORLD KIT — SITE-44 SUB-AQUIFER RESEARCH COMPLEX</h1>
+  <div class="subtitle">
+    Monolithic Brutalist Retro-Industrial Subterranean Environment Generation Language.<br>
+    33 Reusable Precision Modular Production Assets, 7 PBR Material Families, Master Assembly &amp; Renders.
+  </div>
+  <div class="nav-tabs" id="filters">
+    <button class="tab-btn active" onclick="filterCategory('all')">ALL ASSETS (34)</button>
+    <button class="tab-btn" onclick="filterCategory('architecture')">ARCHITECTURE (2)</button>
+    <button class="tab-btn" onclick="filterCategory('doors_windows')">DOORS_WINDOWS (3)</button>
+    <button class="tab-btn" onclick="filterCategory('floors')">FLOORS (4)</button>
+    <button class="tab-btn" onclick="filterCategory('furniture')">FURNITURE (2)</button>
+    <button class="tab-btn" onclick="filterCategory('hero')">HERO (2)</button>
+    <button class="tab-btn" onclick="filterCategory('lights')">LIGHTS (3)</button>
+    <button class="tab-btn" onclick="filterCategory('props')">PROPS (4)</button>
+    <button class="tab-btn" onclick="filterCategory('signage')">SIGNAGE (2)</button>
+    <button class="tab-btn" onclick="filterCategory('structural')">STRUCTURAL (5)</button>
+    <button class="tab-btn" onclick="filterCategory('utilities')">UTILITIES (1)</button>
+    <button class="tab-btn" onclick="filterCategory('walls')">WALLS (6)</button>
+  </div>
+</header>
+
+<div class="section-title">Cinematic Showcase &amp; Environment Inspection</div>
+<div class="gallery-grid">
+  <div class="gallery-card">
+    <video controls autoplay loop muted poster="../showcase/01_establishing_wide.png">
+      <source src="../showcase/showcase_walkthrough.mp4" type="video/mp4">
+    </video>
+    <div class="gallery-info">
+      <h3>Cinematic Walkthrough (MP4)</h3>
+      <p>Dynamic camera traveling from the airlock blast door along the mezzanine catwalk past the monitoring console and down into the geothermal reactor hall.</p>
+    </div>
+  </div>
+
+  <div class="gallery-card">
+    <img src="../showcase/01_establishing_wide.png" alt="Establishing Wide View">
+    <div class="gallery-info">
+      <h3>01 — Establishing Wide Angle (1920x1080)</h3>
+      <p>Full view of the 12m x 16m double-height facility showing structural column rhythm, mezzanine catwalk, and central reactor core.</p>
+    </div>
+  </div>
+
+  <div class="gallery-card">
+    <img src="../showcase/02_architectural_scale.png" alt="Architectural Scale">
+    <div class="gallery-info">
+      <h3>02 — Architectural Scale (1920x1080)</h3>
+      <p>Low-angle perspective emphasizing monolithic brutalist concrete piers, overhead I-beams, and 4m vertical module transitions.</p>
+    </div>
+  </div>
+
+  <div class="gallery-card">
+    <img src="../showcase/03_material_detail.png" alt="Material Detail">
+    <div class="gallery-info">
+      <h3>03 — Material &amp; Detail Close-Up (1920x1080)</h3>
+      <p>Focus on retro-industrial telemetry console, workbench vise, wall-mounted electrical junction box, and board-formed concrete aggregate.</p>
+    </div>
+  </div>
+
+  <div class="gallery-card">
+    <img src="../showcase/04_hero_core_focus.png" alt="Hero Core Focus">
+    <div class="gallery-info">
+      <h3>04 — Hero Geothermal Compression Reactor (1920x1080)</h3>
+      <p>Centerpiece focal asset featuring glowing cyan plasma containment window, hydraulic stabilizer pistons, manifold feeder pipes, and amber beacon.</p>
+    </div>
+  </div>
+
+  <div class="gallery-card">
+    <img src="../showcase/showcase_360_panorama.png" alt="360 Panorama">
+    <div class="gallery-info">
+      <h3>05 — 360° Equirectangular Panoramic VR Inspection (2048x1024)</h3>
+      <p>Spherical panoramic capture from the mezzanine catwalk center for VR head-mounted displays and spatial inspection.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">Modular Asset Catalog ({len(assets)} Production GLB Models)</div>
+<div class="asset-grid" id="assetGrid">
+  <div class="asset-card" data-category="architecture">
+    <img class="asset-thumb" src="thumbnails/WK_CEIL_COFFER_A_01.png" alt="WK_CEIL_COFFER_A_01">
+    <div class="asset-body">
+      <span class="badge">architecture</span>
+      <div class="asset-name">WK_CEIL_COFFER_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 4.0 × 0.4 m</td></tr>
+        <tr><td>Geometry</td><td>66 Quads / 88 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/architecture/WK_CEIL_COFFER_A_01.glb" download>Download GLB (WK_CEIL_COFFER_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="architecture">
+    <img class="asset-thumb" src="thumbnails/WK_CEIL_GIRDER_B_01.png" alt="WK_CEIL_GIRDER_B_01">
+    <div class="asset-body">
+      <span class="badge">architecture</span>
+      <div class="asset-name">WK_CEIL_GIRDER_B_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.7 × 4.0 × 0.6 m</td></tr>
+        <tr><td>Geometry</td><td>90 Quads / 128 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Galvanized_Grate, MAT_Rubber_Conduit</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/architecture/WK_CEIL_GIRDER_B_01.glb" download>Download GLB (WK_CEIL_GIRDER_B_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="doors_windows">
+    <img class="asset-thumb" src="thumbnails/WK_DOOR_BULKHEAD_A_01.png" alt="WK_DOOR_BULKHEAD_A_01">
+    <div class="asset-body">
+      <span class="badge">doors_windows</span>
+      <div class="asset-name">WK_DOOR_BULKHEAD_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.1 × 0.4 × 2.65 m</td></tr>
+        <tr><td>Geometry</td><td>56 Quads / 80 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Rubber_Conduit, MAT_Hazard_Stripes, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/doors_windows/WK_DOOR_BULKHEAD_A_01.glb" download>Download GLB (WK_DOOR_BULKHEAD_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="doors_windows">
+    <img class="asset-thumb" src="thumbnails/WK_DOOR_SLAB_A_01.png" alt="WK_DOOR_SLAB_A_01">
+    <div class="asset-body">
+      <span class="badge">doors_windows</span>
+      <div class="asset-name">WK_DOOR_SLAB_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>1.8 × 0.189 × 2.4 m</td></tr>
+        <tr><td>Geometry</td><td>66 Quads / 96 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Hazard_Stripes, MAT_Reinforced_Glass, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/doors_windows/WK_DOOR_SLAB_A_01.glb" download>Download GLB (WK_DOOR_SLAB_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="doors_windows">
+    <img class="asset-thumb" src="thumbnails/WK_WINDOW_PORTAL_A_01.png" alt="WK_WINDOW_PORTAL_A_01">
+    <div class="asset-body">
+      <span class="badge">doors_windows</span>
+      <div class="asset-name">WK_WINDOW_PORTAL_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.0 × 0.28 × 1.6 m</td></tr>
+        <tr><td>Geometry</td><td>92 Quads / 144 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Reinforced_Glass, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/doors_windows/WK_WINDOW_PORTAL_A_01.glb" download>Download GLB (WK_WINDOW_PORTAL_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="floors">
+    <img class="asset-thumb" src="thumbnails/WK_FLOOR_CATWALK_C_01.png" alt="WK_FLOOR_CATWALK_C_01">
+    <div class="asset-body">
+      <span class="badge">floors</span>
+      <div class="asset-name">WK_FLOOR_CATWALK_C_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.0 × 4.0 × 0.2 m</td></tr>
+        <tr><td>Geometry</td><td>60 Quads / 80 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Galvanized_Grate, MAT_Hazard_Stripes</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/floors/WK_FLOOR_CATWALK_C_01.glb" download>Download GLB (WK_FLOOR_CATWALK_C_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="floors">
+    <img class="asset-thumb" src="thumbnails/WK_FLOOR_GRATE_B_01.png" alt="WK_FLOOR_GRATE_B_01">
+    <div class="asset-body">
+      <span class="badge">floors</span>
+      <div class="asset-name">WK_FLOOR_GRATE_B_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 4.0 × 0.3 m</td></tr>
+        <tr><td>Geometry</td><td>48 Quads / 64 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Galvanized_Grate</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/floors/WK_FLOOR_GRATE_B_01.glb" download>Download GLB (WK_FLOOR_GRATE_B_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="floors">
+    <img class="asset-thumb" src="thumbnails/WK_FLOOR_SLAB_A_01.png" alt="WK_FLOOR_SLAB_A_01">
+    <div class="asset-body">
+      <span class="badge">floors</span>
+      <div class="asset-name">WK_FLOOR_SLAB_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 4.0 × 0.3 m</td></tr>
+        <tr><td>Geometry</td><td>42 Quads / 56 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/floors/WK_FLOOR_SLAB_A_01.glb" download>Download GLB (WK_FLOOR_SLAB_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="floors">
+    <img class="asset-thumb" src="thumbnails/WK_FLOOR_TRIM_A_01.png" alt="WK_FLOOR_TRIM_A_01">
+    <div class="asset-body">
+      <span class="badge">floors</span>
+      <div class="asset-name">WK_FLOOR_TRIM_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 0.35 × 0.16 m</td></tr>
+        <tr><td>Geometry</td><td>12 Quads / 16 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Galvanized_Grate</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/floors/WK_FLOOR_TRIM_A_01.glb" download>Download GLB (WK_FLOOR_TRIM_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="furniture">
+    <img class="asset-thumb" src="thumbnails/WK_FURN_BENCH_A_01.png" alt="WK_FURN_BENCH_A_01">
+    <div class="asset-body">
+      <span class="badge">furniture</span>
+      <div class="asset-name">WK_FURN_BENCH_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>1.8 × 0.659 × 1.01 m</td></tr>
+        <tr><td>Geometry</td><td>66 Quads / 96 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Galvanized_Grate, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/furniture/WK_FURN_BENCH_A_01.glb" download>Download GLB (WK_FURN_BENCH_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="furniture">
+    <img class="asset-thumb" src="thumbnails/WK_FURN_CONSOLE_A_01.png" alt="WK_FURN_CONSOLE_A_01">
+    <div class="asset-body">
+      <span class="badge">furniture</span>
+      <div class="asset-name">WK_FURN_CONSOLE_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.0 × 0.9 × 1.35 m</td></tr>
+        <tr><td>Geometry</td><td>96 Quads / 144 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Emissive_Cyan_UI, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/furniture/WK_FURN_CONSOLE_A_01.glb" download>Download GLB (WK_FURN_CONSOLE_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="hero">
+    <img class="asset-thumb" src="thumbnails/WK_HERO_CORE_A_01.png" alt="WK_HERO_CORE_A_01">
+    <div class="asset-body">
+      <span class="badge">hero</span>
+      <div class="asset-name">WK_HERO_CORE_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>3.593 × 3.593 × 4.65 m</td></tr>
+        <tr><td>Geometry</td><td>226 Quads / 376 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Emissive_Cyan_UI, MAT_Reinforced_Glass, MAT_Hazard_Stripes, MAT_Brass_Valves, MAT_Amber_Strobe, MAT_Rubber_Conduit</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/hero/WK_HERO_CORE_A_01.glb" download>Download GLB (WK_HERO_CORE_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="hero">
+    <img class="asset-thumb" src="thumbnails/WK_HERO_PORTAL_RING_A_01.png" alt="WK_HERO_PORTAL_RING_A_01">
+    <div class="asset-body">
+      <span class="badge">hero</span>
+      <div class="asset-name">WK_HERO_PORTAL_RING_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>7.098 × 2.2 × 7.21 m</td></tr>
+        <tr><td>Geometry</td><td>640 Quads / 904 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Emissive_Cyan_UI, MAT_Hazard_Stripes, MAT_Brass_Valves, MAT_Amber_Strobe, MAT_Rubber_Conduit</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/hero/WK_HERO_PORTAL_RING_A_01.glb" download>Download GLB (WK_HERO_PORTAL_RING_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="lights">
+    <img class="asset-thumb" src="thumbnails/WK_LIGHT_CAGE_A_01.png" alt="WK_LIGHT_CAGE_A_01">
+    <div class="asset-body">
+      <span class="badge">lights</span>
+      <div class="asset-name">WK_LIGHT_CAGE_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.24 × 0.24 × 0.34 m</td></tr>
+        <tr><td>Geometry</td><td>74 Quads / 120 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Reinforced_Glass, MAT_Fluorescent_Glow</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/lights/WK_LIGHT_CAGE_A_01.glb" download>Download GLB (WK_LIGHT_CAGE_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="lights">
+    <img class="asset-thumb" src="thumbnails/WK_LIGHT_STROBE_A_01.png" alt="WK_LIGHT_STROBE_A_01">
+    <div class="asset-body">
+      <span class="badge">lights</span>
+      <div class="asset-name">WK_LIGHT_STROBE_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.2 × 0.2 × 0.355 m</td></tr>
+        <tr><td>Geometry</td><td>46 Quads / 80 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Amber_Strobe</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/lights/WK_LIGHT_STROBE_A_01.glb" download>Download GLB (WK_LIGHT_STROBE_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="lights">
+    <img class="asset-thumb" src="thumbnails/WK_LIGHT_TROFFER_A_01.png" alt="WK_LIGHT_TROFFER_A_01">
+    <div class="asset-body">
+      <span class="badge">lights</span>
+      <div class="asset-name">WK_LIGHT_TROFFER_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.1 × 0.7 × 0.2 m</td></tr>
+        <tr><td>Geometry</td><td>18 Quads / 24 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Fluorescent_Glow</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/lights/WK_LIGHT_TROFFER_A_01.glb" download>Download GLB (WK_LIGHT_TROFFER_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="props">
+    <img class="asset-thumb" src="thumbnails/WK_PROP_CANISTER_A_01.png" alt="WK_PROP_CANISTER_A_01">
+    <div class="asset-body">
+      <span class="badge">props</span>
+      <div class="asset-name">WK_PROP_CANISTER_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.548 × 0.548 × 1.425 m</td></tr>
+        <tr><td>Geometry</td><td>118 Quads / 200 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Brass_Valves, MAT_Hazard_Stripes</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/props/WK_PROP_CANISTER_A_01.glb" download>Download GLB (WK_PROP_CANISTER_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="props">
+    <img class="asset-thumb" src="thumbnails/WK_PROP_CRATE_A_01.png" alt="WK_PROP_CRATE_A_01">
+    <div class="asset-body">
+      <span class="badge">props</span>
+      <div class="asset-name">WK_PROP_CRATE_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>1.2 × 1.193 × 1.0 m</td></tr>
+        <tr><td>Geometry</td><td>36 Quads / 48 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Hazard_Stripes, MAT_Sign_Hazard</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/props/WK_PROP_CRATE_A_01.glb" download>Download GLB (WK_PROP_CRATE_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="props">
+    <img class="asset-thumb" src="thumbnails/WK_PROP_EXTINGUISHER_01.png" alt="WK_PROP_EXTINGUISHER_01">
+    <div class="asset-body">
+      <span class="badge">props</span>
+      <div class="asset-name">WK_PROP_EXTINGUISHER_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.249 × 0.26 × 0.8 m</td></tr>
+        <tr><td>Geometry</td><td>44 Quads / 72 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Rubber_Conduit, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/props/WK_PROP_EXTINGUISHER_01.glb" download>Download GLB (WK_PROP_EXTINGUISHER_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="props">
+    <img class="asset-thumb" src="thumbnails/WK_PROP_JUNCTION_A_01.png" alt="WK_PROP_JUNCTION_A_01">
+    <div class="asset-body">
+      <span class="badge">props</span>
+      <div class="asset-name">WK_PROP_JUNCTION_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.66 × 0.305 × 0.78 m</td></tr>
+        <tr><td>Geometry</td><td>34 Quads / 48 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Sign_Hazard, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/props/WK_PROP_JUNCTION_A_01.glb" download>Download GLB (WK_PROP_JUNCTION_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="signage">
+    <img class="asset-thumb" src="thumbnails/WK_SIGN_HAZARD_A_01.png" alt="WK_SIGN_HAZARD_A_01">
+    <div class="asset-body">
+      <span class="badge">signage</span>
+      <div class="asset-name">WK_SIGN_HAZARD_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.6 × 0.02 × 0.52 m</td></tr>
+        <tr><td>Geometry</td><td>6 Quads / 8 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Sign_Hazard</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/signage/WK_SIGN_HAZARD_A_01.glb" download>Download GLB (WK_SIGN_HAZARD_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="signage">
+    <img class="asset-thumb" src="thumbnails/WK_SIGN_SECTOR_A_01.png" alt="WK_SIGN_SECTOR_A_01">
+    <div class="asset-body">
+      <span class="badge">signage</span>
+      <div class="asset-name">WK_SIGN_SECTOR_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>1.82 × 0.098 × 0.62 m</td></tr>
+        <tr><td>Geometry</td><td>52 Quads / 80 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Sign_Sector</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/signage/WK_SIGN_SECTOR_A_01.glb" download>Download GLB (WK_SIGN_SECTOR_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="structural">
+    <img class="asset-thumb" src="thumbnails/WK_STRUCT_BEAM_A_01.png" alt="WK_STRUCT_BEAM_A_01">
+    <div class="asset-body">
+      <span class="badge">structural</span>
+      <div class="asset-name">WK_STRUCT_BEAM_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>0.42 × 4.0 × 0.5 m</td></tr>
+        <tr><td>Geometry</td><td>54 Quads / 72 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/structural/WK_STRUCT_BEAM_A_01.glb" download>Download GLB (WK_STRUCT_BEAM_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="structural">
+    <img class="asset-thumb" src="thumbnails/WK_STRUCT_COLUMN_A_01.png" alt="WK_STRUCT_COLUMN_A_01">
+    <div class="asset-body">
+      <span class="badge">structural</span>
+      <div class="asset-name">WK_STRUCT_COLUMN_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>1.2 × 1.0 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>94 Quads / 136 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/structural/WK_STRUCT_COLUMN_A_01.glb" download>Download GLB (WK_STRUCT_COLUMN_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="structural">
+    <img class="asset-thumb" src="thumbnails/WK_STRUCT_RAILING_2M_01.png" alt="WK_STRUCT_RAILING_2M_01">
+    <div class="asset-body">
+      <span class="badge">structural</span>
+      <div class="asset-name">WK_STRUCT_RAILING_2M_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.02 × 0.12 × 1.105 m</td></tr>
+        <tr><td>Geometry</td><td>74 Quads / 120 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Hazard_Stripes</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/structural/WK_STRUCT_RAILING_2M_01.glb" download>Download GLB (WK_STRUCT_RAILING_2M_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="structural">
+    <img class="asset-thumb" src="thumbnails/WK_STRUCT_RAILING_A_01.png" alt="WK_STRUCT_RAILING_A_01">
+    <div class="asset-body">
+      <span class="badge">structural</span>
+      <div class="asset-name">WK_STRUCT_RAILING_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.02 × 0.12 × 1.105 m</td></tr>
+        <tr><td>Geometry</td><td>94 Quads / 152 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Hazard_Stripes</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/structural/WK_STRUCT_RAILING_A_01.glb" download>Download GLB (WK_STRUCT_RAILING_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="structural">
+    <img class="asset-thumb" src="thumbnails/WK_STRUCT_STAIRS_A_01.png" alt="WK_STRUCT_STAIRS_A_01">
+    <div class="asset-body">
+      <span class="badge">structural</span>
+      <div class="asset-name">WK_STRUCT_STAIRS_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.1 × 4.2 × 1.98 m</td></tr>
+        <tr><td>Geometry</td><td>144 Quads / 192 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Galvanized_Grate</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/structural/WK_STRUCT_STAIRS_A_01.glb" download>Download GLB (WK_STRUCT_STAIRS_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="utilities">
+    <img class="asset-thumb" src="thumbnails/WK_UTIL_PIPE_RUN_A_01.png" alt="WK_UTIL_PIPE_RUN_A_01">
+    <div class="asset-body">
+      <span class="badge">utilities</span>
+      <div class="asset-name">WK_UTIL_PIPE_RUN_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 0.245 × 0.42 m</td></tr>
+        <tr><td>Geometry</td><td>104 Quads / 168 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Heavy_Steel_Painted, MAT_Brass_Valves, MAT_Rubber_Conduit</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/utilities/WK_UTIL_PIPE_RUN_A_01.glb" download>Download GLB (WK_UTIL_PIPE_RUN_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="walls">
+    <img class="asset-thumb" src="thumbnails/WK_WALL_CORNER_IN_A_01.png" alt="WK_WALL_CORNER_IN_A_01">
+    <div class="asset-body">
+      <span class="badge">walls</span>
+      <div class="asset-name">WK_WALL_CORNER_IN_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.145 × 2.145 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>60 Quads / 88 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Rubber_Conduit</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/walls/WK_WALL_CORNER_IN_A_01.glb" download>Download GLB (WK_WALL_CORNER_IN_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="walls">
+    <img class="asset-thumb" src="thumbnails/WK_WALL_CORNER_OUT_A_01.png" alt="WK_WALL_CORNER_OUT_A_01">
+    <div class="asset-body">
+      <span class="badge">walls</span>
+      <div class="asset-name">WK_WALL_CORNER_OUT_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>2.145 × 2.15 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>42 Quads / 56 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Hazard_Stripes</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/walls/WK_WALL_CORNER_OUT_A_01.glb" download>Download GLB (WK_WALL_CORNER_OUT_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="walls">
+    <img class="asset-thumb" src="thumbnails/WK_WALL_DOORFRAME_A_01.png" alt="WK_WALL_DOORFRAME_A_01">
+    <div class="asset-body">
+      <span class="badge">walls</span>
+      <div class="asset-name">WK_WALL_DOORFRAME_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 0.29 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>48 Quads / 64 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/walls/WK_WALL_DOORFRAME_A_01.glb" download>Download GLB (WK_WALL_DOORFRAME_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="walls">
+    <img class="asset-thumb" src="thumbnails/WK_WALL_PANEL_B_01.png" alt="WK_WALL_PANEL_B_01">
+    <div class="asset-body">
+      <span class="badge">walls</span>
+      <div class="asset-name">WK_WALL_PANEL_B_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 0.29 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>66 Quads / 88 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Rubber_Conduit, MAT_Emissive_Cyan_UI</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/walls/WK_WALL_PANEL_B_01.glb" download>Download GLB (WK_WALL_PANEL_B_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="walls">
+    <img class="asset-thumb" src="thumbnails/WK_WALL_SOLID_A_01.png" alt="WK_WALL_SOLID_A_01">
+    <div class="asset-body">
+      <span class="badge">walls</span>
+      <div class="asset-name">WK_WALL_SOLID_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 0.29 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>42 Quads / 56 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Rubber_Conduit</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/walls/WK_WALL_SOLID_A_01.glb" download>Download GLB (WK_WALL_SOLID_A_01.glb)</a>
+    </div>
+  </div>
+  <div class="asset-card" data-category="walls">
+    <img class="asset-thumb" src="thumbnails/WK_WALL_WINDOW_A_01.png" alt="WK_WALL_WINDOW_A_01">
+    <div class="asset-body">
+      <span class="badge">walls</span>
+      <div class="asset-name">WK_WALL_WINDOW_A_01</div>
+      <table class="specs-table">
+        <tr><td>Dimensions</td><td>4.0 × 0.32 × 4.0 m</td></tr>
+        <tr><td>Geometry</td><td>122 Quads / 184 Verts</td></tr>
+        <tr><td>Materials</td><td>MAT_Concrete_Brutalist, MAT_Heavy_Steel_Painted, MAT_Reinforced_Glass, MAT_Brass_Valves</td></tr>
+      </table>
+      <a class="download-btn" href="../../WORLD_KIT_EXPORT/walls/WK_WALL_WINDOW_A_01.glb" download>Download GLB (WK_WALL_WINDOW_A_01.glb)</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function filterCategory(cat) {
+  const cards = document.querySelectorAll('.asset-card');
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  cards.forEach(c => {
+    if (cat === 'all' || c.getAttribute('data-category') === cat) {
+      c.style.display = 'block';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+}
+</script>
+
+</body>
+</html>
