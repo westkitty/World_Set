@@ -36,22 +36,25 @@ def _target(name):
 
 
 def build_stills() -> dict:
+    """Six deliberate framings.  Positions/aims are chosen to stay clear of the
+    0.95m column grid (x,y in {0,4,8,12}), the 4.44m evaporator at (6,6) and the
+    spiral-stair footprint (x 0.2-3.8, y 4.2-7.8)."""
     cams = {}
-    # 1 establishing: NE corner, looking SW across channel, evaporator, stair
-    c = _cam("CAM_establishing", 30); c.location = (0.9, 0.9, 2.3)
-    _aim(c, (9.0, 5.5, 2.6)); cams["establishing"] = c
-    # 2 architectural scale: low down the vaulted seaward row
-    c = _cam("CAM_arch", 28); c.location = (10.5, 1.4, 1.3)
-    _aim(c, (2.0, 1.0, 3.2)); cams["architecture"] = c
-    # 3 detail: valve + pipe + crate corner
+    # 1 establishing: NE high corner looking SW over channel, tank, stair
+    c = _cam("CAM_establishing", 30); c.location = (11.0, 7.0, 2.4)
+    _aim(c, (3.0, 2.5, 1.6)); cams["establishing"] = c
+    # 2 architectural scale: low down the vaulted channel row, catwalk beyond
+    c = _cam("CAM_arch", 28); c.location = (1.2, 1.2, 1.5)
+    _aim(c, (10.0, 2.0, 3.0)); cams["architecture"] = c
+    # 3 detail: valve + pipe + crate corner (west)
     c = _cam("CAM_detail", 45); c.location = (3.0, 3.0, 1.4)
     _aim(c, (0.7, 4.0, 0.8)); cams["detail"] = c
-    # 4 modular variation: stair + platform + catwalk
-    c = _cam("CAM_variation", 30); c.location = (5.4, 2.2, 2.0)
-    _aim(c, (2.0, 6.0, 2.6)); cams["variation"] = c
-    # 5 hero integration: evaporator with the glazed seaward wall + beacon behind
-    c = _cam("CAM_hero", 35); c.location = (2.5, 1.6, 1.7)
-    _aim(c, (6.0, 6.0, 4.2)); cams["hero"] = c
+    # 4 modular variation: spiral stair + platform + pipe (vertical circulation)
+    c = _cam("CAM_variation", 30); c.location = (7.5, 3.0, 2.0)
+    _aim(c, (2.0, 6.0, 3.0)); cams["variation"] = c
+    # 5 hero integration: evaporator with glazed seaward wall behind
+    c = _cam("CAM_hero", 35); c.location = (9.5, 7.0, 1.8)
+    _aim(c, (5.5, 3.5, 2.6)); cams["hero"] = c
     # 6 storytelling: crates by the doorway, worn threshold
     c = _cam("CAM_story", 40); c.location = (8.6, 6.0, 1.5)
     _aim(c, (9.6, 7.4, 0.7)); cams["story"] = c
@@ -68,7 +71,9 @@ def build_panorama():
     cd.lens = 18
     ob = bpy.data.objects.new("CAM_pano", cd)
     bpy.context.scene.collection.objects.link(ob)
-    ob.location = (6, 4, EYE)
+    # open floor east of the evaporator: clear of the 4m column grid and far
+    # enough from the tank that the hero reads as an element, not occlusion
+    ob.location = (9, 4, EYE)
     return ob
 
 
@@ -82,12 +87,15 @@ def build_walkthrough(fps, seconds):
 
     last = int(fps * seconds)
     # (frame, cam_loc, target)
+    # Travels *through* the hall: enter at the NE doorway, slip down the open
+    # east side (clear of the 4.44m evaporator and the column grid), then cross
+    # the brine channel west to settle on the spiral stair.  Never orbits.
     keys = [
-        (1,    (6.0, 7.6, EYE), (6.0, 4.0, 1.6)),
-        (int(last * 0.25), (6.0, 5.4, EYE), (6.0, 6.0, 2.6)),
-        (int(last * 0.5), (7.4, 4.0, EYE), (6.0, 6.0, 2.8)),
-        (int(last * 0.75), (9.5, 2.6, EYE), (6.0, 5.5, 2.4)),
-        (last, (10.6, 1.4, 1.9), (3.0, 4.0, 2.2)),
+        (1,    (10.3, 7.2, EYE), (6.0, 6.0, 3.0)),
+        (int(last * 0.3), (9.0, 5.2, EYE), (6.0, 6.0, 3.0)),
+        (int(last * 0.55), (8.6, 3.0, EYE), (5.5, 5.0, 2.6)),
+        (int(last * 0.8), (6.0, 2.0, EYE), (3.0, 4.5, 2.2)),
+        (last, (3.6, 1.6, 1.9), (2.0, 5.0, 2.8)),
     ]
     for f, loc, t in keys:
         cam.location = loc
