@@ -7,31 +7,36 @@ from ..geo import vec
 
 
 def evaporator(asset):
+    # The hero must respect the 4m bay: shell dia 3.1 (clears the 0.95m columns
+    # at the bay corners) and ~4.3m tall so it still crowns through the oculus.
+    S = 0.7
     shell = asset.part("shell", "MK_STEEL_PAINTED", uv_mode="cyl")
-    shell.lathe([
+    shell.lathe([(r * S, z * S) for r, z in [
         (0.0, 0.0), (2.2, 0.0), (2.2, 0.9), (2.17, 0.92), (2.17, 1.8),
         (2.14, 1.82), (2.14, 2.7), (2.11, 2.72), (2.11, 3.6), (2.07, 3.62),
         (2.07, 4.5), (2.0, 4.55), (1.9, 5.0), (0.0, 5.1),
-    ], vec(0, 0, 0), seg=24)
+    ]], vec(0, 0, 0), seg=24)
     hoops = asset.part("hoops", "MK_STEEL_PRIMER", uv_mode="cyl")
     for z, r in ((0.9, 2.2), (1.8, 2.17), (2.7, 2.14), (3.6, 2.11), (4.5, 2.07)):
-        hoops.ring(vec(0, 0, z - 0.05), r + 0.02, r - 0.02, 0.1, seg=24)
+        hoops.ring(vec(0, 0, (z - 0.05) * S), (r + 0.02) * S, (r - 0.02) * S,
+                   0.1 * S, seg=24)
     stack = asset.part("stack", "MK_BRASS", uv_mode="cyl")
-    stack.cyl(vec(0.9, 0, 5.0), 0.14, 0.1, 1.2, axis="Z", seg=12)
-    stack.cyl(vec(0.9, 0, 6.1), 0.18, 0.18, 0.1, axis="Z", seg=12)
+    stack.cyl(vec(0.9 * S, 0, 5.0 * S), 0.14 * S, 0.1 * S, 1.2 * S, axis="Z", seg=12)
+    stack.cyl(vec(0.9 * S, 0, 6.1 * S), 0.18 * S, 0.18 * S, 0.1 * S, axis="Z", seg=12)
     glass = asset.part("sight", "MK_EMISSIVE_CYAN")
-    glass.box(vec(0, -2.15, 2.2), (0.14, 0.06, 2.2))
+    glass.box(vec(0, -2.15 * S, 2.2 * S), (0.14 * S, 0.06 * S, 2.2 * S))
     glassf = asset.part("sightframe", "MK_STEEL_AGED")
-    glassf.box(vec(0, -2.16, 2.2), (0.2, 0.05, 2.3))
+    glassf.box(vec(0, -2.16 * S, 2.2 * S), (0.2 * S, 0.05 * S, 2.3 * S))
     ladder = asset.part("ladder", "MK_STEEL_AGED")
     for sx in (-0.2, 0.2):
-        ladder.cyl(vec(-1.5 + sx, -1.6, 0), 0.03, 0.03, 4.6, axis="Z", seg=8)
+        ladder.cyl(vec((-1.5 + sx) * S, -1.6 * S, 0), 0.03, 0.03, 4.6 * S,
+                   axis="Z", seg=8)
     z = 0.4
     while z < 4.6:
-        ladder.cyl(vec(-1.5, -1.6, z), 0.02, 0.02, 0.4, axis="X", seg=6)
+        ladder.cyl(vec(-1.5 * S, -1.6 * S, z * S), 0.02, 0.02, 0.4 * S, axis="X", seg=6)
         z += 0.35
     hatch = asset.part("hatch", "MK_STEEL_PRIMER", uv_mode="cyl")
-    hatch.cyl(vec(1.6, 1.4, 4.8), 0.4, 0.4, 0.3, axis="Z", seg=16)
+    hatch.cyl(vec(1.6 * S, 1.4 * S, 4.8 * S), 0.4 * S, 0.4 * S, 0.3 * S, axis="Z", seg=16)
 
 
 def beacon(asset):

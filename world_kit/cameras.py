@@ -41,8 +41,8 @@ def build_stills() -> dict:
     spiral-stair footprint (x 0.2-3.8, y 4.2-7.8)."""
     cams = {}
     # 1 establishing: NE high corner looking SW over channel, tank, stair
-    c = _cam("CAM_establishing", 30); c.location = (11.0, 7.0, 2.4)
-    _aim(c, (3.0, 2.5, 1.6)); cams["establishing"] = c
+    c = _cam("CAM_establishing", 28); c.location = (11.2, 7.2, 2.5)
+    _aim(c, (2.5, 2.0, 1.4)); cams["establishing"] = c
     # 2 architectural scale: low down the vaulted channel row, catwalk beyond
     c = _cam("CAM_arch", 28); c.location = (1.2, 1.2, 1.5)
     _aim(c, (10.0, 2.0, 3.0)); cams["architecture"] = c
@@ -53,11 +53,11 @@ def build_stills() -> dict:
     c = _cam("CAM_variation", 30); c.location = (7.5, 3.0, 2.0)
     _aim(c, (2.0, 6.0, 3.0)); cams["variation"] = c
     # 5 hero integration: evaporator with glazed seaward wall behind
-    c = _cam("CAM_hero", 35); c.location = (9.5, 7.0, 1.8)
-    _aim(c, (5.5, 3.5, 2.6)); cams["hero"] = c
-    # 6 storytelling: crates by the doorway, worn threshold
-    c = _cam("CAM_story", 40); c.location = (8.6, 6.0, 1.5)
-    _aim(c, (9.6, 7.4, 0.7)); cams["story"] = c
+    c = _cam("CAM_hero", 32); c.location = (9.8, 6.8, 1.8)
+    _aim(c, (4.5, 3.0, 2.4)); cams["hero"] = c
+    # 6 storytelling: crates by the doorway, worn threshold + signage beyond
+    c = _cam("CAM_story", 40); c.location = (3.4, 1.0, 1.5)
+    _aim(c, (1.2, 2.6, 1.2)); cams["story"] = c
     return cams
 
 
@@ -71,9 +71,9 @@ def build_panorama():
     cd.lens = 18
     ob = bpy.data.objects.new("CAM_pano", cd)
     bpy.context.scene.collection.objects.link(ob)
-    # open floor east of the evaporator: clear of the 4m column grid and far
-    # enough from the tank that the hero reads as an element, not occlusion
-    ob.location = (9, 4, EYE)
+    # open floor SE of the evaporator: clear of the 4m column grid, the tank
+    # and the catwalk, with sightlines to tank, channel, doorway and breach
+    ob.location = (8, 2.2, EYE)
     return ob
 
 
