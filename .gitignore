@@ -1,5 +1,8 @@
-# Build / render artifacts - regenerable with `python tools/wk.py --stage all`
-dist/
+# Render artifacts are committed so the explorer preview survives sandbox
+# resets without a ~1 h re-render.  Regenerable with `python tools/wk.py
+# --stage all`.  The packed master .blend is excluded (exceeds GitHub's
+# 100 MB file limit; rebuild from the committed GLBs + sources).
+dist/WORLD_KIT/WORLD_KIT_master.blend
 
 # Toolchain (installed by tools/bootstrap_env.sh, never committed)
 .venv/
