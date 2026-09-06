@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WORLD KIT — Brinefall Pump Hall · Explorer</title>
+<style>
+  :root{
+    --bg:#141618; --panel:#1d2124; --panel2:#22272b; --line:#33393e;
+    --ink:#e8e6df; --mut:#9aa3a7; --teal:#3aa8a0; --oxide:#c05a3c; --amber:#ffb45e;
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:15px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal)}
+  header{position:sticky;top:0;z-index:40;background:rgba(20,22,24,.94);backdrop-filter:blur(6px);
+         border-bottom:1px solid var(--line)}
+  .bar{max-width:1240px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{width:34px;height:34px;border-radius:7px;flex:0 0 auto;
+        background:linear-gradient(140deg,var(--teal),#1d5f5a 55%,var(--oxide));
+        box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}
+  h1{font-size:17px;margin:0;letter-spacing:.4px}
+  h1 small{color:var(--mut);font-weight:400}
+  nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+  nav button{background:none;border:1px solid transparent;color:var(--mut);padding:6px 11px;border-radius:999px;
+             cursor:pointer;font-size:13px}
+  nav button:hover{color:var(--ink)}
+  nav button.on{color:var(--ink);border-color:var(--line);background:var(--panel2)}
+  main{max-width:1240px;margin:0 auto;padding:22px 18px 80px}
+  section{display:none} section.on{display:block}
+  h2{font-size:22px;margin:6px 0 4px}
+  .sub{color:var(--mut);margin:0 0 18px;max-width:70ch}
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .g2{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+        transition:transform .15s,border-color .15s}
+  .card:hover{transform:translateY(-2px);border-color:#4a5157}
+  .card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:#000;cursor:zoom-in}
+  .card .meta{padding:10px 12px}
+  .card .meta b{font-size:13.5px}
+  .card .meta p{margin:4px 0 0;color:var(--mut);font-size:12.5px}
+  .tag{display:inline-block;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--teal);
+       border:1px solid rgba(58,168,160,.4);padding:1px 7px;border-radius:999px;margin-right:6px}
+  .tag.h{color:var(--amber);border-color:rgba(255,180,94,.45)}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 22px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+  .stat b{display:block;font-size:20px}
+  .stat span{color:var(--mut);font-size:12px}
+  .cols{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+  .panelbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .panelbox h3{margin:0 0 8px;font-size:14px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut)}
+  .panelbox ul{margin:0;padding-left:18px} .panelbox li{margin:4px 0}
+  /* 360 viewer */
+  #pano{height:440px;border-radius:12px;border:1px solid var(--line);cursor:grab;
+        background-image:url('/wk/renders/environment_360.png');
+        background-size:auto 100%;background-repeat:repeat-x;background-position:0 50%;
+        position:relative;overflow:hidden;touch-action:none}
+  #pano:active{cursor:grabbing}
+  #pano .hint{position:absolute;left:12px;bottom:10px;background:rgba(0,0,0,.55);color:var(--ink);
+              font-size:12px;padding:4px 10px;border-radius:999px;pointer-events:none}
+  video{width:100%;border-radius:12px;border:1px solid var(--line);background:#000}
+  /* assets */
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+  .filters button{background:var(--panel);border:1px solid var(--line);color:var(--mut);border-radius:999px;
+                  padding:5px 12px;cursor:pointer;font-size:12.5px}
+  .filters button.on{color:var(--ink);border-color:var(--teal)}
+  #search{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;
+          padding:6px 14px;font-size:13px;outline:none;margin-left:auto;min-width:180px}
+  .acard img{aspect-ratio:1/1;object-fit:contain;background:#2b2f33;padding:8px}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12.5px;margin-top:6px}
+  .kv dt{color:var(--mut)} .kv dd{margin:0}
+  /* lightbox */
+  #lb{position:fixed;inset:0;background:rgba(8,9,10,.9);display:none;z-index:60;
+      align-items:center;justify-content:center;flex-direction:column;padding:24px}
+  #lb.on{display:flex}
+  #lb img{max-width:92vw;max-height:78vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  #lb .cap{color:var(--ink);margin-top:12px;font-size:14px;text-align:center;max-width:80ch}
+  #lb .x{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--mut);
+         font-size:26px;cursor:pointer}
+  /* docs */
+  .docbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .docbar button{background:var(--panel);border:1px solid var(--line);color:var(--mut);border-radius:8px;
+                 padding:6px 12px;cursor:pointer;font-size:13px}
+  .docbar button.on{color:var(--ink);border-color:var(--teal)}
+  .md{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 26px;max-width:960px}
+  .md h1{font-size:24px;margin:.4em 0 .4em}.md h2{font-size:19px;margin:1.1em 0 .4em;color:var(--teal)}
+  .md h3{font-size:15px;margin:1em 0 .3em;color:var(--amber)}
+  .md p{margin:.5em 0}.md li{margin:.25em 0}
+  .md code{background:#101314;border:1px solid var(--line);padding:1px 5px;border-radius:5px;font-size:.9em}
+  .md pre{background:#101314;border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto}
+  .md table{border-collapse:collapse;margin:.7em 0;font-size:13px}
+  .md th,.md td{border:1px solid var(--line);padding:5px 10px;text-align:left}
+  .md th{background:var(--panel2)}
+  .md blockquote{border-left:3px solid var(--teal);margin:.6em 0;padding:.2em 1em;color:var(--mut)}
+  footer{color:var(--mut);font-size:12.5px;border-top:1px solid var(--line);padding:16px 18px;
+         max-width:1240px;margin:0 auto}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo"></div>
+    <h1>WORLD KIT <small>· Brinefall Pump Hall — modular environment explorer</small></h1>
+    <nav id="nav">
+      <button data-s="overview" class="on">Overview</button>
+      <button data-s="renders">Renders</button>
+      <button data-s="pano">360°</button>
+      <button data-s="walk">Walkthrough</button>
+      <button data-s="assets">Assets</button>
+      <button data-s="reuse">Reuse</button>
+      <button data-s="docs">Docs</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ OVERVIEW ============ -->
+  <section id="overview" class="on">
+    <h2>One concept, one construction language</h2>
+    <p class="sub"><b>Brine &amp; Salt</b> — a decommissioned sea-side desalination hall. Weathered cast
+      concrete, oxide-red &amp; teal enamel, brass fittings, standing brine under floor gratings and a
+      sodium-lit beacon. Everything below is built <i>only</i> from the 40 catalogued kit pieces; the
+      showcase is proof the modular system builds a finished location.</p>
+    <div class="stats" id="stats"></div>
+    <div class="cols">
+      <div class="panelbox">
+        <h3>Visual invariants (every asset obeys)</h3>
+        <ul>
+          <li>4.0 m bay grid; wall height 3.6 m; 0.95 m columns cap every grid junction.</li>
+          <li>Cast-concrete primary mass + enamel/brass/steel secondary; teal = treated brine, oxide = primer.</li>
+          <li>Every edge bevelled; no razor silhouettes; real-time poly budgets (foundation first).</li>
+          <li>Wear reads from the waterline up: salt streaks, tide rings, rust bleed under fittings.</li>
+          <li>Origins at design floor, footprint-centred; mechanical pivots on real hinges/axes.</li>
+          <li>Naming <code>WK_[CAT]_[ASSET]_[VAR]_[NUM]</code> — never <code>Cube.004</code>.</li>
+        </ul>
+      </div>
+      <div class="panelbox">
+        <h3>Pipeline (one command, fully regenerable)</h3>
+        <ul>
+          <li><code>tools/wk.py --stage textures</code> — procedural PBR atlas, 14 families</li>
+          <li><code>--stage assets</code> — build · audit · export 40 GLBs · manifest</li>
+          <li><code>--stage reuse</code> — 3 layouts from the same pieces</li>
+          <li><code>--stage showcase</code> — assemble hall · save master .blend</li>
+          <li><code>--stage stills | pano | walk</code> — Cycles renders</li>
+          <li><code>--stage catalog</code> — studio thumbs + contact sheets</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RENDERS ============ -->
+  <section id="renders">
+    <h2>Six deliberate cameras</h2>
+    <p class="sub">Establishing · architectural scale · material close-up · modular variation · hero
+      integration · storytelling. Practical sodium/brine lighting — not a generic three-point rig.</p>
+    <div class="grid g3" id="stillgrid"></div>
+  </section>
+
+  <!-- ============ 360 ============ -->
+  <section id="pano">
+    <h2>360° environment</h2>
+    <p class="sub">Equirectangular capture from the open floor SE of the evaporator. Drag to look around.</p>
+    <div id="pano"><div class="hint">drag to look around</div></div>
+  </section>
+
+  <!-- ============ WALKTHROUGH ============ -->
+  <section id="walk">
+    <h2>Cinematic walkthrough</h2>
+    <p class="sub">Five seconds through the space: in at the NE doorway, down the open east side, across
+      the brine channel, settling on the spiral stair. It travels <i>through</i> — never orbits.</p>
+    <video controls preload="metadata" src="/wk/renders/walkthrough.mp4"></video>
+  </section>
+
+  <!-- ============ ASSETS ============ -->
+  <section id="assets">
+    <h2>Asset vocabulary — 40 pieces</h2>
+    <p class="sub">Effort hierarchy FOUNDATION &gt; VARIATION &gt; DETAIL &gt; HERO. Click any card for the
+      full record from the manifest.</p>
+    <div class="filters" id="filters"><input id="search" placeholder="search assets…"></div>
+    <div class="grid g3" id="assetgrid"></div>
+  </section>
+
+  <!-- ============ REUSE ============ -->
+  <section id="reuse">
+    <h2>Reuse test — same pieces, three layouts</h2>
+    <p class="sub">Compact / open / corridor arrangements built from the identical kit; grid-aligned,
+      zero floor overlaps. A piece that only works in one layout would have failed here.</p>
+    <div class="grid g3" id="reusegrid"></div>
+  </section>
+
+  <!-- ============ DOCS ============ -->
+  <section id="docs">
+    <h2>Reference documents</h2>
+    <p class="sub">Generated by the pipeline from <code>world_kit/dna.py</code> and the registry.</p>
+    <div class="docbar" id="docbar"></div>
+    <div class="md" id="mdbody">loading…</div>
+  </section>
+</main>
+
+<footer>WORLD KIT · kit WK-BRINEFALL-001 · regenerated with <code>tools/wk.py</code> · source on branch
+  <code>arena/01a0748f-world-set</code></footer>
+
+<div id="lb"><button class="x" title="close">×</button><img alt=""><div class="cap"></div></div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+/* ---------- section switching ---------- */
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.s));
+  window.scrollTo({top:0});
+});
+/* ---------- lightbox ---------- */
+const lb=$('#lb');
+function openLB(src,cap,html){
+  lb.querySelector('img').src=src;
+  lb.querySelector('.cap').innerHTML=html||cap;
+  lb.classList.add('on');
+}
+lb.querySelector('.x').onclick=()=>lb.classList.remove('on');
+lb.onclick=e=>{if(e.target===lb)lb.classList.remove('on')};
+addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('on')});
+
+/* ---------- stills ---------- */
+const STILLS=[
+ ['establishing','Establishing — NE corner over channel, evaporator & stair'],
+ ['architecture','Architectural scale — down the vaulted channel row'],
+ ['detail','Material close-up — valve, pipe run, crate, tile wainscot'],
+ ['variation','Modular variation — spiral stair, platform, pipe'],
+ ['hero','Hero integration — evaporator against the glazed seaward wall'],
+ ['story','Storytelling — bench pool under the west lamps'],
+];
+$('#stillgrid').innerHTML=STILLS.map(([n,c])=>`
+  <div class="card"><img loading="lazy" src="/wk/renders/still_${n}.png" alt="${c}"
+    onclick="openLB(this.src,'','<b>${c}</b>')">
+  <div class="meta"><b>${c.split(' — ')[0]}</b><p>${c.split(' — ')[1]||''}</p></div></div>`).join('');
+
+/* ---------- reuse ---------- */
+const REUSE=[['A_compact','Compact — 16 pieces'],['B_open','Open — 18 pieces'],['C_corridor','Corridor — 16 pieces']];
+$('#reusegrid').innerHTML=REUSE.map(([n,c])=>`
+  <div class="card"><img loading="lazy" src="/wk/reuse/reuse_${n}.png" alt="${c}"
+    onclick="openLB(this.src,'','<b>${c}</b>')">
+  <div class="meta"><b>${c.split(' — ')[0]}</b><p>${c.split(' — ')[1]}</p></div></div>`).join('');
+
+/* ---------- 360 drag ---------- */
+(()=>{const p=$('#pano');let drag=false,lx=0,pos=0,vel=0.35,raf;
+ const step=()=>{if(!drag){pos-=vel;p.style.backgroundPosition=`${pos}px 50%`;}raf=requestAnimationFrame(step)};
+ step();
+ p.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;p.setPointerCapture(e.pointerId)});
+ p.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lx;lx=e.clientX;pos+=dx;
+   p.style.backgroundPosition=`${pos}px 50%`});
+ addEventListener('pointerup',()=>drag=false);
+})();
+
+/* ---------- assets from manifest ---------- */
+let MAN=[];
+fetch('/wk/docs/asset_manifest.json').then(r=>r.json()).then(d=>{
+  MAN=(Array.isArray(d)?d:(d.assets||[]));
+  $('#stats').innerHTML=`
+    <div class="stat"><b>${MAN.length}</b><span>catalogued assets</span></div>
+    <div class="stat"><b>${new Set(MAN.map(m=>m.category)).size}</b><span>categories</span></div>
+    <div class="stat"><b>${new Set(MAN.map(m=>m.material_family)).size}</b><span>shared material families</span></div>
+    <div class="stat"><b>4.0 m</b><span>snap grid / bay</span></div>`;
+  buildFilters(); renderAssets();
+}).catch(e=>{$('#assetgrid').innerHTML='<p>manifest failed to load</p>'});
+
+let catFilter='ALL', q='';
+function buildFilters(){
+  const cats=['ALL',...new Set(MAN.map(m=>m.category))];
+  $('#filters').insertAdjacentHTML('afterbegin',cats.map(c=>
+    `<button data-c="${c}" class="${c==='ALL'?'on':''}">${c==='ALL'?'all':c.replace(/^\d+_/,'')}</button>`).join(''));
+  $('#filters').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    catFilter=b.dataset.c;
+    $('#filters').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    renderAssets();
+  });
+  $('#search').oninput=e=>{q=e.target.value.toLowerCase();renderAssets()};
+}
+function renderAssets(){
+  const list=MAN.filter(m=>(catFilter==='ALL'||m.category===catFilter)&&
+     (!q||m.asset_name.toLowerCase().includes(q)||(m.purpose||'').toLowerCase().includes(q)));
+  $('#assetgrid').innerHTML=list.map(m=>{
+    const d=m.dimensions_m||{};
+    const hero=(m.tier||'').toUpperCase()==='HERO';
+    return `<div class="card acard">
+      <img loading="lazy" src="/wk/catalog/thumbs/${m.asset_name}.png" alt="${m.asset_name}"
+        onclick="openLB(this.src,'',assetHTML('${m.asset_name}'))">
+      <div class="meta"><span class="tag ${hero?'h':''}">${(m.tier||'').toLowerCase()}</span>
+        <span class="tag">${m.category.replace(/^\d+_/,'')}</span>
+        <b>${m.asset_name.replace(/^WK_/,'')}</b>
+        <div class="kv"><dt>size</dt><dd>${d.w?d.w.toFixed(2)+' × '+(d.d||0).toFixed(2)+' × '+(d.h||0).toFixed(2)+' m':'—'}</dd>
+        <dt>family</dt><dd>${m.material_family||'—'}</dd></div></div></div>`;
+  }).join('')||'<p>no matches</p>';
+}
+function assetHTML(name){
+  const m=MAN.find(x=>x.asset_name===name)||{};const d=m.dimensions_m||{};
+  return `<b>${name}</b><br>${m.purpose||''}<br>
+    <span style="color:var(--mut)">category ${m.category} · tier ${m.tier} · family ${m.material_family}<br>
+    ${d.w?d.w.toFixed(2)+' × '+(d.d||0).toFixed(2)+' × '+(d.h||0).toFixed(2)+' m':''} · grid ${m.snap_grid_m} m ·
+    file ${m.filename}</span>`;
+}
+
+/* ---------- docs with mini markdown ---------- */
+const DOCS=[['WORLD_DNA.md','World DNA'],['ASSET_MANIFEST.md','Asset manifest'],
+            ['VALIDATION_REPORT.md','Validation report'],['/repo/PIPELINE.md','Pipeline'],
+            ['/repo/README.md','README']];
+$('#docbar').innerHTML=DOCS.map(([f,l],i)=>`<button data-f="${f}" class="${i===0?'on':''}">${l}</button>`).join('');
+$('#docbar').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $('#docbar').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  loadDoc(b.dataset.f);
+});
+function loadDoc(f){
+  $('#mdbody').textContent='loading…';
+  fetch(f.startsWith('/repo/')?f:'/wk/docs/'+f).then(r=>r.text()).then(md=>{$('#mdbody').innerHTML=md2html(md)});
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function inline(s){return esc(s)
+  .replace(/`([^`]+)`/g,'<code>$1</code>')
+  .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+  .replace(/\*([^*]+)\*/g,'<i>$1</i>')}
+function md2html(src){
+  const lines=src.split('\n');let out=[],inCode=false,inUL=false,table=null;
+  const closeUL=()=>{if(inUL){out.push('</ul>');inUL=false}};
+  const flushT=()=>{if(!table)return;let html='<table>';
+    table.rows.forEach((r,ri)=>{const cell=(ri===0&&table.head)?'th':'td';
+      html+='<tr>'+r.map(c=>`<${cell}>${inline(c)}</${cell}>`).join('')+'</tr>'});
+    out.push(html+'</table>');table=null};
+  for(const l of lines){
+    if(l.startsWith('```')){closeUL();flushT();out.push(inCode?'</pre>':'<pre>');inCode=!inCode;continue}
+    if(inCode){out.push(esc(l));continue}
+    if(/^\s*\|/.test(l)){closeUL();
+      if(!table)table={rows:[],head:false};
+      if(/^\s*\|?[\s:|-]+\|?\s*$/.test(l)){table.head=true;continue}
+      table.rows.push(l.split('|').map(s=>s.trim()).filter((s,j,a)=>!(s===''&&(j===0||j===a.length-1))));
+      continue}
+    flushT();
+    const li=l.match(/^\s*(?:[-*]|\d+\.)\s+(.*)/);
+    if(li){if(!inUL){out.push('<ul>');inUL=true}out.push('<li>'+inline(li[1])+'</li>');continue}
+    closeUL();
+    const h=l.match(/^(#{1,4})\s+(.*)/);
+    if(h){out.push(`<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`);continue}
+    if(/^>/.test(l)){out.push('<blockquote>'+inline(l.replace(/^>\s?/,''))+'</blockquote>');continue}
+    if(/^(-{3,}|\*{3,})\s*$/.test(l)){out.push('<hr>');continue}
+    if(l.trim()==='')continue;
+    out.push('<p>'+inline(l)+'</p>');
+  }
+  closeUL();flushT();if(inCode)out.push('</pre>');
+  return out.join('\n');
+}
+loadDoc('WORLD_DNA.md');
+</script>
+</body>
+</html>
