@@ -15525,6 +15525,10 @@ function buildIslandWorld() {
         waterMat.normalMap.offset.x = (time * 0.04) % 1.0;
         waterMat.normalMap.offset.y = (time * 0.025) % 1.0;
       }
+      if (waterMat.roughnessMap) {
+        waterMat.roughnessMap.offset.x = (time * 0.04) % 1.0;
+        waterMat.roughnessMap.offset.y = (time * 0.025) % 1.0;
+      }
       const vPos = waterGeo.attributes.position;
       for (let i = 0; i < vPos.count; i += 2) {
         const vx = vPos.getX(i);
