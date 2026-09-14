@@ -90,6 +90,20 @@ for w in expected_worlds:
         check(f"destinationWorlds.{w} initialized", f"destinationWorlds.{w} = " in index_html, f"destinationWorlds.{w} not initialized")
     check(f"Quick-dial button: btn-quick-{w}", f'id="btn-quick-{w}"' in index_html, f"Quick-dial button for {w} missing")
 
+# INV-07: Radial Biome Launcher Architecture & Interactive Controls
+check("Radial pull-tab element exists", 'id="radial-pull-tab"' in index_html, "Missing #radial-pull-tab")
+check("Radial backdrop element exists", 'id="radial-launcher-backdrop"' in index_html, "Missing #radial-launcher-backdrop")
+check("Radial arena container exists", 'id="radial-arena"' in index_html, "Missing #radial-arena")
+check("Radial central iris hub exists", 'id="radial-hub"' in index_html, "Missing #radial-hub")
+check("Radial hub engage button exists", 'id="radial-hub-engage"' in index_html, "Missing #radial-hub-engage")
+check("Radial nodes styled with radial-node class", 'class="quick-world-btn radial-node' in index_html, "Missing radial-node class")
+check("JS function toggleRadialLauncher", 'function toggleRadialLauncher(' in index_html, "Missing toggleRadialLauncher function")
+check("JS function updateRadialHub", 'function updateRadialHub(' in index_html, "Missing updateRadialHub function")
+check("JS function previewRadialWorld", 'function previewRadialWorld(' in index_html, "Missing previewRadialWorld function")
+check("JS function engageCurrentRadialWorld", 'function engageCurrentRadialWorld(' in index_html, "Missing engageCurrentRadialWorld function")
+check("JS function toggleRadialViewMode", 'function toggleRadialViewMode(' in index_html, "Missing toggleRadialViewMode function")
+check("KeyB radial launcher hotkey mapped", "code === 'KeyB'" in index_html, "KeyB hotkey missing from onKeyDown")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")

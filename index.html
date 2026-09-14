@@ -422,62 +422,413 @@
     color: var(--accent-yellow);
   }
 
-  /* QUICK DIAL PALETTE HUD WIDGET */
-  #quick-dial-hud {
-    position: absolute;
-    right: 1.5rem;
-    top: 68px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-right: 3px solid var(--accent-yellow);
-    border-radius: 6px;
-    padding: 0.75rem 1rem;
-    backdrop-filter: blur(8px);
-    z-index: 20;
-    max-width: 260px;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
+  /* RADIAL BACKDROP DISMISSAL */
+  #radial-launcher-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 7, 12, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 89;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
   }
+  #radial-launcher-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* STARGATE RADIAL LAUNCHER DRAWER */
+  #quick-dial-hud {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) translateX(100%);
+    background: radial-gradient(circle at center, rgba(13, 20, 34, 0.96) 0%, rgba(6, 10, 18, 0.98) 100%);
+    border: 1px solid rgba(27, 231, 255, 0.35);
+    border-right: none;
+    border-radius: 20px 0 0 20px;
+    padding: 1.1rem 1.25rem 1.25rem 1.25rem;
+    backdrop-filter: blur(18px);
+    z-index: 90;
+    width: 500px;
+    max-width: calc(100vw - 50px);
+    box-shadow: -15px 0 45px rgba(0, 0, 0, 0.75), inset 0 0 25px rgba(27, 231, 255, 0.06);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    user-select: none;
+  }
+  #quick-dial-hud.pulled-out {
+    transform: translateY(-50%) translateX(0);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(27, 231, 255, 0.25), inset 0 0 35px rgba(27, 231, 255, 0.12);
+  }
+
+  /* DOCKED PULL TAB (Always visible on right edge) */
+  #radial-pull-tab {
+    position: absolute;
+    left: -44px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    min-height: 140px;
+    background: linear-gradient(180deg, #111827 0%, #0c121e 60%, #06090f 100%);
+    border: 1px solid rgba(27, 231, 255, 0.45);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0.2rem;
+    cursor: pointer;
+    box-shadow: -8px 0 20px rgba(0, 0, 0, 0.65), inset 1px 0 8px rgba(27, 231, 255, 0.2);
+    transition: all 0.25s ease;
+    z-index: 92;
+  }
+  #radial-pull-tab:hover {
+    background: linear-gradient(180deg, #1f293d 0%, #111827 100%);
+    border-color: var(--accent-yellow);
+    box-shadow: -10px 0 25px rgba(245, 183, 0, 0.45), inset 2px 0 10px rgba(245, 183, 0, 0.3);
+  }
+  .pull-tab-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px var(--accent-cyan);
+    animation: tabPulse 2s infinite ease-in-out;
+  }
+  @keyframes tabPulse {
+    0%, 100% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px var(--accent-cyan); }
+  }
+  .pull-tab-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .pull-tab-chevron {
+    font-size: 0.75rem;
+    color: var(--accent-yellow);
+    transition: transform 0.35s ease;
+  }
+  #quick-dial-hud.pulled-out .pull-tab-chevron {
+    transform: rotate(180deg);
+    color: var(--accent-cyan);
+  }
+  .pull-tab-key {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    letter-spacing: 0.5px;
+  }
+
+  /* RADIAL LAUNCHER HEADER */
   .quick-dial-title {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 1.5px;
     color: var(--accent-yellow);
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
   }
-  .quick-world-btn {
+  .launcher-header-actions {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    width: 100%;
-    background: rgba(26, 32, 44, 0.7);
+    gap: 0.5rem;
+  }
+  .view-mode-btn, .close-drawer-btn {
+    background: rgba(26, 32, 44, 0.8);
     border: 1px solid var(--panel-border);
-    color: var(--text-primary);
-    padding: 0.45rem 0.75rem;
-    margin-bottom: 0.35rem;
+    color: var(--text-secondary);
     border-radius: 4px;
-    font-size: 0.78rem;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.68rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
-    text-align: left;
   }
-  .quick-world-btn:hover {
-    transform: translateX(-4px);
+  .view-mode-btn:hover, .close-drawer-btn:hover {
+    color: #fff;
+    border-color: var(--accent-cyan);
+  }
+
+  /* ORBITAL ARENA CONTAINER */
+  #radial-arena {
+    position: relative;
+    width: 440px;
+    height: 440px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* BACKGROUND SVG ORBITAL TRACKS */
+  .orbital-track-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .orbital-ring {
+    fill: none;
+    stroke: rgba(27, 231, 255, 0.18);
+    stroke-width: 1.2;
+    stroke-dasharray: 4 6;
+  }
+  .orbital-ring-outer {
+    fill: none;
+    stroke: rgba(245, 183, 0, 0.15);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 8;
+  }
+  .orbital-axis {
+    stroke: rgba(255, 255, 255, 0.07);
+    stroke-width: 1;
+  }
+
+  /* CENTRAL STARGATE IRIS HUB */
+  #radial-hub {
+    position: absolute;
+    width: 138px;
+    height: 138px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(18, 28, 48, 0.98) 0%, rgba(8, 12, 22, 0.98) 85%, rgba(27, 231, 255, 0.2) 100%);
+    border: 2px solid var(--accent-cyan);
+    box-shadow: 0 0 25px rgba(27, 231, 255, 0.35), inset 0 0 20px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
+    text-align: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+  #radial-hub-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px currentColor;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+  }
+  #radial-hub-name {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.15;
+    letter-spacing: 0.8px;
+    max-width: 125px;
+    margin-bottom: 2px;
+  }
+  #radial-hub-telemetry {
+    font-size: 0.58rem;
+    font-family: monospace;
+    color: var(--accent-yellow);
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    max-width: 125px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #radial-hub-engage {
+    background: linear-gradient(135deg, rgba(27, 231, 255, 0.25) 0%, rgba(245, 183, 0, 0.2) 100%);
+    border: 1px solid var(--accent-cyan);
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 10px rgba(27, 231, 255, 0.2);
+  }
+  #radial-hub-engage:hover {
+    background: var(--accent-cyan);
+    color: #000;
+    box-shadow: 0 0 18px var(--accent-cyan);
+    transform: scale(1.05);
+  }
+
+  /* RADIAL SATELLITE NODES */
+  .radial-node {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1.5px solid var(--node-color, var(--panel-border));
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.22s ease, background 0.2s;
+    z-index: 5;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    transform: translate(calc(var(--cx) * 1px), calc(var(--cy) * 1px));
+  }
+  .radial-node:hover {
+    transform: translate(calc(var(--cx) * 1px), calc(var(--cy) * 1px)) scale(1.24);
+    box-shadow: 0 0 18px var(--node-color, #fff), inset 0 0 8px var(--node-color, #fff);
     border-color: #fff;
+    z-index: 15;
   }
-  .quick-world-btn.active {
-    box-shadow: 0 0 12px currentColor;
+  .radial-node.active {
+    background: var(--node-color, var(--accent-cyan));
+    color: #000;
+    box-shadow: 0 0 20px var(--node-color, var(--accent-cyan)), 0 0 35px var(--node-color, var(--accent-cyan));
+    border-color: #fff;
     font-weight: 900;
+    transform: translate(calc(var(--cx) * 1px), calc(var(--cy) * 1px)) scale(1.18);
+    z-index: 8;
   }
+  .radial-node.active::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1.5px dashed var(--node-color, var(--accent-cyan));
+    animation: ringRotate 8s linear infinite;
+  }
+  @keyframes ringRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .radial-node .node-name {
+    display: none;
+  }
+  .radial-node .node-idx {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
+
+  /* TOOLTIP ON HOVER */
+  .radial-node .radial-tooltip {
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(8, 12, 20, 0.95);
+    border: 1px solid var(--node-color, var(--accent-cyan));
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 25;
+  }
+  .radial-node:hover .radial-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
   .world-swatch {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     flex-shrink: 0;
+    display: none;
+  }
+
+  /* LIST MODE TOGGLE */
+  #radial-arena.list-mode {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    padding-right: 0.35rem;
+    gap: 0.35rem;
+  }
+  #radial-arena.list-mode .orbital-track-svg,
+  #radial-arena.list-mode #radial-hub {
+    display: none;
+  }
+  #radial-arena.list-mode .radial-node {
+    position: static;
+    transform: none;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    padding: 0.45rem 0.75rem;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    background: rgba(26, 32, 44, 0.7);
+    border: 1px solid var(--panel-border);
+    color: var(--text-primary);
+  }
+  #radial-arena.list-mode .radial-node:hover {
+    transform: translateX(-4px);
+    border-color: #fff;
+  }
+  #radial-arena.list-mode .radial-node.active {
+    box-shadow: 0 0 12px currentColor;
+    font-weight: 900;
+  }
+  #radial-arena.list-mode .radial-node.active::after {
+    display: none;
+  }
+  #radial-arena.list-mode .radial-node .world-swatch {
+    display: block;
+  }
+  #radial-arena.list-mode .radial-node .node-name {
+    display: inline;
+  }
+  #radial-arena.list-mode .radial-node .node-idx {
+    display: inline;
+  }
+  #radial-arena.list-mode .radial-node .radial-tooltip {
+    display: none;
+  }
+
+  @media (max-width: 540px) {
+    #quick-dial-hud {
+      width: calc(100vw - 44px);
+      padding: 0.75rem 0.5rem;
+    }
+    #radial-arena {
+      width: 320px;
+      height: 320px;
+      transform: scale(0.72);
+      transform-origin: center center;
+    }
   }
 
   /* FULLSCREEN DIMENSIONAL WARP TRANSIT FLASH */
@@ -933,6 +1284,9 @@
   body.ui-hidden #quick-dial-hud {
     display: none !important;
   }
+  body.ui-hidden #radial-launcher-backdrop {
+    display: none !important;
+  }
   body.ui-hidden #waypoint-bar {
     display: none !important;
   }
@@ -1133,80 +1487,157 @@
     </div>
   </div>
 
-  <!-- QUICK DIAL HUD WIDGET -->
-  <div id="quick-dial-hud">
-    <div class="quick-dial-title">
-      <span>⚡ GATEWAY DESTINATIONS</span>
-      <span style="cursor: pointer;" onclick="openTerminalModal()" title="Open Terminal">🖥️ [E]</span>
+  <!-- RADIAL BACKDROP DISMISSAL -->
+  <div id="radial-launcher-backdrop" onclick="toggleRadialLauncher(false)"></div>
+
+  <!-- QUICK DIAL RADIAL LAUNCHER HUD WIDGET -->
+  <div id="quick-dial-hud" class="radial-launcher">
+    <!-- DOCKED PULL-OUT HANDLE TAB (Always visible on right screen edge) -->
+    <div id="radial-pull-tab" onclick="toggleRadialLauncher()" title="Toggle Biome Radial Launcher [B]">
+      <div class="pull-tab-indicator"></div>
+      <div class="pull-tab-label">
+        <span class="pull-tab-glyph">☫</span>
+        <span>BIOMES</span>
+      </div>
+      <div class="pull-tab-chevron">◀</div>
+      <span class="pull-tab-key">[B]</span>
     </div>
-    <button class="quick-world-btn active" id="btn-quick-aquifer" onclick="dialGateway('aquifer')">
-      <span class="world-swatch" style="background: #1be7ff;"></span>
-      <span>01. Sub-Aquifer (Origin)</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-desert" onclick="dialGateway('desert')">
-      <span class="world-swatch" style="background: #ff9e1b;"></span>
-      <span>02. Kalahari Desert</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-mountain" onclick="dialGateway('mountain')">
-      <span class="world-swatch" style="background: #00e5ff;"></span>
-      <span>03. Glacial Summit</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-city" onclick="dialGateway('city')">
-      <span class="world-swatch" style="background: #ff007f;"></span>
-      <span>04. Neo-Metropolis</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-stonehenge" onclick="dialGateway('stonehenge')">
-      <span class="world-swatch" style="background: #10b981;"></span>
-      <span>05. Megalithic Ruin</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-island" onclick="dialGateway('island')">
-      <span class="world-swatch" style="background: #06b6d4;"></span>
-      <span>06. Tropical Atoll</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-space" onclick="dialGateway('space')">
-      <span class="world-swatch" style="background: #7c3aed;"></span>
-      <span>07. Orbital Station</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-volcano" onclick="dialGateway('volcano')">
-      <span class="world-swatch" style="background: #ef4444;"></span>
-      <span>08. Obsidian Caldera</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-biolum" onclick="dialGateway('biolum')">
-      <span class="world-swatch" style="background: #10b981;"></span>
-      <span>09. Bioluminescent Grove</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-abyss" onclick="dialGateway('abyss')">
-      <span class="world-swatch" style="background: #0284c7;"></span>
-      <span>10. Sunken Citadel</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-mars" onclick="dialGateway('mars')">
-      <span class="world-swatch" style="background: #ea580c;"></span>
-      <span>11. Mars Canyonlands</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-crystal" onclick="dialGateway('crystal')">
-      <span class="world-swatch" style="background: #c084fc;"></span>
-      <span>12. Prismatic Spires</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-swamp" onclick="dialGateway('swamp')">
-      <span class="world-swatch" style="background: #84cc16;"></span>
-      <span>13. Cypress Bayou</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-cavern" onclick="dialGateway('cavern')">
-      <span class="world-swatch" style="background: #818cf8;"></span>
-      <span>14. Amethyst Vault</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-acid" onclick="dialGateway('acid')">
-      <span class="world-swatch" style="background: #eab308;"></span>
-      <span>15. Chemical Sump</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-taiga" onclick="dialGateway('taiga')">
-      <span class="world-swatch" style="background: #059669;"></span>
-      <span>16. Boreal Taiga</span>
-    </button>
-    <button class="quick-world-btn" id="btn-quick-sky" onclick="dialGateway('sky')">
-      <span class="world-swatch" style="background: #38bdf8;"></span>
-      <span>17. Aether Reach</span>
-    </button>
+
+    <!-- LAUNCHER HEADER -->
+    <div class="quick-dial-title">
+      <span>⚡ STARGATE RADIAL LAUNCHER</span>
+      <div class="launcher-header-actions">
+        <button class="view-mode-btn" id="radialViewModeBtn" onclick="toggleRadialViewMode()" title="Toggle Radial / List View">VIEW: ☰ LIST</button>
+        <button class="view-mode-btn" onclick="openTerminalModal()" title="Open Terminal Console">🖥️ [E]</button>
+        <button class="close-drawer-btn" onclick="toggleRadialLauncher(false)" title="Close Launcher [ESC]">✕</button>
+      </div>
+    </div>
+
+    <!-- RADIAL ORBITAL ARENA -->
+    <div id="radial-arena">
+      <!-- BACKGROUND ORBITAL TRACK SVG -->
+      <svg class="orbital-track-svg" viewBox="0 0 440 440">
+        <circle cx="220" cy="220" r="108" class="orbital-ring" />
+        <circle cx="220" cy="220" r="184" class="orbital-ring-outer" />
+        <line x1="220" y1="20" x2="220" y2="420" class="orbital-axis" />
+        <line x1="20" y1="220" x2="420" y2="220" class="orbital-axis" />
+      </svg>
+
+      <!-- CENTRAL COMMAND IRIS HUB -->
+      <div id="radial-hub">
+        <div id="radial-hub-swatch"></div>
+        <div id="radial-hub-name">01. SUB-AQUIFER</div>
+        <div id="radial-hub-telemetry">42.8 MPa // BASE</div>
+        <button id="radial-hub-engage" onclick="engageCurrentRadialWorld()">⚡ WARP</button>
+      </div>
+
+      <!-- 17 RADIAL SATELLITE NODES -->
+      <!-- Inner Orbit (01 - 08) -->
+      <button class="quick-world-btn radial-node active" id="btn-quick-aquifer" data-world="aquifer" onclick="dialGateway('aquifer')" onmouseenter="previewRadialWorld('aquifer', 0)" onmouseleave="resetRadialPreview()" style="--cx: 0; --cy: -108; --node-color: #1be7ff;" title="01. Sub-Aquifer (Origin)">
+        <span class="world-swatch" style="background: #1be7ff;"></span>
+        <span class="node-idx">01</span>
+        <span class="node-name">01. Sub-Aquifer (Origin)</span>
+        <span class="radial-tooltip">01. Sub-Aquifer (Origin)</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-desert" data-world="desert" onclick="dialGateway('desert')" onmouseenter="previewRadialWorld('desert', 1)" onmouseleave="resetRadialPreview()" style="--cx: 76; --cy: -76; --node-color: #ff9e1b;" title="02. Kalahari Desert">
+        <span class="world-swatch" style="background: #ff9e1b;"></span>
+        <span class="node-idx">02</span>
+        <span class="node-name">02. Kalahari Desert</span>
+        <span class="radial-tooltip">02. Kalahari Desert</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-mountain" data-world="mountain" onclick="dialGateway('mountain')" onmouseenter="previewRadialWorld('mountain', 2)" onmouseleave="resetRadialPreview()" style="--cx: 108; --cy: 0; --node-color: #00e5ff;" title="03. Glacial Summit">
+        <span class="world-swatch" style="background: #00e5ff;"></span>
+        <span class="node-idx">03</span>
+        <span class="node-name">03. Glacial Summit</span>
+        <span class="radial-tooltip">03. Glacial Summit</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-city" data-world="city" onclick="dialGateway('city')" onmouseenter="previewRadialWorld('city', 3)" onmouseleave="resetRadialPreview()" style="--cx: 76; --cy: 76; --node-color: #ff007f;" title="04. Neo-Metropolis">
+        <span class="world-swatch" style="background: #ff007f;"></span>
+        <span class="node-idx">04</span>
+        <span class="node-name">04. Neo-Metropolis</span>
+        <span class="radial-tooltip">04. Neo-Metropolis</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-stonehenge" data-world="stonehenge" onclick="dialGateway('stonehenge')" onmouseenter="previewRadialWorld('stonehenge', 4)" onmouseleave="resetRadialPreview()" style="--cx: 0; --cy: 108; --node-color: #10b981;" title="05. Megalithic Ruin">
+        <span class="world-swatch" style="background: #10b981;"></span>
+        <span class="node-idx">05</span>
+        <span class="node-name">05. Megalithic Ruin</span>
+        <span class="radial-tooltip">05. Megalithic Ruin</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-island" data-world="island" onclick="dialGateway('island')" onmouseenter="previewRadialWorld('island', 5)" onmouseleave="resetRadialPreview()" style="--cx: -76; --cy: 76; --node-color: #06b6d4;" title="06. Tropical Atoll">
+        <span class="world-swatch" style="background: #06b6d4;"></span>
+        <span class="node-idx">06</span>
+        <span class="node-name">06. Tropical Atoll</span>
+        <span class="radial-tooltip">06. Tropical Atoll</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-space" data-world="space" onclick="dialGateway('space')" onmouseenter="previewRadialWorld('space', 6)" onmouseleave="resetRadialPreview()" style="--cx: -108; --cy: 0; --node-color: #7c3aed;" title="07. Orbital Station">
+        <span class="world-swatch" style="background: #7c3aed;"></span>
+        <span class="node-idx">07</span>
+        <span class="node-name">07. Orbital Station</span>
+        <span class="radial-tooltip">07. Orbital Station</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-volcano" data-world="volcano" onclick="dialGateway('volcano')" onmouseenter="previewRadialWorld('volcano', 7)" onmouseleave="resetRadialPreview()" style="--cx: -76; --cy: -76; --node-color: #ef4444;" title="08. Obsidian Caldera">
+        <span class="world-swatch" style="background: #ef4444;"></span>
+        <span class="node-idx">08</span>
+        <span class="node-name">08. Obsidian Caldera</span>
+        <span class="radial-tooltip">08. Obsidian Caldera</span>
+      </button>
+
+      <!-- Outer Orbit (09 - 17) -->
+      <button class="quick-world-btn radial-node" id="btn-quick-biolum" data-world="biolum" onclick="dialGateway('biolum')" onmouseenter="previewRadialWorld('biolum', 8)" onmouseleave="resetRadialPreview()" style="--cx: 69; --cy: -171; --node-color: #10b981;" title="09. Bioluminescent Grove">
+        <span class="world-swatch" style="background: #10b981;"></span>
+        <span class="node-idx">09</span>
+        <span class="node-name">09. Bioluminescent Grove</span>
+        <span class="radial-tooltip">09. Bioluminescent Grove</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-abyss" data-world="abyss" onclick="dialGateway('abyss')" onmouseenter="previewRadialWorld('abyss', 9)" onmouseleave="resetRadialPreview()" style="--cx: 162; --cy: -86; --node-color: #0284c7;" title="10. Sunken Citadel">
+        <span class="world-swatch" style="background: #0284c7;"></span>
+        <span class="node-idx">10</span>
+        <span class="node-name">10. Sunken Citadel</span>
+        <span class="radial-tooltip">10. Sunken Citadel</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-mars" data-world="mars" onclick="dialGateway('mars')" onmouseenter="previewRadialWorld('mars', 10)" onmouseleave="resetRadialPreview()" style="--cx: 180; --cy: 38; --node-color: #ea580c;" title="11. Mars Canyonlands">
+        <span class="world-swatch" style="background: #ea580c;"></span>
+        <span class="node-idx">11</span>
+        <span class="node-name">11. Mars Canyonlands</span>
+        <span class="radial-tooltip">11. Mars Canyonlands</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-crystal" data-world="crystal" onclick="dialGateway('crystal')" onmouseenter="previewRadialWorld('crystal', 11)" onmouseleave="resetRadialPreview()" style="--cx: 113; --cy: 145; --node-color: #c084fc;" title="12. Prismatic Spires">
+        <span class="world-swatch" style="background: #c084fc;"></span>
+        <span class="node-idx">12</span>
+        <span class="node-name">12. Prismatic Spires</span>
+        <span class="radial-tooltip">12. Prismatic Spires</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-swamp" data-world="swamp" onclick="dialGateway('swamp')" onmouseenter="previewRadialWorld('swamp', 12)" onmouseleave="resetRadialPreview()" style="--cx: -6; --cy: 184; --node-color: #84cc16;" title="13. Cypress Bayou">
+        <span class="world-swatch" style="background: #84cc16;"></span>
+        <span class="node-idx">13</span>
+        <span class="node-name">13. Cypress Bayou</span>
+        <span class="radial-tooltip">13. Cypress Bayou</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-cavern" data-world="cavern" onclick="dialGateway('cavern')" onmouseenter="previewRadialWorld('cavern', 13)" onmouseleave="resetRadialPreview()" style="--cx: -123; --cy: 137; --node-color: #818cf8;" title="14. Amethyst Vault">
+        <span class="world-swatch" style="background: #818cf8;"></span>
+        <span class="node-idx">14</span>
+        <span class="node-name">14. Amethyst Vault</span>
+        <span class="radial-tooltip">14. Amethyst Vault</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-acid" data-world="acid" onclick="dialGateway('acid')" onmouseenter="previewRadialWorld('acid', 14)" onmouseleave="resetRadialPreview()" style="--cx: -182; --cy: 26; --node-color: #eab308;" title="15. Chemical Sump">
+        <span class="world-swatch" style="background: #eab308;"></span>
+        <span class="node-idx">15</span>
+        <span class="node-name">15. Chemical Sump</span>
+        <span class="radial-tooltip">15. Chemical Sump</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-taiga" data-world="taiga" onclick="dialGateway('taiga')" onmouseenter="previewRadialWorld('taiga', 15)" onmouseleave="resetRadialPreview()" style="--cx: -156; --cy: -98; --node-color: #059669;" title="16. Boreal Taiga">
+        <span class="world-swatch" style="background: #059669;"></span>
+        <span class="node-idx">16</span>
+        <span class="node-name">16. Boreal Taiga</span>
+        <span class="radial-tooltip">16. Boreal Taiga</span>
+      </button>
+      <button class="quick-world-btn radial-node" id="btn-quick-sky" data-world="sky" onclick="dialGateway('sky')" onmouseenter="previewRadialWorld('sky', 16)" onmouseleave="resetRadialPreview()" style="--cx: -57; --cy: -175; --node-color: #38bdf8;" title="17. Aether Reach">
+        <span class="world-swatch" style="background: #38bdf8;"></span>
+        <span class="node-idx">17</span>
+        <span class="node-name">17. Aether Reach</span>
+        <span class="radial-tooltip">17. Aether Reach</span>
+      </button>
+    </div>
   </div>
 
   <!-- INTERACTION PROMPT -->
@@ -1215,7 +1646,7 @@
   </div>
 
   <div id="controls-hint">
-    Click to <span>LOCK FPS</span> or Drag Mouse to <span>LOOK</span> | <span>[W,A,S,D]</span> Walk | <span>[SHIFT]</span> Sprint | <span>[1-7]</span> Worlds | <span>[F]</span> Flashlight | <span>[P]</span> Perf | <span>[H]</span> UI | <span>[E]</span> Inspect
+    Click to <span>LOCK FPS</span> or Drag Mouse to <span>LOOK</span> | <span>[W,A,S,D]</span> Walk | <span>[SHIFT]</span> Sprint | <span>[B]</span> Biomes | <span>[1-7]</span> Worlds | <span>[F]</span> Flashlight | <span>[P]</span> Perf | <span>[H]</span> UI | <span>[E]</span> Inspect
   </div>
 
   <div id="waypoint-bar">
@@ -3108,8 +3539,80 @@ function populateTerminalModal() {
   });
 }
 
+let isRadialLauncherOpen = false;
+
+function toggleRadialLauncher(forceState) {
+  const hud = document.getElementById('quick-dial-hud');
+  const backdrop = document.getElementById('radial-launcher-backdrop');
+  if (!hud) return;
+  isRadialLauncherOpen = (typeof forceState === 'boolean') ? forceState : !isRadialLauncherOpen;
+  if (isRadialLauncherOpen) {
+    hud.classList.add('pulled-out');
+    if (backdrop) backdrop.classList.add('active');
+    updateRadialHub(activeWorldKey);
+    playChevronTone(3);
+  } else {
+    hud.classList.remove('pulled-out');
+    if (backdrop) backdrop.classList.remove('active');
+  }
+}
+
+function updateRadialHub(worldKey) {
+  const w = WORLDS[worldKey];
+  if (!w) return;
+  const nameEl = document.getElementById('radial-hub-name');
+  const swatchEl = document.getElementById('radial-hub-swatch');
+  const atmosEl = document.getElementById('radial-hub-telemetry');
+  const engageBtn = document.getElementById('radial-hub-engage');
+  if (nameEl) nameEl.innerText = w.name.toUpperCase();
+  if (swatchEl) {
+    swatchEl.style.background = w.primaryColor;
+    swatchEl.style.boxShadow = `0 0 14px ${w.primaryColor}`;
+  }
+  if (atmosEl) atmosEl.innerText = `${w.atmosphere} // ${w.coordinates}`;
+  if (engageBtn) {
+    engageBtn.style.borderColor = w.primaryColor;
+    engageBtn.setAttribute('data-target', worldKey);
+  }
+}
+
+function previewRadialWorld(worldKey, soundIdx) {
+  updateRadialHub(worldKey);
+  if (typeof soundIdx === 'number') {
+    playChevronTone(soundIdx % 8);
+  }
+}
+
+function resetRadialPreview() {
+  updateRadialHub(activeWorldKey);
+}
+
+function engageCurrentRadialWorld() {
+  const engageBtn = document.getElementById('radial-hub-engage');
+  const targetKey = (engageBtn && engageBtn.getAttribute('data-target')) || activeWorldKey;
+  if (targetKey) {
+    toggleRadialLauncher(false);
+    triggerPortalTransit(targetKey);
+  }
+}
+
+function toggleRadialViewMode() {
+  const arena = document.getElementById('radial-arena');
+  const modeBtn = document.getElementById('radialViewModeBtn');
+  if (!arena || !modeBtn) return;
+  const isList = arena.classList.toggle('list-mode');
+  modeBtn.innerText = isList ? "VIEW: ☫ ORBIT" : "VIEW: ☰ LIST";
+}
+
 function dialGateway(worldKey) {
   if (!WORLDS[worldKey]) return;
+
+  // If already active and radial launcher is open, a repeat click engages warp immediately!
+  if (activeWorldKey === worldKey && isRadialLauncherOpen) {
+    toggleRadialLauncher(false);
+    triggerPortalTransit(worldKey);
+    return;
+  }
 
   // If currently in a foreign world, dialing initiates dimensional transit immediately!
   if (currentLocation !== 'base') {
@@ -3158,6 +3661,9 @@ function dialGateway(worldKey) {
     feedbackEl.innerText = `DIALING SEQUENCE INITIATED // LOCKING COORDINATES: ${activeWorldObj.coordinates}`;
     feedbackEl.style.color = 'var(--accent-yellow)';
   }
+
+  // Update Central Hub in Radial Launcher
+  updateRadialHub(worldKey);
 
   // 4. Chevron lock animation
   const chevs = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -19534,6 +20040,7 @@ function initThreeScene() {
   createTerminalConsole();
   populateTerminalModal();
   initDestinationWorlds();
+  updateRadialHub('aquifer');
   
   // Instantiate Base 20 Enhancements
   baseEnhancements = buildBaseEnhancements();
@@ -19736,8 +20243,26 @@ function onKeyDown(e) {
     }
   }
 
-  // Dismiss Modals with [Escape]
+  // Toggle Radial Biome Launcher [B]
+  if (code === 'KeyB' || key === 'b') {
+    if (!isTerminalModalOpen && !isLoreModalOpen) {
+      toggleRadialLauncher();
+      return;
+    }
+  }
+
+  // Engage Warp on [Enter] if Radial Launcher is open
+  if ((code === 'Enter' || key === 'enter') && isRadialLauncherOpen) {
+    engageCurrentRadialWorld();
+    return;
+  }
+
+  // Dismiss Modals or Radial Launcher with [Escape]
   if (code === 'Escape' || key === 'escape') {
+    if (isRadialLauncherOpen) {
+      toggleRadialLauncher(false);
+      return;
+    }
     if (isLoreModalOpen) closeLoreModal();
     if (isTerminalModalOpen) closeTerminalModal();
   }
