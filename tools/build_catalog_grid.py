@@ -218,7 +218,7 @@ html_content = f"""<!DOCTYPE html>
   <h1>WORLD KIT — SITE-44 SUB-AQUIFER RESEARCH COMPLEX</h1>
   <div class="subtitle">
     Monolithic Brutalist Retro-Industrial Subterranean Environment Generation Language.<br>
-    33 Reusable Precision Modular Production Assets, 7 PBR Material Families, Master Assembly &amp; Renders.
+    {len(assets)} Reusable Precision Modular Production Assets, 7 PBR Material Families, Master Assembly &amp; Renders.
   </div>
   <div class="nav-tabs" id="filters">
     <button class="tab-btn active" onclick="filterCategory('all')">ALL ASSETS ({len(assets)})</button>

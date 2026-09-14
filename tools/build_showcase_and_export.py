@@ -63,6 +63,7 @@ ASSET_CATEGORIES = {
     "WK_UTIL_PIPE_RUN_A_01": "utilities",
     # Hero
     "WK_HERO_CORE_A_01": "hero",
+    "WK_HERO_PORTAL_RING_A_01": "hero",
 }
 
 def load_master():
