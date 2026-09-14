@@ -435,6 +435,8 @@
     backdrop-filter: blur(8px);
     z-index: 20;
     max-width: 260px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
   }
   .quick-dial-title {
     font-size: 0.72rem;
@@ -1164,6 +1166,46 @@
     <button class="quick-world-btn" id="btn-quick-space" onclick="dialGateway('space')">
       <span class="world-swatch" style="background: #7c3aed;"></span>
       <span>07. Orbital Station</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-volcano" onclick="dialGateway('volcano')">
+      <span class="world-swatch" style="background: #ef4444;"></span>
+      <span>08. Obsidian Caldera</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-biolum" onclick="dialGateway('biolum')">
+      <span class="world-swatch" style="background: #10b981;"></span>
+      <span>09. Bioluminescent Grove</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-abyss" onclick="dialGateway('abyss')">
+      <span class="world-swatch" style="background: #0284c7;"></span>
+      <span>10. Sunken Citadel</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-mars" onclick="dialGateway('mars')">
+      <span class="world-swatch" style="background: #ea580c;"></span>
+      <span>11. Mars Canyonlands</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-crystal" onclick="dialGateway('crystal')">
+      <span class="world-swatch" style="background: #c084fc;"></span>
+      <span>12. Prismatic Spires</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-swamp" onclick="dialGateway('swamp')">
+      <span class="world-swatch" style="background: #84cc16;"></span>
+      <span>13. Cypress Bayou</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-cavern" onclick="dialGateway('cavern')">
+      <span class="world-swatch" style="background: #818cf8;"></span>
+      <span>14. Amethyst Vault</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-acid" onclick="dialGateway('acid')">
+      <span class="world-swatch" style="background: #eab308;"></span>
+      <span>15. Chemical Sump</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-taiga" onclick="dialGateway('taiga')">
+      <span class="world-swatch" style="background: #059669;"></span>
+      <span>16. Boreal Taiga</span>
+    </button>
+    <button class="quick-world-btn" id="btn-quick-sky" onclick="dialGateway('sky')">
+      <span class="world-swatch" style="background: #38bdf8;"></span>
+      <span>17. Aether Reach</span>
     </button>
   </div>
 
@@ -2805,6 +2847,196 @@ const WORLDS = {
     audioSubFreq: 36,
     audioHumFreq: 130,
     audioFilterFreq: 310
+  },
+  volcano: {
+    id: 'volcano',
+    name: 'Obsidian Rift // Caldera Ignis',
+    sector: 'WORLD: PYROCLASTIC TRENCH // MAGMA BASIN',
+    primaryColor: '#ef4444',
+    secondaryColor: '#f97316',
+    glowColorHex: 0xef4444,
+    chevronColorHex: 0xf59e0b,
+    icon: '🌋',
+    tag: 'BIOME: VOLCANIC CALDERA',
+    desc: 'Fractured basaltic crust coursing with superheated molten magma veins, active cinder cones, and drifting pyroclastic ash.',
+    atmosphere: 'SO2-CO2 HEAVY // TEMP: 412°C // PRESSURE: 2.1 ATM',
+    coordinates: 'VESUVIUS-EXO // RIFT-904',
+    speed: 1.4,
+    swirlArms: 6,
+    audioSubFreq: 38,
+    audioHumFreq: 90,
+    audioFilterFreq: 210
+  },
+  biolum: {
+    id: 'biolum',
+    name: 'Abyssal Grove // Pandora Glade',
+    sector: 'WORLD: XENO-MYCOLOGICAL CANOPY // LEVEL 03',
+    primaryColor: '#10b981',
+    secondaryColor: '#06b6d4',
+    glowColorHex: 0x10b981,
+    chevronColorHex: 0x34d399,
+    icon: '🍄',
+    tag: 'BIOME: BIOLUMINESCENT JUNGLE',
+    desc: 'Dense ancient twilight rain forest dominated by titanic glowing spore-emitting mushrooms and pulsating mycelial networks.',
+    atmosphere: 'N2-O2-SPORES // TEMP: 22.8°C // HUMIDITY: 98%',
+    coordinates: 'PROXIMA-B // MYCELIA-12',
+    speed: 0.8,
+    swirlArms: 4,
+    audioSubFreq: 48,
+    audioHumFreq: 115,
+    audioFilterFreq: 280
+  },
+  abyss: {
+    id: 'abyss',
+    name: 'Sunken Citadel // Oceanic Trench',
+    sector: 'WORLD: SUBMERGED PELAGIC // DEPTH 3,800M',
+    primaryColor: '#0284c7',
+    secondaryColor: '#0369a1',
+    glowColorHex: 0x0284c7,
+    chevronColorHex: 0x38bdf8,
+    icon: '🏛️',
+    tag: 'BIOME: SUBMERGED RUIN',
+    desc: 'Ancient sunken drowned temple citadel resting on the abyssal benthic plain flanked by hydrothermal sulfur smokers.',
+    atmosphere: 'SALINE HYDROSTATIC 38 MPa // TEMP: 2.4°C // AQUEOUS',
+    coordinates: 'MARIANA-DEEP // CITADEL-07',
+    speed: 0.9,
+    swirlArms: 5,
+    audioSubFreq: 32,
+    audioHumFreq: 85,
+    audioFilterFreq: 160
+  },
+  mars: {
+    id: 'mars',
+    name: 'Valles Marineris // Mars Canyonlands',
+    sector: 'WORLD: ARES BASIN // CANYON OUTPOST 04',
+    primaryColor: '#ea580c',
+    secondaryColor: '#c2410c',
+    glowColorHex: 0xea580c,
+    chevronColorHex: 0xfb923c,
+    icon: '🪐',
+    tag: 'BIOME: MARTIAN CANYON',
+    desc: 'Colossal iron-oxide canyon gorge flanked by stratified red sandstone plateaus, scientific sensor masts, and ferric dust storms.',
+    atmosphere: 'CO2: 95.3% // TEMP: -63.5°C // PRESSURE: 0.006 ATM',
+    coordinates: 'ARES-IV // MARINERIS-01',
+    speed: 1.0,
+    swirlArms: 4,
+    audioSubFreq: 44,
+    audioHumFreq: 102,
+    audioFilterFreq: 220
+  },
+  crystal: {
+    id: 'crystal',
+    name: 'Prismatic Shards // Caelum Geode',
+    sector: 'WORLD: SILICATE MONOLITH // REFRACTIVE FIELD',
+    primaryColor: '#c084fc',
+    secondaryColor: '#a855f7',
+    glowColorHex: 0xc084fc,
+    chevronColorHex: 0xe9d5ff,
+    icon: '🔮',
+    tag: 'BIOME: CRYSTALLINE SPIRES',
+    desc: 'Towering geometric quartz and amethyst crystal obelisks protruding from vitreous salt flats under a vibrant ultraviolet sky.',
+    atmosphere: 'O2-AR // TEMP: -18.2°C // PIEZOELECTRIC: +18.4 kV',
+    coordinates: 'SIRIUS-B // QUARTZ-77',
+    speed: 1.3,
+    swirlArms: 7,
+    audioSubFreq: 55,
+    audioHumFreq: 155,
+    audioFilterFreq: 380
+  },
+  swamp: {
+    id: 'swamp',
+    name: 'Sunken Mire // Cypress Bayou',
+    sector: 'WORLD: MARSH BASIN // EXPEDITION PIER 09',
+    primaryColor: '#84cc16',
+    secondaryColor: '#65a30d',
+    glowColorHex: 0x84cc16,
+    chevronColorHex: 0xa3e635,
+    icon: '🌿',
+    tag: 'BIOME: WETLAND BAYOU',
+    desc: 'Murky cypress wetland channels tangled with mossy roots, stagnant duckweed waters, and glowing swamp gas wisps.',
+    atmosphere: 'CH4-RICH // TEMP: 31.0°C // HUMIDITY: 96%',
+    coordinates: 'DELTA-BAYOU // PEAT-44',
+    speed: 0.75,
+    swirlArms: 3,
+    audioSubFreq: 40,
+    audioHumFreq: 95,
+    audioFilterFreq: 190
+  },
+  cavern: {
+    id: 'cavern',
+    name: 'Sub-Crustal Amethyst Vault // Dripstone',
+    sector: 'WORLD: LITHO-CAVERN // DEPTH 12,000M',
+    primaryColor: '#818cf8',
+    secondaryColor: '#6366f1',
+    glowColorHex: 0x818cf8,
+    chevronColorHex: 0xa5b4fc,
+    icon: '🪨',
+    tag: 'BIOME: SUBTERRANEAN GEODE',
+    desc: 'Immense underground limestone cathedral adorned with calcite stalactites, glowing water pools, and amethyst cavities.',
+    atmosphere: 'N2-CO2 // TEMP: 18.0°C // PRESSURE: 3.2 ATM',
+    coordinates: 'CRUSTAL-LOW // VAULT-02',
+    speed: 0.85,
+    swirlArms: 5,
+    audioSubFreq: 34,
+    audioHumFreq: 105,
+    audioFilterFreq: 240
+  },
+  acid: {
+    id: 'acid',
+    name: 'Sector 99 Wasteland // Chemical Sump',
+    sector: 'WORLD: INDUSTRIAL SLAG // CONTAMINATED ZONE',
+    primaryColor: '#eab308',
+    secondaryColor: '#ca8a04',
+    glowColorHex: 0xeab308,
+    chevronColorHex: 0xfacc15,
+    icon: '☣️',
+    tag: 'BIOME: TOXIC SUMP',
+    desc: 'Corroded industrial chemical runoff wasteland with bubbling neon-lime acid pools, venting exhaust stacks, and hazard drums.',
+    atmosphere: 'NOXIOUS ACID VAPOR // TEMP: 58.4°C // pH: 1.2',
+    coordinates: 'OUT-ZONE // SUMP-99',
+    speed: 1.35,
+    swirlArms: 5,
+    audioSubFreq: 50,
+    audioHumFreq: 138,
+    audioFilterFreq: 320
+  },
+  taiga: {
+    id: 'taiga',
+    name: 'Boreal Taiga // Whispering Pines',
+    sector: 'WORLD: SUB-ARCTIC PINE BASIN // SECTOR 16',
+    primaryColor: '#059669',
+    secondaryColor: '#047857',
+    glowColorHex: 0x059669,
+    chevronColorHex: 0x10b981,
+    icon: '🌲',
+    tag: 'BIOME: HIGHLAND TAIGA',
+    desc: 'Dense coniferous pine forest carpeted in soft needles and granite glacial boulders beneath crisp sub-arctic morning skies.',
+    atmosphere: 'O2: 21.2% // TEMP: 7.4°C // BAROMETRIC: 1.01 ATM',
+    coordinates: 'BOREALIS // PINE-104',
+    speed: 0.9,
+    swirlArms: 4,
+    audioSubFreq: 42,
+    audioHumFreq: 98,
+    audioFilterFreq: 200
+  },
+  sky: {
+    id: 'sky',
+    name: 'Aether Reach // Floating Sky Islands',
+    sector: 'WORLD: STRATOSPHERIC REACH // ARCHIPELAGO',
+    primaryColor: '#38bdf8',
+    secondaryColor: '#0ea5e9',
+    glowColorHex: 0x38bdf8,
+    chevronColorHex: 0x7dd3fc,
+    icon: '☁️',
+    tag: 'BIOME: FLOATING ARCHIPELAGO',
+    desc: 'Gravity-defying aerolite sky islands floating high above a dense sea of clouds, connected by solar bridges and waterfalls.',
+    atmosphere: 'STRATOSPHERIC HIGH // TEMP: -12.0°C // ALT: 14,000M',
+    coordinates: 'AETHER-HIGH // SKY-01',
+    speed: 1.2,
+    swirlArms: 6,
+    audioSubFreq: 46,
+    audioHumFreq: 140,
+    audioFilterFreq: 360
   }
 };
 
@@ -3723,6 +3955,191 @@ function getGlobalGrassPBR() {
     _cachedGrassPBR = { normalMap, roughnessMap };
   }
   return _cachedGrassPBR;
+}
+
+let _cachedMagmaPBR = null;
+function getGlobalMagmaPBR() {
+  if (!_cachedMagmaPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const crack1 = (Math.abs(Math.sin(u * 24.0 + Math.cos(v * 16.0) * 1.5)) > 0.88) ? -0.6 : 0.0;
+      const crack2 = (Math.abs(Math.cos(u * 14.0 - v * 28.0)) > 0.90) ? -0.5 : 0.0;
+      const basaltGrain = (Math.sin(u * 80.0) * Math.cos(v * 80.0)) * 0.15;
+      return crack1 + crack2 + basaltGrain;
+    }, 3.2);
+    normalMap.repeat.set(12, 12);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      const isCrack = (Math.abs(Math.sin(u * 24.0 + Math.cos(v * 16.0) * 1.5)) > 0.88);
+      return isCrack ? 0.2 : 0.88;
+    });
+    roughnessMap.repeat.set(12, 12);
+    _cachedMagmaPBR = { normalMap, roughnessMap };
+  }
+  return _cachedMagmaPBR;
+}
+
+let _cachedFungusPBR = null;
+function getGlobalFungusPBR() {
+  if (!_cachedFungusPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const mounds = (Math.sin(u * 32.0) * Math.cos(v * 32.0) + Math.sin(u * 64.0 + v * 48.0) * 0.4) * 0.35;
+      const micro = Math.sin(u * 128.0) * Math.sin(v * 128.0) * 0.12;
+      return mounds + micro;
+    }, 2.6);
+    normalMap.repeat.set(16, 16);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.65 + Math.sin(u * 40.0) * 0.12;
+    });
+    roughnessMap.repeat.set(16, 16);
+    _cachedFungusPBR = { normalMap, roughnessMap };
+  }
+  return _cachedFungusPBR;
+}
+
+let _cachedAbyssMarblePBR = null;
+function getGlobalAbyssMarblePBR() {
+  if (!_cachedAbyssMarblePBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const flute = Math.sin(u * 36.0 * Math.PI) * 0.25;
+      const erosion = (Math.sin(u * 50.0) * Math.cos(v * 50.0)) * 0.2;
+      const barnacle = (Math.abs(Math.sin(u * 90.0) * Math.cos(v * 90.0)) > 0.82) ? 0.35 : 0.0;
+      return flute + erosion + barnacle;
+    }, 2.8);
+    normalMap.repeat.set(8, 8);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.35 + Math.sin(u * 18.0 + v * 18.0) * 0.15;
+    });
+    roughnessMap.repeat.set(8, 8);
+    _cachedAbyssMarblePBR = { normalMap, roughnessMap };
+  }
+  return _cachedAbyssMarblePBR;
+}
+
+let _cachedFerricRockPBR = null;
+function getGlobalFerricRockPBR() {
+  if (!_cachedFerricRockPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const strata = Math.sin(v * 38.0) * 0.45;
+      const scour = Math.sin(u * 120.0 + v * 12.0) * 0.12;
+      const rockPits = (Math.abs(Math.sin(u * 44.0 + v * 28.0)) > 0.85) ? -0.3 : 0.0;
+      return strata + scour + rockPits;
+    }, 3.0);
+    normalMap.repeat.set(6, 18);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.92 + Math.sin(u * 30.0 + v * 30.0) * 0.06;
+    });
+    roughnessMap.repeat.set(6, 18);
+    _cachedFerricRockPBR = { normalMap, roughnessMap };
+  }
+  return _cachedFerricRockPBR;
+}
+
+let _cachedPrismaticCrystalPBR = null;
+function getGlobalPrismaticCrystalPBR() {
+  if (!_cachedPrismaticCrystalPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const facet1 = (Math.sin(u * 48.0 + v * 24.0) > 0.0) ? 0.35 : -0.35;
+      const facet2 = (Math.cos(u * 24.0 - v * 48.0) > 0.0) ? 0.35 : -0.35;
+      return facet1 + facet2;
+    }, 3.5);
+    normalMap.repeat.set(12, 12);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.05 + Math.abs(Math.sin(u * 16.0)) * 0.05;
+    });
+    roughnessMap.repeat.set(12, 12);
+    _cachedPrismaticCrystalPBR = { normalMap, roughnessMap };
+  }
+  return _cachedPrismaticCrystalPBR;
+}
+
+let _cachedPeatPBR = null;
+function getGlobalPeatPBR() {
+  if (!_cachedPeatPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const mud = (Math.sin(u * 28.0 + v * 24.0) + Math.cos(u * 16.0 - v * 32.0)) * 0.35;
+      const roots = (Math.abs(Math.sin(u * 60.0 + v * 15.0)) > 0.85) ? 0.3 : 0.0;
+      return mud + roots;
+    }, 2.5);
+    normalMap.repeat.set(16, 16);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      const wetPool = Math.sin(u * 8.0) * Math.cos(v * 8.0);
+      return (wetPool > 0.25) ? 0.08 : 0.82;
+    });
+    roughnessMap.repeat.set(16, 16);
+    _cachedPeatPBR = { normalMap, roughnessMap };
+  }
+  return _cachedPeatPBR;
+}
+
+let _cachedLimestonePBR = null;
+function getGlobalLimestonePBR() {
+  if (!_cachedLimestonePBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const flowstone = Math.sin(u * 32.0 + Math.sin(v * 12.0) * 0.6) * 0.45;
+      const calcite = (Math.sin(u * 110.0) * Math.cos(v * 110.0)) * 0.15;
+      return flowstone + calcite;
+    }, 2.8);
+    normalMap.repeat.set(8, 16);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.32 + Math.abs(Math.sin(v * 24.0)) * 0.2;
+    });
+    roughnessMap.repeat.set(8, 16);
+    _cachedLimestonePBR = { normalMap, roughnessMap };
+  }
+  return _cachedLimestonePBR;
+}
+
+let _cachedSlagPBR = null;
+function getGlobalSlagPBR() {
+  if (!_cachedSlagPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const pits = (Math.sin(u * 64.0) * Math.sin(v * 64.0) > 0.4) ? -0.45 : 0.0;
+      const rust = (Math.sin(u * 120.0 + v * 60.0) + Math.cos(u * 60.0 - v * 120.0)) * 0.2;
+      return pits + rust;
+    }, 2.7);
+    normalMap.repeat.set(14, 14);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.72 + Math.sin(u * 36.0) * 0.15;
+    });
+    roughnessMap.repeat.set(14, 14);
+    _cachedSlagPBR = { normalMap, roughnessMap };
+  }
+  return _cachedSlagPBR;
+}
+
+let _cachedPineTurfPBR = null;
+function getGlobalPineTurfPBR() {
+  if (!_cachedPineTurfPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const needles = (Math.sin(u * 120.0 + v * 70.0) + Math.cos(u * 80.0 - v * 110.0)) * 0.35;
+      const soil = Math.sin(u * 22.0) * Math.cos(v * 22.0) * 0.2;
+      return needles + soil;
+    }, 2.9);
+    normalMap.repeat.set(18, 18);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.86 + Math.sin(u * 28.0) * 0.08;
+    });
+    roughnessMap.repeat.set(18, 18);
+    _cachedPineTurfPBR = { normalMap, roughnessMap };
+  }
+  return _cachedPineTurfPBR;
+}
+
+let _cachedAerolitePBR = null;
+function getGlobalAerolitePBR() {
+  if (!_cachedAerolitePBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      const vesicles = (Math.sin(u * 50.0) * Math.cos(v * 50.0) < -0.35) ? -0.45 : 0.08;
+      const stoneGrain = Math.sin(u * 100.0) * Math.sin(v * 100.0) * 0.15;
+      return vesicles + stoneGrain;
+    }, 3.0);
+    normalMap.repeat.set(12, 12);
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.85 + Math.sin(u * 20.0) * 0.08;
+    });
+    roughnessMap.repeat.set(12, 12);
+    _cachedAerolitePBR = { normalMap, roughnessMap };
+  }
+  return _cachedAerolitePBR;
 }
 
 
@@ -17608,6 +18025,1203 @@ function buildSpaceWorld() {
   };
 }
 
+// =============================================================
+// TEN NEW HIGH-REALISM EXPLORATION BIOMES
+// =============================================================
+
+// -------------------------------------------------------------
+// BIOME 08: VOLCANIC CALDERA (OBSIDIAN RIFT // CALDERA IGNIS)
+// -------------------------------------------------------------
+function buildVolcanoWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0xef4444);
+  group.add(returnGate.group);
+
+  // 1. Fractured Basalt Caldera Floor with Magma Fissures
+  const terrGeo = new THREE.PlaneGeometry(260, 260, 64, 64);
+  terrGeo.rotateX(-Math.PI / 2);
+  const pos = terrGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const dDais = Math.hypot(x, z - (-12));
+    const flatDais = Math.min(1.0, Math.max(0.0, (dDais - 7.5) / 12));
+    const dCrater = Math.hypot(x, z - 25);
+    const craterDepression = (dCrater < 45) ? -Math.cos((dCrater / 45) * Math.PI) * 4.5 - 2.0 : 0.0;
+    const ridgeNoise = Math.sin(x * 0.06) * 3.5 + Math.cos(z * 0.05) * 3.0;
+    pos.setY(i, (craterDepression + ridgeNoise) * flatDais);
+  }
+  terrGeo.computeVertexNormals();
+  const magmaPBR = getGlobalMagmaPBR();
+  const terrMat = new THREE.MeshStandardMaterial({
+    color: 0x1c1917,
+    roughness: 0.85,
+    metalness: 0.15,
+    normalMap: magmaPBR.normalMap,
+    roughnessMap: magmaPBR.roughnessMap
+  });
+  terrMat.normalScale.set(1.4, 1.4);
+  const terrMesh = new THREE.Mesh(terrGeo, terrMat);
+  terrMesh.receiveShadow = true;
+  group.add(terrMesh);
+
+  // 2. Molten Lava Pool in Caldera Depression
+  const lavaGeo = new THREE.PlaneGeometry(90, 90, 24, 24);
+  lavaGeo.rotateX(-Math.PI / 2);
+  const lavaMat = new THREE.MeshStandardMaterial({
+    color: 0xff3b00,
+    emissive: 0xff4500,
+    emissiveIntensity: 2.0,
+    roughness: 0.22,
+    metalness: 0.04
+  });
+  const lavaMesh = new THREE.Mesh(lavaGeo, lavaMat);
+  lavaMesh.position.set(0, -5.8, 25);
+  group.add(lavaMesh);
+
+  // 3. Hexagonal Columnar Basalt Formations
+  const basaltMat = new THREE.MeshStandardMaterial({ color: 0x292524, roughness: 0.8, metalness: 0.2 });
+  for (let i = 0; i < 18; i++) {
+    const colH = 4.0 + Math.sin(i * 1.7) * 3.0;
+    const colGeo = new THREE.CylinderGeometry(1.2, 1.3, colH, 6);
+    const colMesh = new THREE.Mesh(colGeo, basaltMat);
+    const angle = i * 0.38 + 0.4;
+    const dist = 32.0 + (i % 3) * 6.0;
+    colMesh.position.set(Math.cos(angle) * dist, colH * 0.5 - 2.0, 25 + Math.sin(angle) * dist);
+    colMesh.castShadow = true;
+    colMesh.receiveShadow = true;
+    group.add(colMesh);
+  }
+
+  // 4. Volcanic Cinder Spire Cones
+  const coneMat = new THREE.MeshStandardMaterial({ color: 0x1f1d1d, roughness: 0.9, metalness: 0.1 });
+  const conePositions = [[-45, 12, 10], [55, 16, 35], [-25, 14, 65], [40, 10, -35]];
+  conePositions.forEach(([cx, ch, cz]) => {
+    const coneGeo = new THREE.ConeGeometry(ch * 0.9, ch, 16);
+    const cMesh = new THREE.Mesh(coneGeo, coneMat);
+    cMesh.position.set(cx, ch * 0.5 - 2.0, cz);
+    cMesh.castShadow = true;
+    group.add(cMesh);
+  });
+
+  // 5. Drifting Pyroclastic Ash & Embers
+  const emberCount = 300;
+  const emberGeo = new THREE.BufferGeometry();
+  const emberPos = new Float32Array(emberCount * 3);
+  for (let i = 0; i < emberCount; i++) {
+    emberPos[i * 3] = (Math.random() - 0.5) * 140;
+    emberPos[i * 3 + 1] = Math.random() * 25;
+    emberPos[i * 3 + 2] = (Math.random() - 0.5) * 140;
+  }
+  emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPos, 3));
+  const emberMat = new THREE.PointsMaterial({
+    color: 0xff7722,
+    size: 0.5,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  const emberPoints = new THREE.Points(emberGeo, emberMat);
+  group.add(emberPoints);
+
+  // 6. Lighting
+  const sun = new THREE.DirectionalLight(0xff6b35, 2.2);
+  sun.position.set(45, 65, -35);
+  sun.castShadow = true;
+  sun.shadow.normalBias = 0.02;
+  group.add(sun);
+
+  const hemi = new THREE.HemisphereLight(0xff4500, 0x1c1917, 0.85);
+  group.add(hemi);
+
+  const lavaLight = new THREE.PointLight(0xff5500, 4.0, 75);
+  lavaLight.position.set(0, 1.5, 25);
+  group.add(lavaLight);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x450a0a,
+    fogDensity: 0.014,
+    bgColor: 0x450a0a,
+    update: (time, delta) => {
+      const ep = emberGeo.attributes.position.array;
+      for (let i = 0; i < emberCount * 3; i += 3) {
+        ep[i + 1] += delta * 3.2;
+        ep[i] += Math.sin(time * 2.0 + i) * delta * 0.8;
+        if (ep[i + 1] > 28.0) {
+          ep[i + 1] = 0.5;
+          ep[i] = (Math.random() - 0.5) * 140;
+          ep[i + 2] = (Math.random() - 0.5) * 140;
+        }
+      }
+      emberGeo.attributes.position.needsUpdate = true;
+      lavaMat.emissiveIntensity = 1.8 + Math.sin(time * 3.5) * 0.4;
+      returnGate.disc.rotation.z += delta * 0.35;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 09: BIOLUMINESCENT DEEP FOREST (ABYSSAL GROVE // PANDORA GLADE)
+// -------------------------------------------------------------
+function buildBiolumWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0x10b981);
+  group.add(returnGate.group);
+
+  // 1. Organic Humus Terrain
+  const terrGeo = new THREE.PlaneGeometry(260, 260, 64, 64);
+  terrGeo.rotateX(-Math.PI / 2);
+  const pos = terrGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const dDais = Math.hypot(x, z - (-12));
+    const flatDais = Math.min(1.0, Math.max(0.0, (dDais - 7.5) / 12));
+    const undul = Math.sin(x * 0.04) * 2.8 + Math.cos(z * 0.04) * 2.5 + Math.sin((x + z) * 0.08) * 1.2;
+    pos.setY(i, undul * flatDais);
+  }
+  terrGeo.computeVertexNormals();
+  const fungusPBR = getGlobalFungusPBR();
+  const terrMat = new THREE.MeshStandardMaterial({
+    color: 0x052e16,
+    roughness: 0.75,
+    metalness: 0.08,
+    normalMap: fungusPBR.normalMap,
+    roughnessMap: fungusPBR.roughnessMap
+  });
+  const terrMesh = new THREE.Mesh(terrGeo, terrMat);
+  terrMesh.receiveShadow = true;
+  group.add(terrMesh);
+
+  // 2. Giant Bioluminescent Umbrella Mushrooms
+  const stalkMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.65, metalness: 0.1 });
+  const capMat = new THREE.MeshStandardMaterial({
+    color: 0x10b981,
+    emissive: 0x059669,
+    emissiveIntensity: 1.5,
+    roughness: 0.35,
+    metalness: 0.05
+  });
+  const gillMat = new THREE.MeshStandardMaterial({
+    color: 0x34d399,
+    emissive: 0x10b981,
+    emissiveIntensity: 2.2,
+    roughness: 0.2
+  });
+
+  const mushPositions = [
+    [16, 12, 6, 4.5], [-18, 14, -2, 5.2], [28, 18, -18, 6.0], [-26, 10, 18, 4.0],
+    [8, 15, 32, 5.5], [-12, 16, 40, 5.8], [34, 11, 14, 4.2], [-32, 13, -24, 4.8]
+  ];
+  mushPositions.forEach(([mx, mh, mz, mr]) => {
+    // Stalk
+    const sGeo = new THREE.CylinderGeometry(mr * 0.18, mr * 0.26, mh, 12);
+    const sMesh = new THREE.Mesh(sGeo, stalkMat);
+    sMesh.position.set(mx, mh * 0.5, mz);
+    sMesh.castShadow = true;
+    group.add(sMesh);
+
+    // Cap
+    const cGeo = new THREE.ConeGeometry(mr, mr * 0.55, 16);
+    const cMesh = new THREE.Mesh(cGeo, capMat);
+    cMesh.position.set(mx, mh, mz);
+    cMesh.castShadow = true;
+    group.add(cMesh);
+
+    // Glowing Gills
+    const gGeo = new THREE.CircleGeometry(mr * 0.95, 16);
+    gGeo.rotateX(Math.PI / 2);
+    const gMesh = new THREE.Mesh(gGeo, gillMat);
+    gMesh.position.set(mx, mh - 0.05, mz);
+    group.add(gMesh);
+  });
+
+  // 3. Ancient Twisted Root Arches
+  const rootMat = new THREE.MeshStandardMaterial({ color: 0x022c22, roughness: 0.85 });
+  for (let i = 0; i < 5; i++) {
+    const rGeo = new THREE.TorusGeometry(6.0 + i * 1.5, 0.65, 8, 18, Math.PI);
+    const rMesh = new THREE.Mesh(rGeo, rootMat);
+    rMesh.position.set(-15 + i * 7.0, -0.5, 8 + (i % 2) * 12.0);
+    rMesh.rotation.y = 0.4 * i;
+    rMesh.castShadow = true;
+    group.add(rMesh);
+  }
+
+  // 4. Floating Spore Field
+  const sporeCount = 350;
+  const sporeGeo = new THREE.BufferGeometry();
+  const sporePos = new Float32Array(sporeCount * 3);
+  for (let i = 0; i < sporeCount; i++) {
+    sporePos[i * 3] = (Math.random() - 0.5) * 130;
+    sporePos[i * 3 + 1] = 0.5 + Math.random() * 18;
+    sporePos[i * 3 + 2] = (Math.random() - 0.5) * 130;
+  }
+  sporeGeo.setAttribute('position', new THREE.BufferAttribute(sporePos, 3));
+  const sporeMat = new THREE.PointsMaterial({
+    color: 0x6ee7b7,
+    size: 0.45,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending
+  });
+  const sporePoints = new THREE.Points(sporeGeo, sporeMat);
+  group.add(sporePoints);
+
+  // 5. Lighting
+  const moon = new THREE.DirectionalLight(0x34d399, 1.5);
+  moon.position.set(-30, 50, 40);
+  moon.castShadow = true;
+  moon.shadow.normalBias = 0.02;
+  group.add(moon);
+
+  const hemi = new THREE.HemisphereLight(0x064e3b, 0x022c22, 0.9);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x022c22,
+    fogDensity: 0.015,
+    bgColor: 0x022c22,
+    update: (time, delta) => {
+      const sp = sporeGeo.attributes.position.array;
+      for (let i = 0; i < sporeCount * 3; i += 3) {
+        sp[i + 1] += Math.sin(time * 1.5 + sp[i]) * delta * 0.6;
+        sp[i] += Math.cos(time * 1.2 + sp[i + 2]) * delta * 0.4;
+      }
+      sporeGeo.attributes.position.needsUpdate = true;
+      gillMat.emissiveIntensity = 2.0 + Math.sin(time * 2.8) * 0.5;
+      returnGate.disc.rotation.z += delta * 0.32;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 10: ANCIENT SUNKEN RUIN (SUNKEN CITADEL // OCEANIC TRENCH)
+// -------------------------------------------------------------
+function buildAbyssWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0x0284c7);
+  group.add(returnGate.group);
+
+  // 1. Silt-Covered Seabed Floor
+  const floorGeo = new THREE.PlaneGeometry(260, 260, 64, 64);
+  floorGeo.rotateX(-Math.PI / 2);
+  const pos = floorGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const dDais = Math.hypot(x, z - (-12));
+    const flatDais = Math.min(1.0, Math.max(0.0, (dDais - 7.5) / 12));
+    const silt = Math.sin(x * 0.08) * 1.4 + Math.cos(z * 0.08) * 1.4;
+    pos.setY(i, silt * flatDais);
+  }
+  floorGeo.computeVertexNormals();
+  const marblePBR = getGlobalAbyssMarblePBR();
+  const floorMat = new THREE.MeshStandardMaterial({
+    color: 0x0f172a,
+    roughness: 0.8,
+    metalness: 0.1,
+    normalMap: marblePBR.normalMap,
+    roughnessMap: marblePBR.roughnessMap
+  });
+  const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+  floorMesh.receiveShadow = true;
+  group.add(floorMesh);
+
+  // 2. Submerged Classical Ruins (Columns & Architraves)
+  const colMat = new THREE.MeshStandardMaterial({
+    color: 0x64748b,
+    roughness: 0.45,
+    metalness: 0.15,
+    normalMap: marblePBR.normalMap,
+    roughnessMap: marblePBR.roughnessMap
+  });
+  for (let i = 0; i < 14; i++) {
+    const cH = 6.0 + (i % 3) * 2.0;
+    const cGeo = new THREE.CylinderGeometry(0.7, 0.75, cH, 16);
+    const col = new THREE.Mesh(cGeo, colMat);
+    const isToppled = (i === 3 || i === 8 || i === 11);
+    if (isToppled) {
+      col.rotation.z = Math.PI / 2;
+      col.position.set(-18 + i * 3.5, 0.75, 12 + (i % 4) * 6.0);
+    } else {
+      col.position.set(-20 + (i % 7) * 7.0, cH * 0.5, 8 + Math.floor(i / 7) * 16.0);
+    }
+    col.castShadow = true;
+    group.add(col);
+  }
+
+  // 3. Hydrothermal Black Smoker Chimneys
+  const ventMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9, metalness: 0.3 });
+  for (let i = 0; i < 3; i++) {
+    const vGeo = new THREE.CylinderGeometry(0.8, 1.8, 8.0, 12);
+    const vent = new THREE.Mesh(vGeo, ventMat);
+    vent.position.set(24 + i * 8.0, 4.0, -4 + i * 14.0);
+    group.add(vent);
+
+    const glowLight = new THREE.PointLight(0xf97316, 2.5, 18);
+    glowLight.position.set(24 + i * 8.0, 8.2, -4 + i * 14.0);
+    group.add(glowLight);
+  }
+
+  // 4. Marine Snow Particulates
+  const snowCount = 350;
+  const snowGeo = new THREE.BufferGeometry();
+  const snowPos = new Float32Array(snowCount * 3);
+  for (let i = 0; i < snowCount; i++) {
+    snowPos[i * 3] = (Math.random() - 0.5) * 140;
+    snowPos[i * 3 + 1] = Math.random() * 22;
+    snowPos[i * 3 + 2] = (Math.random() - 0.5) * 140;
+  }
+  snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
+  const snowMat = new THREE.PointsMaterial({
+    color: 0x93c5fd,
+    size: 0.38,
+    transparent: true,
+    opacity: 0.65
+  });
+  const snowPoints = new THREE.Points(snowGeo, snowMat);
+  group.add(snowPoints);
+
+  // 5. Lighting
+  const causticBeam = new THREE.DirectionalLight(0x38bdf8, 1.6);
+  causticBeam.position.set(20, 50, 20);
+  causticBeam.castShadow = true;
+  causticBeam.shadow.normalBias = 0.02;
+  group.add(causticBeam);
+
+  const hemi = new THREE.HemisphereLight(0x0c4a6e, 0x021626, 0.75);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x082f49,
+    fogDensity: 0.016,
+    bgColor: 0x082f49,
+    update: (time, delta) => {
+      const sp = snowGeo.attributes.position.array;
+      for (let i = 0; i < snowCount * 3; i += 3) {
+        sp[i + 1] -= delta * 1.2;
+        sp[i] += Math.sin(time + i) * delta * 0.2;
+        if (sp[i + 1] < 0.2) sp[i + 1] = 22.0;
+      }
+      snowGeo.attributes.position.needsUpdate = true;
+      causticBeam.intensity = 1.4 + Math.sin(time * 3.2) * 0.3;
+      returnGate.disc.rotation.z += delta * 0.3;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 11: RED PLANET MARS CANYONS (VALLES MARINERIS // RED PLANET)
+// -------------------------------------------------------------
+function buildMarsWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0xea580c);
+  group.add(returnGate.group);
+
+  // 1. Ferric Canyon Gorge Terrain
+  const terrGeo = new THREE.PlaneGeometry(260, 260, 64, 64);
+  terrGeo.rotateX(-Math.PI / 2);
+  const pos = terrGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const dDais = Math.hypot(x, z - (-12));
+    const flatDais = Math.min(1.0, Math.max(0.0, (dDais - 7.5) / 12));
+    // High canyon walls on left and right, central wash
+    const gorge = Math.pow(Math.abs(x) / 45, 2) * 8.0 + Math.sin(z * 0.05) * 3.0;
+    pos.setY(i, gorge * flatDais);
+  }
+  terrGeo.computeVertexNormals();
+  const ferricPBR = getGlobalFerricRockPBR();
+  const terrMat = new THREE.MeshStandardMaterial({
+    color: 0x9a3412,
+    roughness: 0.9,
+    metalness: 0.05,
+    normalMap: ferricPBR.normalMap,
+    roughnessMap: ferricPBR.roughnessMap
+  });
+  const terrMesh = new THREE.Mesh(terrGeo, terrMat);
+  terrMesh.receiveShadow = true;
+  group.add(terrMesh);
+
+  // 2. Martian Outpost Sensor Mast & High-Gain Antenna
+  const mastGroup = new THREE.Group();
+  mastGroup.position.set(14, 0, 10);
+  const mastPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 9, 8), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.85, roughness: 0.25 }));
+  mastPillar.position.y = 4.5;
+  mastGroup.add(mastPillar);
+
+  const solarPanel = new THREE.Mesh(new THREE.BoxGeometry(6, 0.1, 2), new THREE.MeshStandardMaterial({ color: 0x1e3a8a, metalness: 0.9, roughness: 0.1 }));
+  solarPanel.position.set(0, 8.5, 0);
+  mastGroup.add(solarPanel);
+
+  const dishGeo = new THREE.SphereGeometry(1.2, 16, 8, 0, Math.PI * 2, 0, Math.PI * 0.45);
+  const dishMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.8, roughness: 0.3, side: THREE.DoubleSide });
+  const dishMesh = new THREE.Mesh(dishGeo, dishMat);
+  dishMesh.position.set(0, 9.8, 0);
+  mastGroup.add(dishMesh);
+  group.add(mastGroup);
+
+  // 3. Ferric Regolith Boulder Clusters
+  const bMat = new THREE.MeshStandardMaterial({ color: 0x7c2d12, roughness: 0.88 });
+  for (let i = 0; i < 24; i++) {
+    const s = 0.8 + Math.sin(i) * 0.5;
+    const bGeo = new THREE.DodecahedronGeometry(s, 1);
+    const bMesh = new THREE.Mesh(bGeo, bMat);
+    bMesh.position.set(-25 + (i * 7.3) % 50, s * 0.6, -10 + (i * 9.1) % 60);
+    bMesh.castShadow = true;
+    group.add(bMesh);
+  }
+
+  // 4. Drifting Dust Storm Particles
+  const dustCount = 350;
+  const dustGeo = new THREE.BufferGeometry();
+  const dustPos = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount; i++) {
+    dustPos[i * 3] = (Math.random() - 0.5) * 140;
+    dustPos[i * 3 + 1] = Math.random() * 15;
+    dustPos[i * 3 + 2] = (Math.random() - 0.5) * 140;
+  }
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+  const dustMat = new THREE.PointsMaterial({
+    color: 0xfb923c,
+    size: 0.45,
+    transparent: true,
+    opacity: 0.7
+  });
+  const dustPoints = new THREE.Points(dustGeo, dustMat);
+  group.add(dustPoints);
+
+  // 5. Lighting
+  const sun = new THREE.DirectionalLight(0xffeedd, 2.4);
+  sun.position.set(50, 70, -20);
+  sun.castShadow = true;
+  sun.shadow.normalBias = 0.02;
+  group.add(sun);
+
+  const hemi = new THREE.HemisphereLight(0xc2410c, 0x451a03, 0.85);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x7c2d12,
+    fogDensity: 0.012,
+    bgColor: 0x7c2d12,
+    update: (time, delta) => {
+      dishMesh.rotation.y += delta * 0.4;
+      const dp = dustGeo.attributes.position.array;
+      for (let i = 0; i < dustCount * 3; i += 3) {
+        dp[i] += delta * 6.5;
+        dp[i + 2] += delta * 1.5;
+        if (dp[i] > 70) dp[i] = -70;
+        if (dp[i + 2] > 70) dp[i + 2] = -70;
+      }
+      dustGeo.attributes.position.needsUpdate = true;
+      returnGate.disc.rotation.z += delta * 0.32;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 12: ALIEN CRYSTAL SPIRES (PRISMATIC SHARDS // CAELUM GEODE)
+// -------------------------------------------------------------
+function buildCrystalWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0xc084fc);
+  group.add(returnGate.group);
+
+  // 1. Vitreous Salt Flat Ground Plane
+  const flatGeo = new THREE.PlaneGeometry(260, 260, 48, 48);
+  flatGeo.rotateX(-Math.PI / 2);
+  const cryPBR = getGlobalPrismaticCrystalPBR();
+  const flatMat = new THREE.MeshStandardMaterial({
+    color: 0x4c1d95,
+    roughness: 0.15,
+    metalness: 0.35,
+    normalMap: cryPBR.normalMap,
+    roughnessMap: cryPBR.roughnessMap
+  });
+  const flatMesh = new THREE.Mesh(flatGeo, flatMat);
+  flatMesh.receiveShadow = true;
+  group.add(flatMesh);
+
+  // 2. Towering Hexagonal Quartz & Amethyst Spires
+  const crystalMat = new THREE.MeshStandardMaterial({
+    color: 0xd8b4fe,
+    emissive: 0x7c3aed,
+    emissiveIntensity: 0.6,
+    roughness: 0.08,
+    metalness: 0.15,
+    transparent: true,
+    opacity: 0.88
+  });
+  const spireList = [];
+  const spirePositions = [
+    [0, 22, 28], [-22, 16, 12], [26, 18, 8], [-32, 25, 42], [35, 20, 36],
+    [-15, 14, -30], [20, 15, -28], [-38, 19, -8], [40, 24, -14]
+  ];
+  spirePositions.forEach(([sx, sh, sz]) => {
+    const sGroup = new THREE.Group();
+    sGroup.position.set(sx, 0, sz);
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.2, sh, 6), crystalMat);
+    body.position.y = sh * 0.5;
+    body.castShadow = true;
+    sGroup.add(body);
+    const cap = new THREE.Mesh(new THREE.ConeGeometry(1.6, 4.5, 6), crystalMat);
+    cap.position.y = sh + 2.25;
+    cap.castShadow = true;
+    sGroup.add(cap);
+    group.add(sGroup);
+    spireList.push(sGroup);
+  });
+
+  // 3. Hovering Resonator Crystal Shards
+  const shardMat = new THREE.MeshStandardMaterial({
+    color: 0xf0abfc,
+    emissive: 0xc084fc,
+    emissiveIntensity: 1.4,
+    roughness: 0.05
+  });
+  const shards = [];
+  for (let i = 0; i < 12; i++) {
+    const shMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.7, 0), shardMat);
+    group.add(shMesh);
+    shards.push({ mesh: shMesh, angle: i * 0.52, radius: 10 + (i % 3) * 4, baseH: 3.5 + (i % 4) * 2.0 });
+  }
+
+  // 4. Photonic Glimmer Particles
+  const glimCount = 250;
+  const glimGeo = new THREE.BufferGeometry();
+  const glimPos = new Float32Array(glimCount * 3);
+  for (let i = 0; i < glimCount; i++) {
+    glimPos[i * 3] = (Math.random() - 0.5) * 120;
+    glimPos[i * 3 + 1] = Math.random() * 24;
+    glimPos[i * 3 + 2] = (Math.random() - 0.5) * 120;
+  }
+  glimGeo.setAttribute('position', new THREE.BufferAttribute(glimPos, 3));
+  const glimMat = new THREE.PointsMaterial({
+    color: 0xf5d0fe,
+    size: 0.55,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  const glimPoints = new THREE.Points(glimGeo, glimMat);
+  group.add(glimPoints);
+
+  // 5. Lighting
+  const light = new THREE.DirectionalLight(0xe9d5ff, 2.6);
+  light.position.set(30, 60, -30);
+  light.castShadow = true;
+  light.shadow.normalBias = 0.02;
+  group.add(light);
+
+  const hemi = new THREE.HemisphereLight(0xa855f7, 0x2e1065, 0.95);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x3b0764,
+    fogDensity: 0.013,
+    bgColor: 0x3b0764,
+    update: (time, delta) => {
+      shards.forEach((s, idx) => {
+        s.angle += delta * 0.7;
+        s.mesh.position.set(Math.cos(s.angle) * s.radius, s.baseH + Math.sin(time * 2.0 + idx) * 1.2, 15 + Math.sin(s.angle) * s.radius);
+        s.mesh.rotation.y += delta * 1.5;
+        s.mesh.rotation.x += delta * 0.8;
+      });
+      crystalMat.emissiveIntensity = 0.6 + Math.sin(time * 3.0) * 0.25;
+      returnGate.disc.rotation.z += delta * 0.35;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 13: SWAMP BAYOU (SUNKEN MIRE // CYPRESS BAYOU)
+// -------------------------------------------------------------
+function buildSwampWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0x84cc16);
+  group.add(returnGate.group);
+
+  // 1. Muddy Peat Terrain
+  const terrGeo = new THREE.PlaneGeometry(260, 260, 64, 64);
+  terrGeo.rotateX(-Math.PI / 2);
+  const pos = terrGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const dDais = Math.hypot(x, z - (-12));
+    const flatDais = Math.min(1.0, Math.max(0.0, (dDais - 7.5) / 12));
+    const mudMounds = Math.sin(x * 0.05) * 1.8 + Math.cos(z * 0.05) * 1.6;
+    pos.setY(i, (mudMounds - 0.5) * flatDais);
+  }
+  terrGeo.computeVertexNormals();
+  const peatPBR = getGlobalPeatPBR();
+  const terrMat = new THREE.MeshStandardMaterial({
+    color: 0x1c1917,
+    roughness: 0.88,
+    metalness: 0.05,
+    normalMap: peatPBR.normalMap,
+    roughnessMap: peatPBR.roughnessMap
+  });
+  const terrMesh = new THREE.Mesh(terrGeo, terrMat);
+  terrMesh.receiveShadow = true;
+  group.add(terrMesh);
+
+  // 2. Stagnant Duckweed Water Plane
+  const waterGeo = new THREE.PlaneGeometry(250, 250);
+  waterGeo.rotateX(-Math.PI / 2);
+  const waterMat = new THREE.MeshStandardMaterial({
+    color: 0x365314,
+    roughness: 0.12,
+    metalness: 0.05,
+    transparent: true,
+    opacity: 0.85
+  });
+  const waterMesh = new THREE.Mesh(waterGeo, waterMat);
+  waterMesh.position.y = -0.4;
+  group.add(waterMesh);
+
+  // 3. Gnarled Cypress Trees with Buttress Roots
+  const woodMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.9 });
+  const mossMat = new THREE.MeshStandardMaterial({ color: 0x4d7c0f, roughness: 0.8, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
+  const treePositions = [
+    [-16, 12, 10], [18, 14, 4], [-24, 15, -4], [22, 11, 26],
+    [-8, 13, 30], [28, 16, -18], [-30, 10, 20], [8, 12, -26]
+  ];
+  treePositions.forEach(([tx, th, tz]) => {
+    // Buttressed Trunk
+    const tMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 1.8, th, 10), woodMat);
+    tMesh.position.set(tx, th * 0.5 - 0.4, tz);
+    tMesh.castShadow = true;
+    group.add(tMesh);
+
+    // Hanging Spanish Moss curtains
+    for (let m = 0; m < 4; m++) {
+      const mPlane = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 4.0), mossMat);
+      mPlane.position.set(tx + Math.cos(m * 1.5) * 1.8, th - 2.5, tz + Math.sin(m * 1.5) * 1.8);
+      group.add(mPlane);
+    }
+  });
+
+  // 4. Weathered Wooden Boardwalk Pier
+  const plankMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.85 });
+  for (let b = 0; b < 12; b++) {
+    const plank = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.2, 1.2), plankMat);
+    plank.position.set(0, 0.1, -4.0 + b * 1.4);
+    plank.receiveShadow = true;
+    group.add(plank);
+  }
+
+  // 5. Willow-Wisp Firefly Lights
+  const wisps = [];
+  for (let w = 0; w < 4; w++) {
+    const wLight = new THREE.PointLight(0xa3e635, 2.5, 16);
+    group.add(wLight);
+    wisps.push({ light: wLight, seed: w * 2.0 });
+  }
+
+  // 6. Lighting
+  const sun = new THREE.DirectionalLight(0xd97706, 1.8);
+  sun.position.set(-40, 45, 30);
+  sun.castShadow = true;
+  sun.shadow.normalBias = 0.02;
+  group.add(sun);
+
+  const hemi = new THREE.HemisphereLight(0x3f6212, 0x1c1917, 0.8);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x14532d,
+    fogDensity: 0.016,
+    bgColor: 0x14532d,
+    update: (time, delta) => {
+      wisps.forEach((w, idx) => {
+        const t = time * 0.8 + w.seed;
+        w.light.position.set(Math.sin(t) * 16, 1.5 + Math.sin(t * 2.2) * 0.8, 10 + Math.cos(t * 1.3) * 16);
+        w.light.intensity = 1.8 + Math.sin(time * 4.0 + idx) * 0.8;
+      });
+      returnGate.disc.rotation.z += delta * 0.3;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 14: SUBTERRANEAN GEODE CAVERN (AMETHYST VAULT // DRIPSTONE)
+// -------------------------------------------------------------
+function buildCavernWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0x818cf8);
+  group.add(returnGate.group);
+
+  // 1. Limestone Cavern Floor & Inverted Ceiling Vault
+  const limePBR = getGlobalLimestonePBR();
+  const caveMat = new THREE.MeshStandardMaterial({
+    color: 0x1e1b4b,
+    roughness: 0.72,
+    metalness: 0.1,
+    normalMap: limePBR.normalMap,
+    roughnessMap: limePBR.roughnessMap
+  });
+
+  const floorGeo = new THREE.PlaneGeometry(240, 240, 48, 48);
+  floorGeo.rotateX(-Math.PI / 2);
+  const floorMesh = new THREE.Mesh(floorGeo, caveMat);
+  floorMesh.receiveShadow = true;
+  group.add(floorMesh);
+
+  const ceilGeo = new THREE.PlaneGeometry(240, 240, 32, 32);
+  ceilGeo.rotateX(Math.PI / 2);
+  const ceilMesh = new THREE.Mesh(ceilGeo, caveMat);
+  ceilMesh.position.y = 26;
+  group.add(ceilMesh);
+
+  // 2. Stalactites (Ceiling) & Stalagmites (Floor)
+  const dripMat = new THREE.MeshStandardMaterial({ color: 0x312e81, roughness: 0.65 });
+  for (let i = 0; i < 20; i++) {
+    const sH = 4.0 + (i % 4) * 2.0;
+    const sx = -35 + (i * 9.2) % 70;
+    const sz = -15 + (i * 11.4) % 65;
+
+    // Stalagmite on floor
+    const sm = new THREE.Mesh(new THREE.ConeGeometry(1.2, sH, 8), dripMat);
+    sm.position.set(sx, sH * 0.5, sz);
+    sm.castShadow = true;
+    group.add(sm);
+
+    // Stalactite on ceiling
+    const st = new THREE.Mesh(new THREE.ConeGeometry(0.9, sH * 1.2, 8), dripMat);
+    st.position.set(sx + 1.2, 26 - sH * 0.6, sz + 1.2);
+    st.rotation.x = Math.PI;
+    group.add(st);
+  }
+
+  // 3. Hollow Giant Amethyst Geode Cavity
+  const geodeGeo = new THREE.SphereGeometry(7.0, 16, 12, 0, Math.PI * 1.2);
+  const geodeMat = new THREE.MeshStandardMaterial({
+    color: 0x6366f1,
+    emissive: 0x4f46e5,
+    emissiveIntensity: 1.2,
+    roughness: 0.25,
+    side: THREE.BackSide
+  });
+  const geodeMesh = new THREE.Mesh(geodeGeo, geodeMat);
+  geodeMesh.position.set(0, 4.0, 26);
+  group.add(geodeMesh);
+
+  // 4. Subterranean Mineral Pool with Ripples
+  const poolGeo = new THREE.CircleGeometry(12, 32);
+  poolGeo.rotateX(-Math.PI / 2);
+  const poolMat = new THREE.MeshStandardMaterial({
+    color: 0x4338ca,
+    roughness: 0.06,
+    metalness: 0.08,
+    transparent: true,
+    opacity: 0.88
+  });
+  const poolMesh = new THREE.Mesh(poolGeo, poolMat);
+  poolMesh.position.set(0, 0.05, 14);
+  group.add(poolMesh);
+
+  // 5. Water Droplets Particle System
+  const dropCount = 40;
+  const dropGeo = new THREE.BufferGeometry();
+  const dropPos = new Float32Array(dropCount * 3);
+  for (let i = 0; i < dropCount; i++) {
+    dropPos[i * 3] = (Math.random() - 0.5) * 20;
+    dropPos[i * 3 + 1] = 2.0 + Math.random() * 22;
+    dropPos[i * 3 + 2] = 6 + Math.random() * 16;
+  }
+  dropGeo.setAttribute('position', new THREE.BufferAttribute(dropPos, 3));
+  const dropMat = new THREE.PointsMaterial({ color: 0x818cf8, size: 0.35 });
+  const dropPoints = new THREE.Points(dropGeo, dropMat);
+  group.add(dropPoints);
+
+  // 6. Lighting
+  const poolGlow = new THREE.PointLight(0x6366f1, 4.5, 55);
+  poolGlow.position.set(0, 2.5, 14);
+  group.add(poolGlow);
+
+  const rimLight = new THREE.DirectionalLight(0x818cf8, 1.2);
+  rimLight.position.set(-20, 22, -10);
+  rimLight.shadow.normalBias = 0.02;
+  group.add(rimLight);
+
+  const hemi = new THREE.HemisphereLight(0x312e81, 0x020617, 0.65);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x0f172a,
+    fogDensity: 0.014,
+    bgColor: 0x0f172a,
+    update: (time, delta) => {
+      const dp = dropGeo.attributes.position.array;
+      for (let i = 0; i < dropCount * 3; i += 3) {
+        dp[i + 1] -= delta * 9.8;
+        if (dp[i + 1] < 0.1) dp[i + 1] = 24.0;
+      }
+      dropGeo.attributes.position.needsUpdate = true;
+      geodeMat.emissiveIntensity = 1.2 + Math.sin(time * 2.5) * 0.3;
+      returnGate.disc.rotation.z += delta * 0.32;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 15: TOXIC INDUSTRIAL SUMP (SECTOR 99 CHEMICAL WASTELAND)
+// -------------------------------------------------------------
+function buildAcidWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0xeab308);
+  group.add(returnGate.group);
+
+  // 1. Corroded Slag Basin
+  const terrGeo = new THREE.PlaneGeometry(260, 260, 48, 48);
+  terrGeo.rotateX(-Math.PI / 2);
+  const slagPBR = getGlobalSlagPBR();
+  const terrMat = new THREE.MeshStandardMaterial({
+    color: 0x292524,
+    roughness: 0.85,
+    metalness: 0.3,
+    normalMap: slagPBR.normalMap,
+    roughnessMap: slagPBR.roughnessMap
+  });
+  const terrMesh = new THREE.Mesh(terrGeo, terrMat);
+  terrMesh.receiveShadow = true;
+  group.add(terrMesh);
+
+  // 2. Fluorescent Toxic Leachate Pools
+  const poolMat = new THREE.MeshStandardMaterial({
+    color: 0xa3e635,
+    emissive: 0x84cc16,
+    emissiveIntensity: 1.8,
+    roughness: 0.1,
+    transparent: true,
+    opacity: 0.9
+  });
+  const poolMesh = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), poolMat);
+  poolMesh.rotateX(-Math.PI / 2);
+  poolMesh.position.set(0, 0.05, 20);
+  group.add(poolMesh);
+
+  // 3. Corroded Chemical Pipes & Hazard Drums
+  const pipeMat = new THREE.MeshStandardMaterial({ color: 0x71717a, metalness: 0.8, roughness: 0.45 });
+  const drumMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.6, metalness: 0.2 });
+
+  for (let p = 0; p < 4; p++) {
+    const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 28, 12), pipeMat);
+    pipe.rotation.z = Math.PI / 2;
+    pipe.position.set(0, 1.8 + p * 1.5, -2 + p * 8);
+    group.add(pipe);
+  }
+
+  for (let d = 0; d < 12; d++) {
+    const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.3, 10), drumMat);
+    drum.position.set(-14 + (d % 4) * 1.4, 0.65, 8 + Math.floor(d / 4) * 2.0);
+    drum.castShadow = true;
+    group.add(drum);
+  }
+
+  // 4. Acid Steam Exhaust Vapor Particles
+  const steamCount = 250;
+  const steamGeo = new THREE.BufferGeometry();
+  const steamPos = new Float32Array(steamCount * 3);
+  for (let i = 0; i < steamCount; i++) {
+    steamPos[i * 3] = (Math.random() - 0.5) * 80;
+    steamPos[i * 3 + 1] = Math.random() * 18;
+    steamPos[i * 3 + 2] = 5 + (Math.random() - 0.5) * 60;
+  }
+  steamGeo.setAttribute('position', new THREE.BufferAttribute(steamPos, 3));
+  const steamMat = new THREE.PointsMaterial({
+    color: 0xd9f99d,
+    size: 0.65,
+    transparent: true,
+    opacity: 0.6,
+    blending: THREE.AdditiveBlending
+  });
+  const steamPoints = new THREE.Points(steamGeo, steamMat);
+  group.add(steamPoints);
+
+  // 5. Flashing Hazard Strobe Beacon
+  const strobeLight = new THREE.PointLight(0xfacc15, 3.5, 35);
+  strobeLight.position.set(-14, 6.0, 10);
+  group.add(strobeLight);
+
+  // 6. Lighting
+  const sun = new THREE.DirectionalLight(0xca8a04, 2.0);
+  sun.position.set(40, 50, -30);
+  sun.castShadow = true;
+  sun.shadow.normalBias = 0.02;
+  group.add(sun);
+
+  const hemi = new THREE.HemisphereLight(0x65a30d, 0x1a2e05, 0.8);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x3f6212,
+    fogDensity: 0.015,
+    bgColor: 0x3f6212,
+    update: (time, delta) => {
+      strobeLight.intensity = (Math.sin(time * 6.0) > 0.4) ? 4.0 : 0.2;
+      const sp = steamGeo.attributes.position.array;
+      for (let i = 0; i < steamCount * 3; i += 3) {
+        sp[i + 1] += delta * 2.2;
+        if (sp[i + 1] > 20.0) sp[i + 1] = 0.5;
+      }
+      steamGeo.attributes.position.needsUpdate = true;
+      returnGate.disc.rotation.z += delta * 0.35;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 16: HIGHLAND BOREAL TAIGA (WHISPERING PINES)
+// -------------------------------------------------------------
+function buildTaigaWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0x059669);
+  group.add(returnGate.group);
+
+  // 1. Rolling Boreal Hills Terrain
+  const terrGeo = new THREE.PlaneGeometry(260, 260, 64, 64);
+  terrGeo.rotateX(-Math.PI / 2);
+  const pos = terrGeo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const dDais = Math.hypot(x, z - (-12));
+    const flatDais = Math.min(1.0, Math.max(0.0, (dDais - 7.5) / 12));
+    const hills = Math.sin(x * 0.04) * 3.2 + Math.cos(z * 0.035) * 3.0;
+    pos.setY(i, hills * flatDais);
+  }
+  terrGeo.computeVertexNormals();
+  const pinePBR = getGlobalPineTurfPBR();
+  const terrMat = new THREE.MeshStandardMaterial({
+    color: 0x14532d,
+    roughness: 0.88,
+    metalness: 0.04,
+    normalMap: pinePBR.normalMap,
+    roughnessMap: pinePBR.roughnessMap
+  });
+  const terrMesh = new THREE.Mesh(terrGeo, terrMat);
+  terrMesh.receiveShadow = true;
+  group.add(terrMesh);
+
+  // 2. Evergreen Conifer Pines (Trunk + Tiered Foliage Cones)
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x3f2e18, roughness: 0.9 });
+  const needleMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.75 });
+  const treeList = [];
+  for (let i = 0; i < 22; i++) {
+    const tx = -40 + (i * 13.7) % 80;
+    const tz = -25 + (i * 17.3) % 85;
+    if (Math.hypot(tx, tz - (-12)) < 12) continue; // Keep landing area clear
+
+    const tGroup = new THREE.Group();
+    tGroup.position.set(tx, 0, tz);
+
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 4.0, 8), trunkMat);
+    trunk.position.y = 2.0;
+    trunk.castShadow = true;
+    tGroup.add(trunk);
+
+    for (let c = 0; c < 3; c++) {
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(2.4 - c * 0.5, 3.2, 8), needleMat);
+      cone.position.y = 3.8 + c * 2.0;
+      cone.castShadow = true;
+      tGroup.add(cone);
+    }
+    group.add(tGroup);
+    treeList.push(tGroup);
+  }
+
+  // 3. Glacial Granite Erratics
+  const rockMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.8 });
+  for (let r = 0; r < 8; r++) {
+    const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(1.5 + (r % 3) * 0.5, 1), rockMat);
+    rock.position.set(-20 + r * 6.0, 1.0, 10 + (r % 3) * 8.0);
+    rock.castShadow = true;
+    group.add(rock);
+  }
+
+  // 4. Drifting Pine Pollen & Morning Mist
+  const pollenCount = 250;
+  const pollenGeo = new THREE.BufferGeometry();
+  const pollenPos = new Float32Array(pollenCount * 3);
+  for (let i = 0; i < pollenCount; i++) {
+    pollenPos[i * 3] = (Math.random() - 0.5) * 140;
+    pollenPos[i * 3 + 1] = 0.5 + Math.random() * 12;
+    pollenPos[i * 3 + 2] = (Math.random() - 0.5) * 140;
+  }
+  pollenGeo.setAttribute('position', new THREE.BufferAttribute(pollenPos, 3));
+  const pollenMat = new THREE.PointsMaterial({
+    color: 0xfef08a,
+    size: 0.35,
+    transparent: true,
+    opacity: 0.65
+  });
+  const pollenPoints = new THREE.Points(pollenGeo, pollenMat);
+  group.add(pollenPoints);
+
+  // 5. Lighting
+  const dawnSun = new THREE.DirectionalLight(0xfef08a, 2.2);
+  dawnSun.position.set(50, 40, -40);
+  dawnSun.castShadow = true;
+  dawnSun.shadow.normalBias = 0.02;
+  group.add(dawnSun);
+
+  const hemi = new THREE.HemisphereLight(0x64748b, 0x1e293b, 0.85);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x334155,
+    fogDensity: 0.012,
+    bgColor: 0x334155,
+    update: (time, delta) => {
+      treeList.forEach((tr, idx) => {
+        tr.rotation.z = Math.sin(time * 1.8 + idx) * 0.015;
+      });
+      const pp = pollenGeo.attributes.position.array;
+      for (let i = 0; i < pollenCount * 3; i += 3) {
+        pp[i] += delta * 1.8;
+        if (pp[i] > 70) pp[i] = -70;
+      }
+      pollenGeo.attributes.position.needsUpdate = true;
+      returnGate.disc.rotation.z += delta * 0.3;
+    }
+  };
+}
+
+// -------------------------------------------------------------
+// BIOME 17: SKY ISLAND ARCHIPELAGO (AETHER REACH // FLOATING ISLES)
+// -------------------------------------------------------------
+function buildSkyWorld() {
+  const group = new THREE.Group();
+  const returnGate = createReturnStargate(0x38bdf8);
+  group.add(returnGate.group);
+
+  const aeroPBR = getGlobalAerolitePBR();
+  const aeroMat = new THREE.MeshStandardMaterial({
+    color: 0x334155,
+    roughness: 0.85,
+    metalness: 0.1,
+    normalMap: aeroPBR.normalMap,
+    roughnessMap: aeroPBR.roughnessMap
+  });
+  const turfMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.7 });
+
+  // 1. Central Floating Island Dais
+  const mainIsland = new THREE.Group();
+  mainIsland.position.set(0, -1.0, -8.0);
+  const mainTop = new THREE.Mesh(new THREE.CylinderGeometry(16, 14, 2.5, 24), turfMat);
+  mainTop.position.y = 0;
+  mainTop.receiveShadow = true;
+  mainIsland.add(mainTop);
+
+  const mainBottom = new THREE.Mesh(new THREE.ConeGeometry(14, 16, 24), aeroMat);
+  mainBottom.position.y = -9.25;
+  mainBottom.rotation.x = Math.PI;
+  mainIsland.add(mainBottom);
+  group.add(mainIsland);
+
+  // 2. Satellite Floating Islands
+  const satellites = [];
+  const satPositions = [
+    [-28, 4, 18, 7], [32, -2, 22, 9], [-34, -6, -20, 8],
+    [28, 6, -30, 6], [0, 8, 42, 11]
+  ];
+  satPositions.forEach(([sx, sy, sz, sr], sIdx) => {
+    const sGroup = new THREE.Group();
+    sGroup.position.set(sx, sy, sz);
+    const sTop = new THREE.Mesh(new THREE.CylinderGeometry(sr, sr * 0.85, 2.0, 16), turfMat);
+    sGroup.add(sTop);
+    const sBot = new THREE.Mesh(new THREE.ConeGeometry(sr * 0.85, sr * 1.5, 16), aeroMat);
+    sBot.position.y = -sr * 0.75 - 1.0;
+    sBot.rotation.x = Math.PI;
+    sGroup.add(sBot);
+    group.add(sGroup);
+    satellites.push({ group: sGroup, baseH: sy, seed: sIdx });
+  });
+
+  // 3. Ancient Brass Celestial Astrolabe Rings
+  const brassMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.85, roughness: 0.25 });
+  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(5.5, 0.25, 12, 36), brassMat);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.2, 0.22, 12, 36), brassMat);
+  const ring3 = new THREE.Mesh(new THREE.TorusGeometry(3.0, 0.2, 12, 36), brassMat);
+  const astrolabeGroup = new THREE.Group();
+  astrolabeGroup.position.set(0, 7.0, 16);
+  astrolabeGroup.add(ring1);
+  astrolabeGroup.add(ring2);
+  astrolabeGroup.add(ring3);
+  group.add(astrolabeGroup);
+
+  // 4. Stratospheric Cloud Floor
+  const cloudCount = 200;
+  const cloudGeo = new THREE.BufferGeometry();
+  const cloudPos = new Float32Array(cloudCount * 3);
+  for (let i = 0; i < cloudCount; i++) {
+    cloudPos[i * 3] = (Math.random() - 0.5) * 200;
+    cloudPos[i * 3 + 1] = -32.0 + (Math.random() - 0.5) * 6.0;
+    cloudPos[i * 3 + 2] = (Math.random() - 0.5) * 200;
+  }
+  cloudGeo.setAttribute('position', new THREE.BufferAttribute(cloudPos, 3));
+  const cloudMat = new THREE.PointsMaterial({
+    color: 0xe0f2fe,
+    size: 9.0,
+    transparent: true,
+    opacity: 0.55
+  });
+  const cloudPoints = new THREE.Points(cloudGeo, cloudMat);
+  group.add(cloudPoints);
+
+  // 5. Lighting
+  const sun = new THREE.DirectionalLight(0xffffff, 2.6);
+  sun.position.set(50, 80, -30);
+  sun.castShadow = true;
+  sun.shadow.normalBias = 0.02;
+  group.add(sun);
+
+  const hemi = new THREE.HemisphereLight(0x38bdf8, 0x0369a1, 0.95);
+  group.add(hemi);
+
+  return {
+    group,
+    returnGate,
+    fogColor: 0x0284c7,
+    fogDensity: 0.008,
+    bgColor: 0x0284c7,
+    update: (time, delta) => {
+      satellites.forEach(sat => {
+        sat.group.position.y = sat.baseH + Math.sin(time * 1.4 + sat.seed) * 0.8;
+      });
+      ring1.rotation.x += delta * 0.4;
+      ring1.rotation.y += delta * 0.6;
+      ring2.rotation.y -= delta * 0.5;
+      ring2.rotation.z += delta * 0.7;
+      ring3.rotation.z -= delta * 0.6;
+      returnGate.disc.rotation.z += delta * 0.35;
+    }
+  };
+}
+
+
 // Performance Optimization: Freeze static scene-graph matrix recalculations
 function freezeStaticTransforms(root) {
   if (!root) return;
@@ -17626,6 +19240,16 @@ function initDestinationWorlds() {
   destinationWorlds.stonehenge = buildStonehengeWorld();
   destinationWorlds.island = buildIslandWorld();
   destinationWorlds.space = buildSpaceWorld();
+  destinationWorlds.volcano = buildVolcanoWorld();
+  destinationWorlds.biolum = buildBiolumWorld();
+  destinationWorlds.abyss = buildAbyssWorld();
+  destinationWorlds.mars = buildMarsWorld();
+  destinationWorlds.crystal = buildCrystalWorld();
+  destinationWorlds.swamp = buildSwampWorld();
+  destinationWorlds.cavern = buildCavernWorld();
+  destinationWorlds.acid = buildAcidWorld();
+  destinationWorlds.taiga = buildTaigaWorld();
+  destinationWorlds.sky = buildSkyWorld();
 
   Object.values(destinationWorlds).forEach(w => {
     freezeStaticTransforms(w.group);

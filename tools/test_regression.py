@@ -77,6 +77,19 @@ val_res = subprocess.run(["python3", "/Users/andrew/World_Set/tools/validate_kit
 check("validate_kit.py exit code 0", val_res.returncode == 0, f"validate_kit.py exited with {val_res.returncode}")
 check("validate_kit.py 100% PASS output", "100% PASS" in val_res.stdout, "validate_kit.py did not report 100% PASS")
 
+# INV-06: 17 Exploration Biomes Registered & Integrated
+expected_worlds = [
+    'aquifer', 'desert', 'mountain', 'city', 'stonehenge', 'island', 'space',
+    'volcano', 'biolum', 'abyss', 'mars', 'crystal', 'swamp', 'cavern', 'acid', 'taiga', 'sky'
+]
+check("17 Biomes in WORLDS constant", all(f"id: '{w}'" in index_html or f'id: "{w}"' in index_html for w in expected_worlds), "Missing worlds in WORLDS constant")
+for w in expected_worlds:
+    if w != 'aquifer':
+        fn_name = f"build{w.capitalize()}World"
+        check(f"Builder function: {fn_name}", f"function {fn_name}()" in index_html, f"{fn_name} missing from index.html")
+        check(f"destinationWorlds.{w} initialized", f"destinationWorlds.{w} = " in index_html, f"destinationWorlds.{w} not initialized")
+    check(f"Quick-dial button: btn-quick-{w}", f'id="btn-quick-{w}"' in index_html, f"Quick-dial button for {w} missing")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")
