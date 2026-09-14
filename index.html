@@ -3656,16 +3656,75 @@ let _cachedWaterPBR = null;
 function getGlobalWaterPBR() {
   if (!_cachedWaterPBR) {
     const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      // Dynamic multi-frequency marine wave crests and micro-ripples
       const wave1 = Math.sin(u * 28.0 + v * 14.0) * 0.45;
       const wave2 = Math.cos(u * 18.0 - v * 28.0) * 0.35;
       const wave3 = Math.sin((u + v) * 36.0) * 0.2;
-      return wave1 + wave2 + wave3;
-    }, 2.8);
+      const wave4 = Math.sin(u * 72.0 - v * 54.0) * 0.12;
+      return wave1 + wave2 + wave3 + wave4;
+    }, 3.0);
     normalMap.repeat.set(18, 18);
-    _cachedWaterPBR = { normalMap };
+
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      // Glassy dielectric surface with subtle wave facet roughness modulation
+      return 0.04 + Math.abs(Math.sin(u * 28.0 + v * 14.0)) * 0.04;
+    });
+    roughnessMap.repeat.set(18, 18);
+
+    _cachedWaterPBR = { normalMap, roughnessMap };
   }
   return _cachedWaterPBR;
 }
+
+let _cachedSteelPBR = null;
+function getGlobalSteelPBR() {
+  if (!_cachedSteelPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      // Industrial diamond treadplate and brushed directional micro-grain
+      const d1 = Math.abs((u * 16.0 + v * 16.0) % 1.0 - 0.5);
+      const d2 = Math.abs((u * 16.0 - v * 16.0) % 1.0 - 0.5);
+      const diamond = (d1 < 0.12 && d2 < 0.12) ? 0.45 : 0.0;
+      const brushGrain = Math.sin(u * 240.0) * 0.08;
+      const microPores = Math.sin(u * 120.0) * Math.cos(v * 120.0) * 0.06;
+      return diamond + brushGrain + microPores;
+    }, 2.4);
+    normalMap.repeat.set(16, 16);
+
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      const d1 = Math.abs((u * 16.0 + v * 16.0) % 1.0 - 0.5);
+      const d2 = Math.abs((u * 16.0 - v * 16.0) % 1.0 - 0.5);
+      // Raised tread lugs have slight scuff polish
+      return (d1 < 0.12 && d2 < 0.12) ? 0.32 : 0.48;
+    });
+    roughnessMap.repeat.set(16, 16);
+
+    _cachedSteelPBR = { normalMap, roughnessMap };
+  }
+  return _cachedSteelPBR;
+}
+
+let _cachedGrassPBR = null;
+function getGlobalGrassPBR() {
+  if (!_cachedGrassPBR) {
+    const normalMap = createPBRNormalTexture(256, 256, (u, v) => {
+      // Salisbury Plain meadow turf: dense blade tufts and organic soil undulations
+      const tufts = (Math.sin(u * 96.0) * Math.cos(v * 96.0) + Math.sin(u * 48.0 + v * 48.0)) * 0.32;
+      const sodSoil = Math.sin(u * 18.0) * Math.cos(v * 24.0) * 0.35;
+      const microFescue = Math.sin(u * 180.0) * 0.12;
+      return tufts + sodSoil + microFescue;
+    }, 2.8);
+    normalMap.repeat.set(20, 20);
+
+    const roughnessMap = createPBRRoughnessTexture(256, 256, (u, v) => {
+      return 0.88 + Math.sin(u * 32.0 + v * 32.0) * 0.08;
+    });
+    roughnessMap.repeat.set(20, 20);
+
+    _cachedGrassPBR = { normalMap, roughnessMap };
+  }
+  return _cachedGrassPBR;
+}
+
 
 // =============================================================
 // PHASE 16: ZERO-DEPENDENCY WEBGL CINEMATIC POST-PROCESSING COMPOSITOR
@@ -6430,21 +6489,36 @@ function buildPhase26BaseExpansion() {
   const group = new THREE.Group();
   group.name = "Phase26_Base_Expansion_Group";
 
+  const concretePBR = getGlobalConcretePBR();
+  const steelPBR = getGlobalSteelPBR();
+
   const concreteMat = new THREE.MeshStandardMaterial({
     color: 0x2d3748,
+    normalMap: concretePBR.normalMap,
+    roughnessMap: concretePBR.roughnessMap,
     roughness: 0.82,
     metalness: 0.18
   });
+  concreteMat.normalScale.set(0.6, 0.6);
+
   const steelMat = new THREE.MeshStandardMaterial({
     color: 0x4a5568,
+    normalMap: steelPBR.normalMap,
+    roughnessMap: steelPBR.roughnessMap,
     roughness: 0.45,
     metalness: 0.75
   });
+  steelMat.normalScale.set(0.8, 0.8);
+
   const darkPlateMat = new THREE.MeshStandardMaterial({
     color: 0x1a202c,
+    normalMap: steelPBR.normalMap,
+    roughnessMap: steelPBR.roughnessMap,
     roughness: 0.55,
     metalness: 0.65
   });
+  darkPlateMat.normalScale.set(0.5, 0.5);
+
   const hazardYellowMat = new THREE.MeshStandardMaterial({
     color: 0xeab308,
     roughness: 0.4,
@@ -6882,12 +6956,15 @@ function buildPhase26DesertExpansion() {
 
   // --- 2. OASIS NATURAL ARTESIAN SPRING GULCH & PALM GROVE (WEST DEPRESSION) ---
   // Sunken canyon depression: X in [-52.0, -24.0], Z in [-30.0, -2.0], Y = -1.8m
+  const waterPBR = getGlobalWaterPBR();
   const oasisWaterMat = new THREE.MeshStandardMaterial({
     color: 0x0ea5e9,
-    roughness: 0.12,
-    metalness: 0.75,
+    normalMap: waterPBR.normalMap,
+    roughnessMap: waterPBR.roughnessMap,
+    roughness: 0.05,
+    metalness: 0.02,
     transparent: true,
-    opacity: 0.85
+    opacity: 0.82
   });
   const oasisPool = new THREE.Mesh(new THREE.CylinderGeometry(8.5, 9.5, 0.6, 24), oasisWaterMat);
   oasisPool.position.set(-37.0, -1.7, -14.0);
@@ -6943,22 +7020,26 @@ function buildPhase26MountainExpansion() {
   group.name = "Phase26_Mountain_Expansion_Group";
 
   const icePBR = getGlobalIcePBR();
+  const steelPBR = getGlobalSteelPBR();
   const deepIceMat = new THREE.MeshStandardMaterial({
     color: 0x38bdf8,
     roughness: 0.15,
-    metalness: 0.35,
+    metalness: 0.12,
     transparent: true,
     opacity: 0.88,
-    normalMap: icePBR.normalMap
+    normalMap: icePBR.normalMap,
+    roughnessMap: icePBR.roughnessMap
   });
   const snowMat = new THREE.MeshStandardMaterial({
     color: 0xf1f5f9,
-    roughness: 0.85
+    roughness: 0.88
   });
   const gantrySteelMat = new THREE.MeshStandardMaterial({
     color: 0x334155,
+    normalMap: steelPBR.normalMap,
+    roughnessMap: steelPBR.roughnessMap,
     roughness: 0.45,
-    metalness: 0.8
+    metalness: 0.85
   });
   const safetyOrangeMat = new THREE.MeshStandardMaterial({
     color: 0xf97316,
@@ -7083,8 +7164,9 @@ function buildPhase26CityExpansion() {
   const roadMat = new THREE.MeshStandardMaterial({
     color: 0x1e293b,
     roughness: 0.35,
-    metalness: 0.65,
-    normalMap: asphaltPBR.normalMap
+    metalness: 0.25,
+    normalMap: asphaltPBR.normalMap,
+    roughnessMap: asphaltPBR.roughnessMap
   });
   const darkGlassMat = new THREE.MeshStandardMaterial({
     color: 0x0284c7,
@@ -7199,14 +7281,19 @@ function buildPhase26StonehengeExpansion() {
   group.name = "Phase26_Stonehenge_Expansion_Group";
 
   const stonePBR = getGlobalStonePBR();
+  const grassPBR = getGlobalGrassPBR();
   const sarsenMat = new THREE.MeshStandardMaterial({
     color: 0x64748b,
     roughness: 0.92,
-    normalMap: stonePBR.normalMap
+    metalness: 0.04,
+    normalMap: stonePBR.normalMap,
+    roughnessMap: stonePBR.roughnessMap
   });
   const turfMat = new THREE.MeshStandardMaterial({
     color: 0x3f6212,
-    roughness: 0.95
+    roughness: 0.92,
+    normalMap: grassPBR.normalMap,
+    roughnessMap: grassPBR.roughnessMap
   });
   const chalkMat = new THREE.MeshStandardMaterial({
     color: 0xe2e8f0,
@@ -7287,11 +7374,15 @@ function buildPhase26IslandExpansion() {
   const group = new THREE.Group();
   group.name = "Phase26_Island_Expansion_Group";
 
+  const rockPBR = getGlobalRockPBR();
   const basaltMat = new THREE.MeshStandardMaterial({
     color: 0x1e293b,
-    roughness: 0.95,
-    metalness: 0.2
+    normalMap: rockPBR.normalMap,
+    roughnessMap: rockPBR.roughnessMap,
+    roughness: 0.92,
+    metalness: 0.08
   });
+  basaltMat.normalScale.set(1.2, 1.2);
   const teakMat = new THREE.MeshStandardMaterial({
     color: 0x854d0e,
     roughness: 0.8
@@ -7399,10 +7490,13 @@ function buildPhase26SpaceExpansion() {
   const group = new THREE.Group();
   group.name = "Phase26_Space_Expansion_Group";
 
+  const steelPBR = getGlobalSteelPBR();
   const trussMat = new THREE.MeshStandardMaterial({
     color: 0x334155,
+    normalMap: steelPBR.normalMap,
+    roughnessMap: steelPBR.roughnessMap,
     roughness: 0.35,
-    metalness: 0.85
+    metalness: 0.88
   });
   const mliGoldMat = new THREE.MeshStandardMaterial({
     color: 0xf59e0b,
@@ -7711,12 +7805,6 @@ function buildDesertWorld() {
   const returnGate = createReturnStargate(0xff9e1b);
   group.add(returnGate.group);
 
-  const sunLight = new THREE.DirectionalLight(0xffbe5c, 2.5);
-  sunLight.position.set(60, 35, 70);
-  group.add(sunLight);
-
-  const ambLight = new THREE.AmbientLight(0x78350f, 1.2);
-  group.add(ambLight);
 
   
   // --- TIER 2 ENHANCEMENTS (ITEMS 11-20) ---
@@ -8061,7 +8149,7 @@ function buildDesertWorld() {
   const desertSky = createProceduralSkyDome('desert');
   group.add(desertSky);
 
-  const desertSunLight = new THREE.DirectionalLight(0xffedd5, 2.6);
+  const desertSunLight = new THREE.DirectionalLight(0xffedd5, 2.85);
   desertSunLight.position.set(35, 55, -25);
   desertSunLight.castShadow = true;
   desertSunLight.shadow.mapSize.width = 1024;
@@ -8072,10 +8160,12 @@ function buildDesertWorld() {
   desertSunLight.shadow.camera.right = 45;
   desertSunLight.shadow.camera.top = 45;
   desertSunLight.shadow.camera.bottom = -45;
-  desertSunLight.shadow.bias = -0.0004;
+  desertSunLight.shadow.bias = -0.0002;
+  desertSunLight.shadow.normalBias = 0.02;
   group.add(desertSunLight);
 
-  const desertFillLight = new THREE.AmbientLight(0x78350f, 0.9);
+  // Atmospheric sky irradiance + sand albedo bounce
+  const desertFillLight = new THREE.HemisphereLight(0xffedd5, 0x78350f, 0.65);
   group.add(desertFillLight);
 
   const desertSunBeam = createVolumetricLightBeam(0xfef08a, 1.2, 8.0, 16.0);
@@ -9106,9 +9196,9 @@ function buildDesertWorld() {
   return {
     group,
     returnGate,
-    fogColor: 0xd97706,
-    fogDensity: 0.015,
-    bgColor: 0xd97706,
+    fogColor: 0xb45309,
+    fogDensity: 0.012,
+    bgColor: 0xb45309,
     update: (time, delta) => {
       // Sand Dust
       const p = dustGeo.attributes.position.array;
@@ -9443,12 +9533,6 @@ function buildMountainWorld() {
   const returnGate = createReturnStargate(0x00e5ff);
   group.add(returnGate.group);
 
-  const sunLight = new THREE.DirectionalLight(0xa5f3fc, 2.2);
-  sunLight.position.set(-40, 45, 60);
-  group.add(sunLight);
-
-  const ambLight = new THREE.AmbientLight(0x1e293b, 1.2);
-  group.add(ambLight);
 
   
   // --- TIER 2 ENHANCEMENTS (ITEMS 11-20) ---
@@ -9739,7 +9823,7 @@ function buildMountainWorld() {
   const mountainSky = createProceduralSkyDome('mountain');
   group.add(mountainSky);
 
-  const mountainSunLight = new THREE.DirectionalLight(0xe0f2fe, 2.2);
+  const mountainSunLight = new THREE.DirectionalLight(0xe0f2fe, 2.7);
   mountainSunLight.position.set(-35, 45, -30);
   mountainSunLight.castShadow = true;
   mountainSunLight.shadow.mapSize.width = 1024;
@@ -9750,10 +9834,12 @@ function buildMountainWorld() {
   mountainSunLight.shadow.camera.right = 45;
   mountainSunLight.shadow.camera.top = 45;
   mountainSunLight.shadow.camera.bottom = -45;
-  mountainSunLight.shadow.bias = -0.0004;
+  mountainSunLight.shadow.bias = -0.0002;
+  mountainSunLight.shadow.normalBias = 0.02;
   group.add(mountainSunLight);
 
-  const mountainFill = new THREE.AmbientLight(0x0c4a6e, 0.85);
+  // Polar sky irradiance + dark basalt granite bounce
+  const mountainFill = new THREE.HemisphereLight(0xbae6fd, 0x0f172a, 0.65);
   group.add(mountainFill);
 
   const mountainSunBeam = createVolumetricLightBeam(0xe0f2fe, 0.8, 6.5, 14.0);
@@ -11024,12 +11110,6 @@ function buildCityWorld() {
   const returnGate = createReturnStargate(0xff007f);
   group.add(returnGate.group);
 
-  const moonLight = new THREE.DirectionalLight(0xa855f7, 1.8);
-  moonLight.position.set(40, 60, -40);
-  group.add(moonLight);
-
-  const ambLight = new THREE.AmbientLight(0x2e0854, 1.4);
-  group.add(ambLight);
 
   
   // --- TIER 2 ENHANCEMENTS (ITEMS 11-20) ---
@@ -11342,7 +11422,7 @@ function buildCityWorld() {
   const citySky = createProceduralSkyDome('city');
   group.add(citySky);
 
-  const cityMoonLight = new THREE.DirectionalLight(0x818cf8, 1.8);
+  const cityMoonLight = new THREE.DirectionalLight(0x818cf8, 2.2);
   cityMoonLight.position.set(25, 45, 20);
   cityMoonLight.castShadow = true;
   cityMoonLight.shadow.mapSize.width = 1024;
@@ -11353,10 +11433,12 @@ function buildCityWorld() {
   cityMoonLight.shadow.camera.right = 40;
   cityMoonLight.shadow.camera.top = 40;
   cityMoonLight.shadow.camera.bottom = -40;
-  cityMoonLight.shadow.bias = -0.0004;
+  cityMoonLight.shadow.bias = -0.0002;
+  cityMoonLight.shadow.normalBias = 0.02;
   group.add(cityMoonLight);
 
-  const cityFill = new THREE.AmbientLight(0x1e1b4b, 0.95);
+  // Deep indigo night sky + wet dark pavement bounce
+  const cityFill = new THREE.HemisphereLight(0x818cf8, 0x090d16, 0.45);
   group.add(cityFill);
 
   // Volumetric Rain Spotlight Beams
@@ -12512,8 +12594,15 @@ function buildStonehengeWorld() {
     const hill = Math.sin(x * 0.04) * 2.2 + Math.cos(z * 0.04) * 1.8 - (d * 0.02);
     pos.setY(i, hill);
   }
-  meadowGeo.computeVertexNormals();
-  const meadowMat = new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.95 });
+  const grassPBR = getGlobalGrassPBR();
+  const meadowMat = new THREE.MeshStandardMaterial({
+    color: 0x14532d,
+    normalMap: grassPBR.normalMap,
+    roughnessMap: grassPBR.roughnessMap,
+    roughness: 0.92,
+    metalness: 0.02
+  });
+  meadowMat.normalScale.set(1.2, 1.2);
   const meadow = new THREE.Mesh(meadowGeo, meadowMat);
   meadow.receiveShadow = true;
   group.add(meadow);
@@ -12681,12 +12770,6 @@ function buildStonehengeWorld() {
   const returnGate = createReturnStargate(0x10b981);
   group.add(returnGate.group);
 
-  const moonLight = new THREE.DirectionalLight(0x6ee7b7, 1.8);
-  moonLight.position.set(30, 60, 40);
-  group.add(moonLight);
-
-  const ambLight = new THREE.AmbientLight(0x064e3b, 1.2);
-  group.add(ambLight);
 
   
   // --- TIER 2 ENHANCEMENTS (ITEMS 11-20) ---
@@ -12933,7 +13016,7 @@ function buildStonehengeWorld() {
   const hengeSky = createProceduralSkyDome('stonehenge');
   group.add(hengeSky);
 
-  const hengeMoonLight = new THREE.DirectionalLight(0xc7d2fe, 1.7);
+  const hengeMoonLight = new THREE.DirectionalLight(0xc7d2fe, 2.2);
   hengeMoonLight.position.set(18, 48, 25);
   hengeMoonLight.castShadow = true;
   hengeMoonLight.shadow.mapSize.width = 1024;
@@ -12944,10 +13027,12 @@ function buildStonehengeWorld() {
   hengeMoonLight.shadow.camera.right = 45;
   hengeMoonLight.shadow.camera.top = 45;
   hengeMoonLight.shadow.camera.bottom = -45;
-  hengeMoonLight.shadow.bias = -0.0004;
+  hengeMoonLight.shadow.bias = -0.0002;
+  hengeMoonLight.shadow.normalBias = 0.02;
   group.add(hengeMoonLight);
 
-  const hengeFill = new THREE.AmbientLight(0x064e3b, 0.9);
+  // Pale solstice twilight sky + dewy emerald meadow turf bounce
+  const hengeFill = new THREE.HemisphereLight(0xc7d2fe, 0x064e3b, 0.55);
   group.add(hengeFill);
 
   // Volumetric Moonbeam piercing through central trilithon onto altar
@@ -13891,8 +13976,15 @@ function buildStonehengeWorld() {
 function buildIslandWorld() {
   const group = new THREE.Group();
 
-  const atollGeo = new THREE.CylinderGeometry(28, 42, 3.5, 32);
-  const atollMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.9 });
+  const sandPBR = getGlobalSandPBR();
+  const atollMat = new THREE.MeshStandardMaterial({
+    color: 0xfef3c7,
+    normalMap: sandPBR.normalMap,
+    roughnessMap: sandPBR.roughnessMap,
+    roughness: 0.92,
+    metalness: 0.02
+  });
+  atollMat.normalScale.set(1.4, 1.4);
   const atoll = new THREE.Mesh(atollGeo, atollMat);
   atoll.position.set(0, -1.2, 5);
   atoll.receiveShadow = true;
@@ -14004,12 +14096,13 @@ function buildIslandWorld() {
   const waterMat = new THREE.MeshStandardMaterial({
     color: 0x0891b2,
     normalMap: waterPBR.normalMap,
-    roughness: 0.06,
-    metalness: 0.88,
+    roughnessMap: waterPBR.roughnessMap,
+    roughness: 0.05,
+    metalness: 0.02,
     transparent: true,
-    opacity: 0.84
+    opacity: 0.82
   });
-  waterMat.normalScale.set(1.8, 1.8);
+  waterMat.normalScale.set(1.6, 1.6);
   const water = new THREE.Mesh(waterGeo, waterMat);
   water.position.set(0, 0.1, 0);
   group.add(water);
@@ -14048,12 +14141,6 @@ function buildIslandWorld() {
   const returnGate = createReturnStargate(0x06b6d4);
   group.add(returnGate.group);
 
-  const sunLight = new THREE.DirectionalLight(0xfffbeb, 2.8);
-  sunLight.position.set(-40, 60, 50);
-  group.add(sunLight);
-
-  const ambLight = new THREE.AmbientLight(0x164e63, 1.3);
-  group.add(ambLight);
 
   
   // --- TIER 2 ENHANCEMENTS (ITEMS 11-20) ---
@@ -14306,7 +14393,7 @@ function buildIslandWorld() {
   const islandSky = createProceduralSkyDome('island');
   group.add(islandSky);
 
-  const islandSunLight = new THREE.DirectionalLight(0xfffaed, 2.8);
+  const islandSunLight = new THREE.DirectionalLight(0xfffaed, 2.9);
   islandSunLight.position.set(28, 55, 18);
   islandSunLight.castShadow = true;
   islandSunLight.shadow.mapSize.width = 1024;
@@ -14317,10 +14404,12 @@ function buildIslandWorld() {
   islandSunLight.shadow.camera.right = 45;
   islandSunLight.shadow.camera.top = 45;
   islandSunLight.shadow.camera.bottom = -45;
-  islandSunLight.shadow.bias = -0.0004;
+  islandSunLight.shadow.bias = -0.0002;
+  islandSunLight.shadow.normalBias = 0.02;
   group.add(islandSunLight);
 
-  const islandFill = new THREE.AmbientLight(0x0e7490, 0.9);
+  // Tropical azure sky irradiance + cerulean lagoon water bounce
+  const islandFill = new THREE.HemisphereLight(0x7dd3fc, 0x0e7490, 0.65);
   group.add(islandFill);
 
   // Volumetric Sun Shafts through palms
@@ -15576,7 +15665,16 @@ function buildSpaceWorld() {
   const group = new THREE.Group();
 
   // Metal Gantry Catwalk
-  const gantry = new THREE.Mesh(new THREE.BoxGeometry(8, 0.4, 45), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.25 }));
+  const steelPBR = getGlobalSteelPBR();
+  const gantryMat = new THREE.MeshStandardMaterial({
+    color: 0x334155,
+    normalMap: steelPBR.normalMap,
+    roughnessMap: steelPBR.roughnessMap,
+    metalness: 0.9,
+    roughness: 0.32
+  });
+  gantryMat.normalScale.set(1.0, 1.0);
+  const gantry = new THREE.Mesh(new THREE.BoxGeometry(8, 0.4, 45), gantryMat);
   gantry.position.set(0, -0.2, 5);
   gantry.receiveShadow = true;
   group.add(gantry);
@@ -15751,9 +15849,6 @@ function buildSpaceWorld() {
   const returnGate = createReturnStargate(0x7c3aed);
   group.add(returnGate.group);
 
-  const sunLight = new THREE.DirectionalLight(0xffffff, 3.2);
-  sunLight.position.set(80, 50, -90);
-  group.add(sunLight);
 
   
   // --- TIER 2 ENHANCEMENTS (ITEMS 11-20) ---
@@ -15938,7 +16033,7 @@ function buildSpaceWorld() {
   const spaceSky = createProceduralSkyDome('space');
   group.add(spaceSky);
 
-  const spaceSunLight = new THREE.DirectionalLight(0xffffff, 3.2);
+  const spaceSunLight = new THREE.DirectionalLight(0xffffff, 3.4);
   spaceSunLight.position.set(50, 35, -40);
   spaceSunLight.castShadow = true;
   spaceSunLight.shadow.mapSize.width = 1024;
@@ -15949,7 +16044,8 @@ function buildSpaceWorld() {
   spaceSunLight.shadow.camera.right = 40;
   spaceSunLight.shadow.camera.top = 40;
   spaceSunLight.shadow.camera.bottom = -40;
-  spaceSunLight.shadow.bias = -0.0004;
+  spaceSunLight.shadow.bias = -0.0002;
+  spaceSunLight.shadow.normalBias = 0.02;
   group.add(spaceSunLight);
 
   // Earth Atmospheric Rayleigh Scattering Outer Shell
@@ -17728,12 +17824,12 @@ function initThreeScene() {
     postProcessing.init(initDims.width, initDims.height);
   }
   
-  // Lights
-  const ambLight = new THREE.AmbientLight(0x283848, 1.0);
-  scene.add(ambLight);
-  
   baseLightsGroup = new THREE.Group();
   scene.add(baseLightsGroup);
+
+  // Lights
+  const ambLight = new THREE.AmbientLight(0x283848, 0.95);
+  baseLightsGroup.add(ambLight);
 
   // Sector 04: Pulsing Cyan Core Light
   coreLight = new THREE.PointLight(0x1be7ff, 4.0, 25);
