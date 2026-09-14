@@ -1173,7 +1173,7 @@
   </div>
 
   <div id="controls-hint">
-    Click to <span>LOCK FPS</span> or Drag Mouse to <span>LOOK</span> | <span>[W,A,S,D]</span> Walk | <span>[SHIFT]</span> Sprint | <span>[F]</span> Flashlight | <span>[SPACE]</span> Jump | <span>[E]</span> Inspect / Terminal
+    Click to <span>LOCK FPS</span> or Drag Mouse to <span>LOOK</span> | <span>[W,A,S,D]</span> Walk | <span>[SHIFT]</span> Sprint | <span>[1-7]</span> Worlds | <span>[F]</span> Flashlight | <span>[P]</span> Perf | <span>[H]</span> UI | <span>[E]</span> Inspect
   </div>
 
   <div id="waypoint-bar">
@@ -6221,8 +6221,9 @@ function buildBaseEnhancements() {
         rs.target.position.z = rs.cz + Math.sin(ang) * rs.radius;
       });
 
-      // 3. Seismograph Screen Update
-      if (Math.floor(time * 24) % 2 === 0) {
+      // 3. Seismograph Screen Update (Distance culled to within 10 meters of console)
+      const distToSeismoSq = (camera.position.x - (-3.8)) * (camera.position.x - (-3.8)) + (camera.position.z - (-1.5)) * (camera.position.z - (-1.5));
+      if (distToSeismoSq < 100 && (Math.floor(time * 16) % 2 === 0)) {
         seismoHistory.shift();
         const noise = Math.sin(time * 8) * 18 + (Math.random() - 0.5) * 14;
         const spike = Math.sin(time * 0.5) > 0.8 ? (Math.random() - 0.5) * 38 : 0;
@@ -8063,8 +8064,8 @@ function buildDesertWorld() {
   const desertSunLight = new THREE.DirectionalLight(0xffedd5, 2.6);
   desertSunLight.position.set(35, 55, -25);
   desertSunLight.castShadow = true;
-  desertSunLight.shadow.mapSize.width = 2048;
-  desertSunLight.shadow.mapSize.height = 2048;
+  desertSunLight.shadow.mapSize.width = 1024;
+  desertSunLight.shadow.mapSize.height = 1024;
   desertSunLight.shadow.camera.near = 1;
   desertSunLight.shadow.camera.far = 140;
   desertSunLight.shadow.camera.left = -45;
@@ -9741,8 +9742,8 @@ function buildMountainWorld() {
   const mountainSunLight = new THREE.DirectionalLight(0xe0f2fe, 2.2);
   mountainSunLight.position.set(-35, 45, -30);
   mountainSunLight.castShadow = true;
-  mountainSunLight.shadow.mapSize.width = 2048;
-  mountainSunLight.shadow.mapSize.height = 2048;
+  mountainSunLight.shadow.mapSize.width = 1024;
+  mountainSunLight.shadow.mapSize.height = 1024;
   mountainSunLight.shadow.camera.near = 1;
   mountainSunLight.shadow.camera.far = 140;
   mountainSunLight.shadow.camera.left = -45;
@@ -11344,8 +11345,8 @@ function buildCityWorld() {
   const cityMoonLight = new THREE.DirectionalLight(0x818cf8, 1.8);
   cityMoonLight.position.set(25, 45, 20);
   cityMoonLight.castShadow = true;
-  cityMoonLight.shadow.mapSize.width = 2048;
-  cityMoonLight.shadow.mapSize.height = 2048;
+  cityMoonLight.shadow.mapSize.width = 1024;
+  cityMoonLight.shadow.mapSize.height = 1024;
   cityMoonLight.shadow.camera.near = 1;
   cityMoonLight.shadow.camera.far = 140;
   cityMoonLight.shadow.camera.left = -40;
@@ -12935,8 +12936,8 @@ function buildStonehengeWorld() {
   const hengeMoonLight = new THREE.DirectionalLight(0xc7d2fe, 1.7);
   hengeMoonLight.position.set(18, 48, 25);
   hengeMoonLight.castShadow = true;
-  hengeMoonLight.shadow.mapSize.width = 2048;
-  hengeMoonLight.shadow.mapSize.height = 2048;
+  hengeMoonLight.shadow.mapSize.width = 1024;
+  hengeMoonLight.shadow.mapSize.height = 1024;
   hengeMoonLight.shadow.camera.near = 1;
   hengeMoonLight.shadow.camera.far = 140;
   hengeMoonLight.shadow.camera.left = -45;
@@ -14308,8 +14309,8 @@ function buildIslandWorld() {
   const islandSunLight = new THREE.DirectionalLight(0xfffaed, 2.8);
   islandSunLight.position.set(28, 55, 18);
   islandSunLight.castShadow = true;
-  islandSunLight.shadow.mapSize.width = 2048;
-  islandSunLight.shadow.mapSize.height = 2048;
+  islandSunLight.shadow.mapSize.width = 1024;
+  islandSunLight.shadow.mapSize.height = 1024;
   islandSunLight.shadow.camera.near = 1;
   islandSunLight.shadow.camera.far = 140;
   islandSunLight.shadow.camera.left = -45;
@@ -15940,8 +15941,8 @@ function buildSpaceWorld() {
   const spaceSunLight = new THREE.DirectionalLight(0xffffff, 3.2);
   spaceSunLight.position.set(50, 35, -40);
   spaceSunLight.castShadow = true;
-  spaceSunLight.shadow.mapSize.width = 2048;
-  spaceSunLight.shadow.mapSize.height = 2048;
+  spaceSunLight.shadow.mapSize.width = 1024;
+  spaceSunLight.shadow.mapSize.height = 1024;
   spaceSunLight.shadow.camera.near = 1;
   spaceSunLight.shadow.camera.far = 160;
   spaceSunLight.shadow.camera.left = -40;
@@ -17507,6 +17508,17 @@ function buildSpaceWorld() {
   };
 }
 
+// Performance Optimization: Freeze static scene-graph matrix recalculations
+function freezeStaticTransforms(root) {
+  if (!root) return;
+  root.traverse(child => {
+    if (child.isMesh && !child.userData.isDynamic) {
+      child.updateMatrix();
+      child.matrixAutoUpdate = false;
+    }
+  });
+}
+
 function initDestinationWorlds() {
   destinationWorlds.desert = buildDesertWorld();
   destinationWorlds.mountain = buildMountainWorld();
@@ -17516,6 +17528,7 @@ function initDestinationWorlds() {
   destinationWorlds.space = buildSpaceWorld();
 
   Object.values(destinationWorlds).forEach(w => {
+    freezeStaticTransforms(w.group);
     w.group.visible = false;
     scene.add(w.group);
   });
@@ -17698,12 +17711,12 @@ function initThreeScene() {
   camera.rotation.z = 0;
   
   // Renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", stencil: false });
   renderer.setSize(initDims.width, initDims.height);
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.setSize(initDims.width, initDims.height);
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
   renderer.shadowMap.enabled = true;
@@ -17727,6 +17740,9 @@ function initThreeScene() {
   coreLight.position.set(0, 2.0, 0);
   coreLight.castShadow = true;
   coreLight.shadow.bias = -0.001;
+  coreLight.shadow.mapSize.set(512, 512);
+  coreLight.shadow.camera.near = 0.5;
+  coreLight.shadow.camera.far = 18.0;
   baseLightsGroup.add(coreLight);
   
   // Sector 04: Overhead Warm Worklights
@@ -17758,7 +17774,7 @@ function initThreeScene() {
   // Sector 05: Colossal Stargate Quantum Event Horizon Light
   portalLight = new THREE.PointLight(0x1be7ff, 7.0, 45);
   portalLight.position.set(0, 3.8, -32.0);
-  portalLight.castShadow = true;
+  portalLight.castShadow = false; // Disabled point-light cubemap shadow passes to eliminate 6 render passes/frame
   baseLightsGroup.add(portalLight);
 
   portalChevronLight = new THREE.PointLight(0xffaa22, 4.0, 20);
@@ -17797,6 +17813,7 @@ function initThreeScene() {
   
   // Instantiate Base 20 Enhancements
   baseEnhancements = buildBaseEnhancements();
+  freezeStaticTransforms(baseEnhancements.group);
   
   // Tactical Shoulder Flashlight
   playerFlashlight = new THREE.SpotLight(0xfffaed, 0, 45, Math.PI / 6, 0.45, 1.2);
@@ -17858,6 +17875,7 @@ function loadShowcaseModel() {
       });
       scene.add(model);
       showcaseMeshGroup = model;
+      freezeStaticTransforms(model);
       
       loaderEl.style.opacity = '0';
       setTimeout(() => { loaderEl.style.display = 'none'; }, 400);
@@ -17978,6 +17996,12 @@ function onKeyDown(e) {
   // Flashlight toggle [F]
   if (code === 'KeyF' || key === 'f') {
     toggleFlashlight();
+    return;
+  }
+
+  // Performance Telemetry HUD [P]
+  if (code === 'KeyP' || key === 'p') {
+    showToast(`PERF: ${_currentFPS} FPS | ${_currentDrawCalls} DRAWS | ${_currentTriangles.toLocaleString()} TRIS | DPR ${Math.min(window.devicePixelRatio, 1.5).toFixed(1)}x`);
     return;
   }
 
@@ -18661,6 +18685,48 @@ function resolvePlayerMovement(pos, deltaX, deltaZ, loc) {
   }
 }
 
+// -------------------------------------------------------------
+// PERFORMANCE OPTIMIZATION ENGINE: ZERO-ALLOCATION MATH & DOM MUTEX
+// -------------------------------------------------------------
+const _animForward = new THREE.Vector3();
+const _animRight = new THREE.Vector3();
+const _animMoveDir = new THREE.Vector3();
+const _animOrbitForward = new THREE.Vector3();
+const _animOrbitRight = new THREE.Vector3();
+
+let _lastVortexUpdateTime = 0;
+let _lastProximityCheckTime = 0;
+let _lastPromptHTML = "";
+let _lastPromptDisplay = "none";
+let _lastTelemetryUpdateTime = 0;
+let _lastSectorText = "";
+
+let _cachedDomPosTelemetry = null;
+let _cachedDomSectorTelemetry = null;
+let _cachedDomPromptEl = null;
+
+let _perfFrameCount = 0;
+let _lastPerfReportTime = 0;
+let _currentFPS = 60;
+let _currentDrawCalls = 0;
+let _currentTriangles = 0;
+
+function updateInteractionPrompt(html, display = 'flex') {
+  if (!_cachedDomPromptEl) {
+    _cachedDomPromptEl = document.getElementById('interaction-prompt');
+  }
+  if (!_cachedDomPromptEl) return;
+
+  if (_lastPromptDisplay !== display) {
+    _cachedDomPromptEl.style.display = display;
+    _lastPromptDisplay = display;
+  }
+  if (display !== 'none' && _lastPromptHTML !== html) {
+    _cachedDomPromptEl.innerHTML = html;
+    _lastPromptHTML = html;
+  }
+}
+
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
@@ -18710,9 +18776,12 @@ function animate() {
     baseEnhancements.update(time, delta);
   }
 
-  // Swirling Event Horizon Vortex
-  if (vortexCtx && vortexTexture) {
-    updateVortexCanvas(time);
+  // Swirling Event Horizon Vortex (Only when in base and within Sector 05 view range, throttled to 30 FPS)
+  if (currentLocation === 'base' && camera.position.z < -10 && vortexCtx && vortexTexture) {
+    if (time - _lastVortexUpdateTime > 0.033) {
+      _lastVortexUpdateTime = time;
+      updateVortexCanvas(time);
+    }
   }
   if (vortexMesh && currentLocation === 'base') {
     vortexMesh.rotation.z += delta * 0.28 * (activeWorldObj ? activeWorldObj.speed : 1.0);
@@ -18725,12 +18794,12 @@ function animate() {
     terminalHoloDiamond.position.y = 1.45 + Math.sin(time * 3.2) * 0.04;
   }
   
-  // Dynamic Proximity Interaction Prompts & Multi-World Targets
-  const promptEl = document.getElementById('interaction-prompt');
-  if (promptEl) {
+  // Dynamic Proximity Interaction Prompts & Multi-World Targets (Throttled to 20 Hz / 50ms)
+  if (time - _lastProximityCheckTime > 0.05) {
+    _lastProximityCheckTime = time;
     const p = camera.position;
     if (isLoreModalOpen || isTerminalModalOpen) {
-      promptEl.style.display = 'none';
+      updateInteractionPrompt('', 'none');
     } else if (currentLocation === 'base') {
       const distTerminal = Math.hypot(p.x - (-3.8), p.z - 2.4);
       const distValve = Math.hypot(p.x - 2.8, p.z - 4.0);
@@ -18738,121 +18807,85 @@ function animate() {
       const distToGate = Math.hypot(p.x - 0, p.z - (-30.0));
       const distOverride = Math.hypot(p.x - (-2.8), p.z - (-6.0));
       if (distTerminal < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> ACCESS SITE-44 GEOTHERMAL TERMINAL // READ LOGS';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ACCESS SITE-44 GEOTHERMAL TERMINAL // READ LOGS');
       } else if (distValve < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> VENT GEOTHERMAL COOLANT PRESSURE VALVE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> VENT GEOTHERMAL COOLANT PRESSURE VALVE');
       } else if (distOverride < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> OVERRIDE GEOTHERMAL COOLANT FLOW INTERLOCK';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> OVERRIDE GEOTHERMAL COOLANT FLOW INTERLOCK');
       } else if (distToDial < 4.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> ACTIVATE GATE DIALING TERMINAL // SELECT DESTINATION';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ACTIVATE GATE DIALING TERMINAL // SELECT DESTINATION');
       } else if (distToGate < 4.2) {
         const destName = (activeWorldKey !== 'aquifer') ? WORLDS[activeWorldKey].name.toUpperCase() : 'A DESTINATION WORLD';
-        promptEl.innerHTML = `<span class="key-badge">[W]</span> STEP INTO HORIZON // TRANSIT TO ${destName}`;
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt(`<span class="key-badge">[W]</span> STEP INTO HORIZON // TRANSIT TO ${destName}`);
       } else {
-        promptEl.style.display = 'none';
+        updateInteractionPrompt('', 'none');
       }
     } else {
       const distToReturn = Math.hypot(p.x - 0, p.z - (-10.5));
       if (currentLocation === 'desert' && Math.hypot(p.x - 8.0, p.z - 6.0) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> DECIPHER ANCIENT RELIC CRYSTAL // STARMAP';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> DECIPHER ANCIENT RELIC CRYSTAL // STARMAP');
       } else if (currentLocation === 'desert' && Math.hypot(p.x - 12.0, p.z - (-4.0)) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> DRINK FROM WATER CISTERN // OASIS WELL';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> DRINK FROM WATER CISTERN // OASIS WELL');
       } else if (currentLocation === 'desert' && Math.hypot(p.x - 6.5, p.z - 4.2) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> BREW NOMAD SPICE TEA // FIREPIT KETTLE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> BREW NOMAD SPICE TEA // FIREPIT KETTLE');
       } else if (currentLocation === 'mountain' && Math.hypot(p.x - 9.2, p.z - 9.8) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> INSPECT EXPEDITION FIELD LAPTOP // WEATHER DATA';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> INSPECT EXPEDITION FIELD LAPTOP // WEATHER DATA');
       } else if (currentLocation === 'mountain' && Math.hypot(p.x - 6.5, p.z - 8.0) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> OPERATE CRYOGENIC ICE CORE DRILL';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> OPERATE CRYOGENIC ICE CORE DRILL');
       } else if (currentLocation === 'mountain' && Math.hypot(p.x - 4.5, p.z - (-6.0)) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> LAUNCH EMERGENCY PHOSPHORUS SIGNAL FLARE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> LAUNCH EMERGENCY PHOSPHORUS SIGNAL FLARE');
       } else if (currentLocation === 'city' && Math.hypot(p.x - 9.0, p.z - 6.0) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> DISPENSE SYNTH-SODA // NEON COLA 2088';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> DISPENSE SYNTH-SODA // NEON COLA 2088');
       } else if (currentLocation === 'city' && Math.hypot(p.x - 6.0, p.z - 8.0) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> ACCESS SKY-LOUNGE ROOFTOP AUTOMAT';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ACCESS SKY-LOUNGE ROOFTOP AUTOMAT');
       } else if (currentLocation === 'city' && Math.hypot(p.x - (-4.5), p.z - (-9.0)) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> CYCLE CYBERSYNTH JUKEBOX // TUNE ' + (activeJukeboxTrack + 1);
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> CYCLE CYBERSYNTH JUKEBOX // TUNE ' + (activeJukeboxTrack + 1));
       } else if (currentLocation === 'stonehenge' && Math.hypot(p.x - 3.2, p.z - 3.2) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> STRIKE SOLSTICE RESONANT LITHOPHONE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> STRIKE SOLSTICE RESONANT LITHOPHONE');
       } else if (currentLocation === 'stonehenge' && Math.hypot(p.x - 2.5, p.z - (-2.5)) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> READ ANCIENT CELESTIAL SUNDIAL // ALIGNMENT';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> READ ANCIENT CELESTIAL SUNDIAL // ALIGNMENT');
       } else if (currentLocation === 'stonehenge' && Math.hypot(p.x - 0, p.z - (-4.0)) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> KINDLE SACRED ALTAR BRAZIER // LEYLINE CHIME';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> KINDLE SACRED ALTAR BRAZIER // LEYLINE CHIME');
       } else if (currentLocation === 'island' && Math.hypot(p.x - 6.0, p.z - 8.0) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> READ VOYAGER\'S MESSAGE IN A BOTTLE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> READ VOYAGER\'S MESSAGE IN A BOTTLE');
       } else if (currentLocation === 'island' && Math.hypot(p.x - 2.0, p.z - 5.0) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> BLOW ANCIENT CONCH SHELL HORN';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> BLOW ANCIENT CONCH SHELL HORN');
       } else if (currentLocation === 'island' && Math.hypot(p.x - 4.0, p.z - (-12.0)) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> OPEN SPANISH GALLEON TREASURE CHEST';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> OPEN SPANISH GALLEON TREASURE CHEST');
       } else if (currentLocation === 'space' && Math.hypot(p.x - 6.0, p.z - 4.0) < 3.2) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> CALIBRATE ORBITAL EVA SENSORS // TELEMETRY';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> CALIBRATE ORBITAL EVA SENSORS // TELEMETRY');
       } else if (currentLocation === 'space' && Math.hypot(p.x - (-6.0), p.z - 2.0) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> ENGAGE GANTRY CARGO MANIPULATOR CRANE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ENGAGE GANTRY CARGO MANIPULATOR CRANE');
       } else if (currentLocation === 'space' && Math.hypot(p.x - 2.0, p.z - (-6.5)) < 3.5) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> CYCLE STATION EXTERIOR EVA AIRLOCK HATCH';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> CYCLE STATION EXTERIOR EVA AIRLOCK HATCH');
       } else if (currentLocation === 'desert' && Math.hypot(p.x - 36.0, p.z - 0) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> DECIPHER PHARAOH-ASTRONAUT HIEROGLYPHS';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> DECIPHER PHARAOH-ASTRONAUT HIEROGLYPHS');
       } else if (currentLocation === 'desert' && Math.hypot(p.x - (-36.0), p.z - (-14.0)) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> REPLENISH WATERSKIN AT OASIS SPRING';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> REPLENISH WATERSKIN AT OASIS SPRING');
       } else if (currentLocation === 'mountain' && Math.hypot(p.x - (-24.0), p.z - (-24.0)) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> ANALYZE PREHISTORIC GLACIAL ICE CORE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ANALYZE PREHISTORIC GLACIAL ICE CORE');
       } else if (currentLocation === 'mountain' && Math.hypot(p.x - 36.0, p.z - 16.0) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> PEER THROUGH SUMMIT VISTA TELESCOPE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> PEER THROUGH SUMMIT VISTA TELESCOPE');
       } else if (currentLocation === 'city' && Math.hypot(p.x - 0, p.z - 40.0) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> QUERY HIGH-SPEED MAGLEV TRANSIT KIOSK';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> QUERY HIGH-SPEED MAGLEV TRANSIT KIOSK');
       } else if (currentLocation === 'city' && Math.hypot(p.x - (-13.0), p.z - (-45.0)) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> ORDER CYBER-COCKTAIL // SYNTH-SAKE 2088';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ORDER CYBER-COCKTAIL // SYNTH-SAKE 2088');
       } else if (currentLocation === 'stonehenge' && Math.hypot(p.x - 32.0, p.z - 1.0) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> COMMUNE WITH NEOLITHIC ANCESTORS // BARROW';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> COMMUNE WITH NEOLITHIC ANCESTORS // BARROW');
       } else if (currentLocation === 'stonehenge' && Math.hypot(p.x - 0, p.z - (-42.0)) < 4.0) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> SIGHT MIDSUMMER SOLSTICE SUNRISE ALIGNMENT';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> SIGHT MIDSUMMER SOLSTICE SUNRISE ALIGNMENT');
       } else if (currentLocation === 'island' && Math.hypot(p.x - (-30.0), p.z - (-18.0)) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> READ BUCCANEER\\\'S FORGOTTEN VOYAGE LOG';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> READ BUCCANEER\\\'S FORGOTTEN VOYAGE LOG');
       } else if (currentLocation === 'island' && Math.hypot(p.x - 36.0, p.z - 34.0) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> SURVEY BARRIER REEF LAGOON // TELESCOPE';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> SURVEY BARRIER REEF LAGOON // TELESCOPE');
       } else if (currentLocation === 'space' && Math.hypot(p.x - (-14.0), p.z - 8.5) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> TRIGGER HIGH-RES EARTH OBSERVATION SCAN';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> TRIGGER HIGH-RES EARTH OBSERVATION SCAN');
       } else if (currentLocation === 'space' && Math.hypot(p.x - 14.0, p.z - 27.5) < 3.8) {
-        promptEl.innerHTML = '<span class="key-badge">[E]</span> RUN PLANETARY ROVER SYSTEM DIAGNOSTIC';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[E]</span> RUN PLANETARY ROVER SYSTEM DIAGNOSTIC');
       } else if (distToReturn < 4.2) {
-        promptEl.innerHTML = '<span class="key-badge">[W]</span> STEP INTO PORTAL // RETURN TO SITE-44 SUB-AQUIFER';
-        promptEl.style.display = 'flex';
+        updateInteractionPrompt('<span class="key-badge">[W]</span> STEP INTO PORTAL // RETURN TO SITE-44 SUB-AQUIFER');
       } else {
-        promptEl.style.display = 'none';
+        updateInteractionPrompt('', 'none');
       }
     }
   }
@@ -18876,23 +18909,23 @@ function animate() {
     }
     const speed = (moveState.sprint ? 8.0 : 4.0) * delta;
     
-    // Calculate pure horizontal forward and right directions cleanly from playerYaw
+    // Calculate pure horizontal forward and right directions cleanly from playerYaw (Zero-Allocation)
     // This completely eliminates pitch-induced slowdowns, jitter, or vector degradation
     const sinY = Math.sin(playerYaw);
     const cosY = Math.cos(playerYaw);
-    const forward = new THREE.Vector3(-sinY, 0, -cosY);
-    const right = new THREE.Vector3(cosY, 0, -sinY);
+    _animForward.set(-sinY, 0, -cosY);
+    _animRight.set(cosY, 0, -sinY);
     
-    const moveDir = new THREE.Vector3();
-    if (moveState.forward) moveDir.add(forward);
-    if (moveState.backward) moveDir.sub(forward);
-    if (moveState.right) moveDir.add(right);
-    if (moveState.left) moveDir.sub(right);
+    _animMoveDir.set(0, 0, 0);
+    if (moveState.forward) _animMoveDir.add(_animForward);
+    if (moveState.backward) _animMoveDir.sub(_animForward);
+    if (moveState.right) _animMoveDir.add(_animRight);
+    if (moveState.left) _animMoveDir.sub(_animRight);
     
-    if (moveDir.lengthSq() > 0) {
-      moveDir.normalize();
-      const deltaX = moveDir.x * speed;
-      const deltaZ = moveDir.z * speed;
+    if (_animMoveDir.lengthSq() > 0) {
+      _animMoveDir.normalize();
+      const deltaX = _animMoveDir.x * speed;
+      const deltaZ = _animMoveDir.z * speed;
       resolvePlayerMovement(camera.position, deltaX, deltaZ, currentLocation);
 
       // Phase 16: Dynamic Walking Head Bob
@@ -18969,48 +19002,67 @@ function animate() {
     }
   } else if (isOrbitMode) {
     const speed = (moveState.sprint ? 12.0 : 6.0) * delta;
-    const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-    forward.y = 0;
-    forward.normalize();
-    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
-    right.y = 0;
-    right.normalize();
+    _animOrbitForward.set(0, 0, -1).applyQuaternion(camera.quaternion);
+    _animOrbitForward.y = 0;
+    _animOrbitForward.normalize();
+    _animOrbitRight.set(1, 0, 0).applyQuaternion(camera.quaternion);
+    _animOrbitRight.y = 0;
+    _animOrbitRight.normalize();
     
-    const moveDir = new THREE.Vector3();
-    if (moveState.forward) moveDir.add(forward);
-    if (moveState.backward) moveDir.sub(forward);
-    if (moveState.right) moveDir.add(right);
-    if (moveState.left) moveDir.sub(right);
-    if (moveDir.lengthSq() > 0) {
-      moveDir.normalize();
-      camera.position.addScaledVector(moveDir, speed);
+    _animMoveDir.set(0, 0, 0);
+    if (moveState.forward) _animMoveDir.add(_animOrbitForward);
+    if (moveState.backward) _animMoveDir.sub(_animOrbitForward);
+    if (moveState.right) _animMoveDir.add(_animOrbitRight);
+    if (moveState.left) _animMoveDir.sub(_animOrbitRight);
+    if (_animMoveDir.lengthSq() > 0) {
+      _animMoveDir.normalize();
+      camera.position.addScaledVector(_animMoveDir, speed);
 
       // Phase 16: Dynamic Walking Head Bob
       walkCycleTime += delta * (moveState.sprint ? 14.0 : 8.8);
       const bobY = Math.sin(walkCycleTime) * (moveState.sprint ? 0.032 : 0.018);
       camera.position.y += bobY * 0.5;
-      orbitControls.target.addScaledVector(moveDir, speed);
+      orbitControls.target.addScaledVector(_animMoveDir, speed);
     }
     orbitControls.update();
   }
   
-  // Update Telemetry HUD
-  const p = camera.position;
-  document.getElementById("posTelemetry").innerText = 
-    `CAMERA: X: ${p.x.toFixed(2)} | Y: ${p.y.toFixed(2)} | Z: ${p.z.toFixed(2)}`;
-
-  if (currentLocation === 'base') {
-    let sec = "SECTOR: 04 // SUB-AQUIFER CORE VAULT";
-    if (p.z < -12) sec = "SECTOR: 05 // THE GREAT PORTAL HALL";
-    else if (p.z < -8) sec = "SECTOR: 04-05 // PRESSURE SEALED AIRLOCK";
-    const secEl = document.getElementById("sectorTelemetry");
-    if (secEl) secEl.innerText = sec;
+  // Update Telemetry HUD (Throttled to 10 Hz & skipped when UI is hidden)
+  if (!document.body.classList.contains('ui-hidden') && (time - _lastTelemetryUpdateTime > 0.1)) {
+    _lastTelemetryUpdateTime = time;
+    if (!_cachedDomPosTelemetry) _cachedDomPosTelemetry = document.getElementById("posTelemetry");
+    if (_cachedDomPosTelemetry) {
+      const p = camera.position;
+      _cachedDomPosTelemetry.innerText = `CAMERA: X: ${p.x.toFixed(2)} | Y: ${p.y.toFixed(2)} | Z: ${p.z.toFixed(2)}`;
+    }
+    if (currentLocation === 'base') {
+      let sec = "SECTOR: 04 // SUB-AQUIFER CORE VAULT";
+      if (camera.position.z < -12) sec = "SECTOR: 05 // THE GREAT PORTAL HALL";
+      else if (camera.position.z < -8) sec = "SECTOR: 04-05 // PRESSURE SEALED AIRLOCK";
+      if (_lastSectorText !== sec) {
+        _lastSectorText = sec;
+        if (!_cachedDomSectorTelemetry) _cachedDomSectorTelemetry = document.getElementById("sectorTelemetry");
+        if (_cachedDomSectorTelemetry) _cachedDomSectorTelemetry.innerText = sec;
+      }
+    }
   }
     
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.render(time, delta);
   } else {
     renderer.render(scene, camera);
+  }
+
+  // Real-time Performance Telemetry Sampling (1 Hz)
+  _perfFrameCount++;
+  if (time - _lastPerfReportTime >= 1.0) {
+    _currentFPS = Math.round((_perfFrameCount * 1.0) / (time - _lastPerfReportTime));
+    _perfFrameCount = 0;
+    _lastPerfReportTime = time;
+    if (renderer && renderer.info && renderer.info.render) {
+      _currentDrawCalls = renderer.info.render.calls;
+      _currentTriangles = renderer.info.render.triangles;
+    }
   }
 }
 
