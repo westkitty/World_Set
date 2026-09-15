@@ -6,26 +6,26 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 3,
-  "last_updated": "2026-09-15T10:50:00Z",
+  "state_revision": 4,
+  "last_updated": "2026-09-15T19:18:00Z",
   "current_baseline": {
-    "identity": "final repair state on main; parent 31180d5c7b8cedef16efaf1586fbd0f275f67a53; final SHA reported externally",
+    "identity": "native macOS app wrapper and dock icon integration; commit 9007912; upstream origin/main synchronized",
     "state": "verified",
-    "last_verified": "2026-09-15T10:49:00Z"
+    "last_verified": "2026-09-15T19:18:00Z"
   },
-  "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit"],
+  "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
 }
 -->
 
 ## 1. Project Identity and Scope
-World_Set is the Site-44 Sub-Aquifer World Kit and its browser exploration runtime. The current task continues the forensic repair and uplift already represented by commit `63c8f70`, without replacing the canonical world-kit identity.
+World_Set is the Site-44 Sub-Aquifer World Kit and its browser exploration runtime. The current task continues the forensic repair, uplift, and native desktop wrapper integration already represented by commits `63c8f70`, `483f232`, and `9007912`, without replacing the canonical world-kit identity.
 
 ## 2. Current Baseline
-- Branch: `main`; upstream: `origin/main`; starting HEAD: `3bfc7504ada6`; ahead/behind: `0/0`.
-- Baseline static suites: `tools/test_regression.py` PASS and `tools/validate_kit.py` PASS.
+- Branch: `main`; upstream: `origin/main`; starting HEAD: `9007912`; ahead/behind: `0/0`.
+- Baseline static suites: `tools/test_regression.py` PASS, `tools/test_runtime_repairs.py` PASS, `tools/test_uplift_integration.py` PASS, `tools/test_uplift_ledger.py` PASS, and `tools/validate_kit.py` PASS.
 - Browser boot observed in installed Chrome: primary WebGL canvas present, renderer initialized, loader dismissed, origin world active.
-- Pre-existing untracked `.app`, icon, and launcher artifacts are protected and excluded from this pass.
+- Native application wrapper: `/Applications/World Set.app` installed, ad-hoc signed, and pinned to user Dock at slot 38. Tooling and assets tracked (`tools/world_set_launcher.c`, `tools/generate_dock_icon.py`, `renders/AppIcon.icns`, `renders/app_icon_1024.png`).
 ## 3. Artifact Contract
 The browser artifact must remain offline-capable, preserve existing exploration behavior, use the existing Three.js/runtime architecture, and keep current world-kit assets and canonical specifications authoritative. The forensic uplift count must be supported by integrated behavior rather than symbol existence.
 
@@ -39,11 +39,11 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 <!-- /operational-state:entry -->
 
 <!-- operational-state:entry
-{"id":"INV-002","title":"Preserve pre-existing user work","state":"requested","rule":"Do not modify, stage, reset, or commit the pre-existing untracked app-wrapper, icon, or launcher artifacts.","scope":"Git working tree","authority":"Current task safety contract","evidence":"Baseline git status","validation_method":"Compare final git status and staged diff to baseline","last_checked":"baseline 3bfc7504ada6","status":"active","recheck_trigger":"Any Git staging or delivery action"}
+{"id":"INV-002","title":"Packaging and app-wrapper integration completed per user specification","state":"verified","rule":"Dedicated native macOS wrapper, icon generator, and launcher tooling are tracked in source; build intermediates and local .app bundle are protected in .gitignore; /Applications/World Set.app is installed and pinned to Dock.","scope":"Packaging and Git working tree","authority":"Explicit user task contract","evidence":"tools/world_set_launcher.c; tools/generate_dock_icon.py; renders/AppIcon.icns; dockutil verification at slot 38","validation_method":"dockutil --find 'World Set' and codesign -vvv","last_checked":"commit 9007912","status":"active","recheck_trigger":"Any packaging or dock integration change"}
 -->
-### INV-002 — Preserve pre-existing user work
-- **State:** `requested`
-- **Rule:** Pre-existing untracked app-wrapper/icon/launcher work remains untouched and unstaged.
+### INV-002 — Packaging and app-wrapper integration completed per user specification
+- **State:** `verified`
+- **Rule:** Standalone native wrapper and Dock icon are fully installed, tested, and tracked in source control.
 <!-- /operational-state:entry -->
 ## 5. Verified Working Behavior
 <!-- operational-state:entry
@@ -62,6 +62,14 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - **Capability:** Both flagship component paths are currently reachable.
 <!-- /operational-state:entry -->
 
+<!-- operational-state:entry
+{"id":"VER-003","title":"Standalone native macOS app wrapper & dock launcher","state":"verified","capability":"/Applications/World Set.app manages background server on port 8000 and launches Chrome/Brave dedicated app mode; pinned to user Dock at slot 38.","scope":"Desktop application wrapper","verification_method":"dockutil and codesign verification","evidence":"dockutil slot 38; codesign valid on disk; curl port 8000 HTTP 200 OK","artifact_revision":"commit 9007912","last_verified":"2026-09-15T19:18:00Z","dependencies":["dockutil","codesign","Chrome/Brave"],"freshness":"current baseline","recheck_trigger":"packaging or launcher source change"}
+-->
+### VER-003 — Standalone native macOS app wrapper & dock launcher
+- **State:** `verified`
+- **Capability:** Dedicated desktop application bundle installed, signed, and accessible from Dock.
+<!-- /operational-state:entry -->
+
 ## 6. Known Not Working
 - None known inside the frozen forensic-repair scope after the final static, browser, world-transition, persistence, mobile-layout, and clean-archive validation gates.
 ## 7. Implemented but Unverified
@@ -72,27 +80,29 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Repository inspection found no GitHub Actions workflows and no configured GitHub Pages site; CI and deployment are therefore not applicable to this repository state.
 
 ## 9. Pending Work
-- No completion-blocking source work remains. Final upstream synchronization is verified externally after the containing commit is created.
+- Current phase deliverables (forensic uplift, bug sweep, responsive audio/settings repair, native macOS app wrapper, and Dock icon integration) are 100% complete and synchronized with `origin/main`.
 
 ## 10. Active Decisions, Defaults, and Prohibitions
 - Preserve the current single-file/offline browser architecture; add no dependency unless evidence makes it necessary.
 - Do not implement fake Three.js LOD: narrow the unused stub to a real adaptive update-budget mechanism.
-- Do not touch or stage baseline untracked app-wrapper/icon/launcher artifacts.
+- Native application wrapper tooling and assets are committed; local build directories are protected via `.gitignore`.
 - Do not manufacture new improvements merely to repeat already implemented value; count only distinct inspectable behavior.
 
 ## 11. Validation and Evidence Matrix
 | ID | Claim | State | Current evidence | Required recheck |
 | --- | --- | --- | --- | --- |
 | INV-001 | Canonical kit remains intact | verified | clean-archive `validate_kit.py` PASS | recheck on asset/world-kit changes |
-| INV-002 | User work preserved | verified | protected untracked paths remain unstaged | recheck on Git delivery |
+| INV-002 | App wrapper & dock integration | verified | `dockutil` slot 38; `codesign` valid; git clean | recheck on packaging delivery |
 | VER-001 | Main browser runtime boots | verified | installed Chrome runtime | browser smoke after edits |
 | VER-002 | Scanner/codex reachable | verified | installed Chrome runtime | flagship integration smoke |
+| VER-003 | Desktop wrapper & dock launcher | verified | `/Applications/World Set.app` active | recheck on launcher edits |
 ## 12. Current Change Scope and Impact Radius
-- Primary files allowed to change: `index.html`, uplift/integration tests, operational state, forensic ledger, and project Bible.
-- Impact radius: runtime bootstrap, render loop, scanner/codex integration, input routing, persistence, performance scheduling, browser lifecycle handling, and documentation truth.
-- Protected outside radius: authored asset files, Blender master, generated production GLBs, and baseline untracked app-wrapper artifacts.
+- Primary files allowed to change: `index.html`, uplift/integration tests, operational state, forensic ledger, project Bible, and packaging launcher tools.
+- Impact radius: runtime bootstrap, render loop, scanner/codex integration, input routing, persistence, performance scheduling, browser lifecycle handling, documentation truth, and desktop application wrapper.
+- Protected outside radius: authored asset files, Blender master, and generated production GLBs.
 
 ## 13. Compact Revision Log
 - Revision 1 — 2026-09-15: bootstrapped operational state from baseline evidence; recorded shallow uplift-proof gap and frozen repair scope.
 - Revision 2 — 2026-09-15: promoted repaired runtime/integration paths after Chrome, 16-world, persistence, mobile, full-suite, and clean-archive proof; implementation commit `466d52a8357109cb4f239490d99190a4de99399c`.
 - Revision 3 — 2026-09-15: closed medium-width header overflow/overlap, live audio-mixer routing, and FOV persistence; revalidated 1280/1024/390 layouts, audio user gesture, world sweep, scanner→Codex, and session/settings reload.
+- Revision 4 — 2026-09-15: integrated native macOS standalone application bundle (`/Applications/World Set.app`) and high-res Stargate Dock icon at slot 38; synchronized commit `9007912` with upstream `origin/main`; verified 100% PASS across all 5 test suites.

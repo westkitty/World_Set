@@ -80,3 +80,28 @@
 - Hover→header reveal→audio click succeeds; AudioContext is running and master/ambience/SFX/UI gains are live.
 - Mars session reload restores FOV 77°, world, camera position/look, shadows/postFX, controls, and telemetry preference.
 - Full repository validation and clean-commit validation are required before delivery; final hashes and remote synchronization are reported externally.
+
+## 2026-09-15 - Standalone macOS application wrapper and Dock integration closure
+
+### Repository state
+- Parent before this closure: `483f23251924d37e9ef99f917eb3bfcb266d22b4` on `main`.
+- Upstream: `git@github.com:westkitty/World_Set.git` on branch `main`.
+
+### Goals & requested scope
+- Package World Set as a dedicated standalone desktop application wrapper.
+- Generate a high-resolution Retina Stargate icon suite conforming to Apple HIG squircle guidelines.
+- Pin the application directly to the user's macOS Dock.
+
+### Implemented changes
+- Icon generation pipeline: `tools/generate_dock_icon.py` crops the 1080p `05_stargate_portal_chamber.png` render to the glowing portal center of mass, renders an 824x824 squircle mask with neon cyan/slate chamfer bezel, glass sheen, and drop shadow on a 1024x1024 canvas (`renders/app_icon_1024.png`), and compiles 10 standard Retina/non-Retina resolutions into `renders/AppIcon.icns` via `iconutil`.
+- Native launcher binary: `tools/world_set_launcher.c` compiled with `clang -O2 -arch arm64` as a fast native Mach-O executable. Automatically tests port 8000 via TCP socket, launches the detached Python HTTP background server if inactive, and spawns Google Chrome or Brave in standalone dedicated window mode (`--app=http://localhost:8000/index.html --window-size=1440,900`).
+- Application bundle: constructed `/Applications/World Set.app` with `Contents/Info.plist`, `Contents/MacOS/World Set`, `Contents/Resources/AppIcon.icns`, and ad-hoc code signature (`codesign --force --deep --sign -`).
+- Dock integration: pinned `/Applications/World Set.app` directly into user's persistent Dock apps at slot 38 via `dockutil`.
+- Ecosystem synchronization: updated `open_app_wrapper.sh` to prioritize the `/Applications/World Set.app` bundle and added build artifacts to `.gitignore`.
+
+### Validation
+- Dock verified: `dockutil --find "World Set"` confirms presence in persistent-apps at slot 38.
+- Code signature: `codesign -vvv --deep --strict "/Applications/World Set.app"` passes with valid requirement.
+- Server test: `http://127.0.0.1:8000/index.html` responds with `HTTP/1.0 200 OK` (974 KB payload).
+- Test battery: `tools/test_regression.py`, `tools/test_runtime_repairs.py`, `tools/test_uplift_integration.py`, `tools/test_uplift_ledger.py`, and `tools/validate_kit.py` all PASS 100%.
+- Git delivery: committed (`9007912`) and pushed to `git@github.com:westkitty/World_Set.git`.
