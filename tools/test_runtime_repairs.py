@@ -15,6 +15,18 @@ checks = [
      source.count("toggleFlashlight();") == 1),
     ("Mobile header contains overflow in nav lane",
      ".nav-tabs::-webkit-scrollbar" in source and "overflow-x: auto;" in source),
+    ("CORR-11 medium-width header uses contained scroll lane",
+     "@media (max-width: 1280px)" in source and "flex: 1 1 auto;" in source),
+    ("CORR-12 floating UI toggle sits below header controls",
+     "#ui-toggle-btn {" in source and "top: 68px;" in source),
+    ("BACK-08 mixer initializes from the live audio context",
+     "AudioMixerBus.init(audioCtx);" in source and "AudioMixerBus.setVolumes(userAudioSettings.masterVol" in source),
+    ("BACK-08 ambience and SFX route through mixer buses",
+     "gainNode.connect(AudioMixerBus.ambienceGain || audioCtx.destination);" in source and
+     "AudioMixerBus.sfxGain || audioCtx.destination" in source and
+     "connect(audioCtx.destination)" not in source),
+    ("CORR-14 dial and transit effects preserve the active FOV setting",
+     source.count("const origFov = camera.fov || 65;") == 2 and "const origFov = 65;" not in source),
 ]
 
 failures = []

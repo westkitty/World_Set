@@ -818,6 +818,26 @@
     display: none;
   }
 
+  @media (max-width: 1280px) {
+    #header-nav {
+      gap: 0.5rem;
+      padding: 0 0.75rem;
+    }
+    .brand, .audio-btn {
+      flex: 0 0 auto;
+    }
+    .nav-tabs {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-btn { flex: 0 0 auto; }
+  }
+
   @media (max-width: 540px) {
     #header-nav {
       padding: 0 0.5rem;
@@ -1352,7 +1372,7 @@
   /* Floating UI Toggle Button */
   #ui-toggle-btn {
     position: fixed;
-    top: 14px;
+    top: 68px;
     right: 18px;
     background: rgba(14, 18, 25, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -2881,6 +2901,8 @@ let subOsc, humOsc, filterNode, gainNode;
 function toggleAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    AudioMixerBus.init(audioCtx);
+    AudioMixerBus.setVolumes(userAudioSettings.masterVol, userAudioSettings.ambienceVol, userAudioSettings.sfxVol);
     
     // Sub bass 45Hz drone
     subOsc = audioCtx.createOscillator();
@@ -2904,7 +2926,7 @@ function toggleAudio() {
     subOsc.connect(filterNode);
     humOsc.connect(filterNode);
     filterNode.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+    gainNode.connect(AudioMixerBus.ambienceGain || audioCtx.destination);
     
     subOsc.start();
     humOsc.start();
@@ -2938,7 +2960,7 @@ function playChevronTone(index) {
     g.gain.setValueAtTime(0.07, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start();
     osc.stop(audioCtx.currentTime + 0.09);
   } catch (err) {}
@@ -2957,7 +2979,7 @@ function playEngageSurgeTone(targetHumFreq) {
     g.gain.setValueAtTime(0.12, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.75);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start();
     osc.stop(audioCtx.currentTime + 0.8);
   } catch (err) {}
@@ -2980,7 +3002,7 @@ function playPortalTransitSound() {
     subG.gain.setValueAtTime(0.22, now);
     subG.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
     sub.connect(subG);
-    subG.connect(audioCtx.destination);
+    subG.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     sub.start(now);
     sub.stop(now + 0.92);
 
@@ -2995,7 +3017,7 @@ function playPortalTransitSound() {
     sweepG.gain.setValueAtTime(0.14, now);
     sweepG.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
     sweep.connect(sweepG);
-    sweepG.connect(audioCtx.destination);
+    sweepG.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     sweep.start(now);
     sweep.stop(now + 0.82);
   } catch (err) {}
@@ -3044,7 +3066,7 @@ function playFlashlightClick() {
     g.gain.setValueAtTime(0.09, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.05);
   } catch (err) {}
@@ -3069,7 +3091,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.06, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.095);
 
@@ -3082,7 +3104,7 @@ function playSurfaceFootstep(surfaceType) {
       harmG.gain.setValueAtTime(0.04, now);
       harmG.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
       harm.connect(harmG);
-      harmG.connect(audioCtx.destination);
+      harmG.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       harm.start(now);
       harm.stop(now + 0.07);
     } 
@@ -3096,7 +3118,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.08, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.08);
     }
@@ -3118,7 +3140,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.06, now);
       noise.connect(filter);
       filter.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       noise.start(now);
     }
     else if (surfaceType === 'snow') {
@@ -3139,7 +3161,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.07, now);
       noise.connect(filter);
       filter.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       noise.start(now);
     }
     else if (surfaceType === 'grass') {
@@ -3152,7 +3174,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.05, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.07);
     }
@@ -3167,7 +3189,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.07, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.1);
     }
@@ -3181,7 +3203,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.06, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.065);
     }
@@ -3195,7 +3217,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.08, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.08);
     }
@@ -3209,7 +3231,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.05, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.09);
     }
@@ -3224,7 +3246,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.08, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.14);
     }
@@ -3246,7 +3268,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.07, now);
       noise.connect(filter);
       filter.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       noise.start(now);
     }
     else if (surfaceType === 'crystal_res') {
@@ -3259,7 +3281,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.06, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.12);
     }
@@ -3274,7 +3296,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.07, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.12);
     }
@@ -3288,7 +3310,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.09, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.1);
     }
@@ -3303,7 +3325,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.05, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.1);
     }
@@ -3325,7 +3347,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.05, now);
       noise.connect(filter);
       filter.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       noise.start(now);
     }
     else if (surfaceType === 'aerolite') {
@@ -3338,7 +3360,7 @@ function playSurfaceFootstep(surfaceType) {
       g.gain.setValueAtTime(0.04, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.14);
     }
@@ -3368,7 +3390,7 @@ function playZeroGThruster() {
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
     noise.connect(filter);
     filter.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     noise.start(now);
   } catch (err) {}
 }
@@ -3386,7 +3408,7 @@ function playLithophoneChime() {
       g.gain.setValueAtTime(0.1, now + idx * 0.06);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 1.2);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.06);
       osc.stop(now + idx * 0.06 + 1.25);
     });
@@ -3406,7 +3428,7 @@ function playElectricalZap() {
     g.gain.setValueAtTime(0.09, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.095);
   } catch (err) {}
@@ -3439,7 +3461,7 @@ function playValveSteamHiss() {
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
     noise.connect(filter);
     filter.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     noise.start(now);
   } catch (err) {}
 }
@@ -3458,7 +3480,7 @@ function playBrazierIgnition() {
     g.gain.setValueAtTime(0.16, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.7);
   } catch (err) {}
@@ -3479,7 +3501,7 @@ function playConchHornBlast() {
       g.gain.setValueAtTime(idx === 0 ? 0.15 : 0.08, now);
       g.gain.exponentialRampToValueAtTime(0.001, now + 1.35);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now);
       osc.stop(now + 1.4);
     });
@@ -3499,7 +3521,7 @@ function playKeypadBeep() {
       g.gain.setValueAtTime(0.07, now + idx * 0.08);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.06);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.08);
       osc.stop(now + idx * 0.08 + 0.065);
     });
@@ -3520,7 +3542,7 @@ function playIceDrillMotor() {
     g.gain.setValueAtTime(0.09, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.8);
   } catch (err) {}
@@ -3539,7 +3561,7 @@ function playCraneMotor() {
     g.gain.setValueAtTime(0.12, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.9);
   } catch (err) {}
@@ -3563,7 +3585,7 @@ function playCoolantOverride() {
     g.gain.setValueAtTime(0.16, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 1.15);
   } catch (err) {}
@@ -3584,7 +3606,7 @@ function playKettleBoil() {
       g.gain.setValueAtTime(0.08, now + idx * 0.12);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.14);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.12);
       osc.stop(now + idx * 0.12 + 0.15);
     });
@@ -3604,7 +3626,7 @@ function playFlareLaunch() {
     g.gain.setValueAtTime(0.18, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.75);
   } catch (err) {}
@@ -3635,7 +3657,7 @@ function playJukeboxTune(trackIndex) {
       g.gain.setValueAtTime(0.08, now + idx * 0.14);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.16);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.14);
       osc.stop(now + idx * 0.14 + 0.18);
     });
@@ -3655,7 +3677,7 @@ function playLithophoneArpeggio() {
       g.gain.setValueAtTime(0.12, now + idx * 0.1);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.6);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.1);
       osc.stop(now + idx * 0.1 + 0.65);
     });
@@ -3676,7 +3698,7 @@ function playTreasureChest() {
     g.gain.setValueAtTime(0.15, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.45);
 
@@ -3689,7 +3711,7 @@ function playTreasureChest() {
       cG.gain.setValueAtTime(0.09, now + 0.2 + idx * 0.08);
       cG.gain.exponentialRampToValueAtTime(0.001, now + 0.2 + idx * 0.08 + 0.25);
       cOsc.connect(cG);
-      cG.connect(audioCtx.destination);
+      cG.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       cOsc.start(now + 0.2 + idx * 0.08);
       cOsc.stop(now + 0.2 + idx * 0.08 + 0.3);
     });
@@ -3709,7 +3731,7 @@ function playAirlockCycle() {
     g.gain.setValueAtTime(0.18, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.6);
   } catch (err) {}
@@ -3824,7 +3846,7 @@ function playGeigerClick() {
     g.gain.setValueAtTime(0.08, now);
     g.gain.exponentialRampToValueAtTime(0.001, now + 0.015);
     osc.connect(g);
-    g.connect(audioCtx.destination);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
     osc.start(now);
     osc.stop(now + 0.02);
   } catch (err) {}
@@ -3843,7 +3865,7 @@ function playFacilityPA() {
       g.gain.setValueAtTime(0.12, now + idx * 0.35);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.35 + 0.65);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.35);
       osc.stop(now + idx * 0.35 + 0.7);
     });
@@ -4535,7 +4557,7 @@ function playLoreChime() {
       g.gain.setValueAtTime(0.08, now + idx * 0.05);
       g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.25);
       osc.connect(g);
-      g.connect(audioCtx.destination);
+      g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
       osc.start(now + idx * 0.05);
       osc.stop(now + idx * 0.05 + 0.28);
     });
@@ -5086,7 +5108,7 @@ function dialGateway(worldKey) {
 
         // Camera FOV shockwave ripple
         if (camera) {
-          const origFov = 65;
+          const origFov = camera.fov || 65;
           camera.fov = origFov + 4;
           camera.updateProjectionMatrix();
           setTimeout(() => {
@@ -21329,7 +21351,7 @@ function triggerPortalTransit(targetWorldKey) {
     overlay.classList.add('active');
   }
 
-  const origFov = 65;
+  const origFov = camera.fov || 65;
   camera.fov = 112;
   camera.updateProjectionMatrix();
 

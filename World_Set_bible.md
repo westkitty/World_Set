@@ -56,3 +56,27 @@
 - Implementation commit: `466d52a8357109cb4f239490d99190a4de99399c`
 - Documentation follow-up: this file and `OPERATIONAL_STATE.md`; hash reported externally after commit.
 - Push status: pending at time of this entry.
+
+## 2026-09-15 - Responsive and audio closure
+
+### Repository state
+- Parent before this closure: `31180d5c7b8cedef16efaf1586fbd0f275f67a53` on `main`.
+- Protected untracked app-wrapper/icon/launcher artifacts remained untouched.
+
+### Defects found during final runtime smoke
+- At 1280px the header exceeded the viewport by ~4px; the audio control was not safely actionable.
+- After revealing the cinematic header, the floating `UI [H]` button overlapped the audio control and intercepted pointer input.
+- `AudioMixerBus` existed but its gain nodes were not initialized by the normal audio-start path; synthesized SFX bypassed it.
+- Dial/portal FOV effects restored a hard-coded 65° and could overwrite a persisted user FOV.
+
+### Repairs
+- Added a contained horizontal navigation lane through the medium-width breakpoint while preserving compact mobile behavior.
+- Moved the floating UI toggle below the header interaction lane.
+- Initialized the mixer from the live `AudioContext`, applied stored volume settings, and routed ambience/SFX through category gains.
+- Changed temporary FOV effects to restore the camera's active FOV.
+
+### Validation
+- Document overflow is zero at 1280px, 1024px, and 390px; mobile virtual controls remain active at 390px.
+- Hover→header reveal→audio click succeeds; AudioContext is running and master/ambience/SFX/UI gains are live.
+- Mars session reload restores FOV 77°, world, camera position/look, shadows/postFX, controls, and telemetry preference.
+- Full repository validation and clean-commit validation are required before delivery; final hashes and remote synchronization are reported externally.

@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 2,
-  "last_updated": "2026-09-15T10:30:00Z",
+  "state_revision": 3,
+  "last_updated": "2026-09-15T10:50:00Z",
   "current_baseline": {
-    "identity": "implementation commit 466d52a8357109cb4f239490d99190a4de99399c on main",
+    "identity": "final repair state on main; parent 31180d5c7b8cedef16efaf1586fbd0f275f67a53; final SHA reported externally",
     "state": "verified",
-    "last_verified": "2026-09-15T10:25:00Z"
+    "last_verified": "2026-09-15T10:49:00Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit"],
   "linked_parent_state": null
@@ -47,7 +47,7 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 <!-- /operational-state:entry -->
 ## 5. Verified Working Behavior
 <!-- operational-state:entry
-{"id":"VER-001","title":"Primary browser runtime boots","state":"verified","capability":"The primary exploration view initializes a Three.js renderer and visible canvas and clears the loader.","scope":"Chrome local HTTP runtime","verification_method":"Headless installed Chrome against http://127.0.0.1:8765/index.html","evidence":"viewport canvas=true; renderer=true; activeWorldKey=aquifer; currentLocation=base; loader=none","artifact_revision":"3bfc7504ada6","last_verified":"2026-09-15T09:25:00Z","dependencies":["installed Chrome","local HTTP server"],"freshness":"current baseline","recheck_trigger":"index.html runtime/bootstrap/render-loop change"}
+{"id":"VER-001","title":"Primary browser runtime boots","state":"verified","capability":"The primary exploration view initializes a Three.js renderer and visible canvas and clears the loader.","scope":"Chrome local HTTP runtime","verification_method":"Headless installed Chrome against http://127.0.0.1:8765/index.html","evidence":"viewport canvas=true; renderer=true; activeWorldKey=aquifer; currentLocation=base; loader=none","artifact_revision":"final repair state","last_verified":"2026-09-15T10:49:00Z","dependencies":["installed Chrome","local HTTP server"],"freshness":"current baseline","recheck_trigger":"index.html runtime/bootstrap/render-loop change"}
 -->
 ### VER-001 — Primary browser runtime boots
 - **State:** `verified`
@@ -55,7 +55,7 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 <!-- /operational-state:entry -->
 
 <!-- operational-state:entry
-{"id":"VER-002","title":"Scanner and 3D codex open","state":"verified","capability":"AR scanner activates and the 3D codex opens with 55 lore entries and a WebGL codex canvas.","scope":"WOW-01 user path","verification_method":"Direct browser runtime invocation","evidence":"scanner active=true; codex active=true; entries=55; codex canvas=true","artifact_revision":"3bfc7504ada6","last_verified":"2026-09-15T09:27:00Z","dependencies":["main renderer","LORE_DATABASE"],"freshness":"current baseline","recheck_trigger":"scanner, codex, lore database, or modal lifecycle change"}
+{"id":"VER-002","title":"Scanner and 3D codex open","state":"verified","capability":"AR scanner activates and the 3D codex opens with 55 lore entries and a WebGL codex canvas.","scope":"WOW-01 user path","verification_method":"Direct browser runtime invocation","evidence":"scanner active=true; codex active=true; entries=55; codex canvas=true","artifact_revision":"final repair state","last_verified":"2026-09-15T10:49:00Z","dependencies":["main renderer","LORE_DATABASE"],"freshness":"current baseline","recheck_trigger":"scanner, codex, lore database, or modal lifecycle change"}
 -->
 ### VER-002 — Scanner and 3D codex open
 - **State:** `verified`
@@ -68,12 +68,11 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Some individual visual/game-feel items in `FORENSIC_UPLIFT_LEDGER.md` remain marked `IMPLEMENTED` rather than individually runtime-observed; they passed source/integration/project validation but were not each manually exercised.
 
 ## 8. Unknown or Evidence-Stale State
-- Remote CI status and delivery synchronization remain pending until the documentation follow-up commit is pushed.
-- No separate deployment target has yet been established from repository evidence.
+- Physical gamepad hardware was unavailable, so real-device controller feel/haptics remain unverified; Gamepad API polling, edge-trigger routing, and production integration are verified in source/integration tests.
+- Repository inspection found no GitHub Actions workflows and no configured GitHub Pages site; CI and deployment are therefore not applicable to this repository state.
 
 ## 9. Pending Work
-1. Commit this operational-state/project-bible handoff.
-2. Push the final branch and verify upstream revision/CI state.
+- No completion-blocking source work remains. Final upstream synchronization is verified externally after the containing commit is created.
 
 ## 10. Active Decisions, Defaults, and Prohibitions
 - Preserve the current single-file/offline browser architecture; add no dependency unless evidence makes it necessary.
@@ -96,3 +95,4 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 ## 13. Compact Revision Log
 - Revision 1 — 2026-09-15: bootstrapped operational state from baseline evidence; recorded shallow uplift-proof gap and frozen repair scope.
 - Revision 2 — 2026-09-15: promoted repaired runtime/integration paths after Chrome, 16-world, persistence, mobile, full-suite, and clean-archive proof; implementation commit `466d52a8357109cb4f239490d99190a4de99399c`.
+- Revision 3 — 2026-09-15: closed medium-width header overflow/overlap, live audio-mixer routing, and FOV persistence; revalidated 1280/1024/390 layouts, audio user gesture, world sweep, scanner→Codex, and session/settings reload.

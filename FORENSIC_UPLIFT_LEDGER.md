@@ -13,6 +13,10 @@ Baseline: `3bfc7504ada6` on `main`. This ledger reconciles the substantive uplif
 - CORR-08 — Duplicate flashlight keyboard toggle removed — VERIFIED by singular production caller.
 - CORR-09 — Scanner no longer attempts to parse narrative lore coordinates as world-space positions — VERIFIED.
 - CORR-10 — Settings/session persistence now has load, apply, save, autosave, and resume paths — VERIFIED across reload.
+- CORR-11 — Medium-width header overflow repaired with a contained navigation scroll lane — VERIFIED at 1280px and 1024px.
+- CORR-12 — Floating UI toggle moved below the revealed header so it no longer intercepts utility controls — VERIFIED by hover→audio click.
+- CORR-13 — Audio mixer bus integrated with the live AudioContext; ambience and synthesized SFX now route through category gains — VERIFIED in Chrome.
+- CORR-14 — Dialing and portal FOV effects now restore the active user FOV instead of hard-resetting to 65° — VERIFIED by 77° persistence reload.
 
 ## UI/UX — 20 required
 | ID | Distinct improvement | Evidence | State |
@@ -33,7 +37,7 @@ Baseline: `3bfc7504ada6` on `main`. This ledger reconciles the substantive uplif
 | UIUX-14 | Dedicated Settings header access | header Settings control | IMPLEMENTED |
 | UIUX-15 | Dedicated Controls header access | header Controls control | IMPLEMENTED |
 | UIUX-16 | Stored settings hydrate into visible controls/readouts | `hydrateSettingsControls` | VERIFIED |
-| UIUX-17 | Mobile header contains navigation in a touch-scroll lane | 390px overflow test | VERIFIED |
+| UIUX-17 | Responsive header contains navigation in a local scroll lane instead of widening the page | 1280px / 1024px / 390px overflow tests | VERIFIED |
 | UIUX-18 | Active-world HUD/portal color synchronization | `dialGateway` UI theming | IMPLEMENTED |
 | UIUX-19 | Mobile quick-dial width compaction | `@media (max-width:540px)` | VERIFIED |
 | UIUX-20 | Mobile radial launcher scaling without page overflow | radial media rule + 390px test | VERIFIED |
@@ -72,7 +76,7 @@ Baseline: `3bfc7504ada6` on `main`. This ledger reconciles the substantive uplif
 | BACK-05 | Clamped frame-delta governor used by render loop | `FrameRateGovernor.getClampedDelta` caller | VERIFIED |
 | BACK-06 | World-to-screen coordinate transformer | scanner projection caller | VERIFIED |
 | BACK-07 | Renderer/FPS telemetry logger | render-loop caller | VERIFIED |
-| BACK-08 | Master/ambience/SFX mixer bus | settings/audio callers | VERIFIED |
+| BACK-08 | Live master/ambience/SFX/UI mixer bus | user-gesture audio runtime with category routing | VERIFIED |
 | BACK-09 | WebGL context-loss boundary | live renderer canvas listener | VERIFIED |
 | BACK-10 | Honest renderer capability profile | live `renderer.capabilities` detection | VERIFIED |
 | BACK-11 | World-scoped spatial hash index | scanner `queryNear` path | VERIFIED |
