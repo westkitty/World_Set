@@ -819,6 +819,33 @@
   }
 
   @media (max-width: 540px) {
+    #header-nav {
+      padding: 0 0.5rem;
+      gap: 0.4rem;
+    }
+    .brand {
+      flex: 0 0 auto;
+      gap: 0.4rem;
+    }
+    .brand-title { font-size: 0.72rem; letter-spacing: 0.7px; }
+    .brand-sub { display: none; }
+    .nav-tabs {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-btn {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 0.4rem 0.55rem;
+      font-size: 0.68rem;
+    }
+    .audio-btn { flex: 0 0 auto; min-height: 40px; padding: 0.4rem 0.55rem; }
+    #audioText { display: none; }
     #quick-dial-hud {
       width: calc(100vw - 44px);
       padding: 0.75rem 0.5rem;
@@ -1979,6 +2006,9 @@
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
+  }
+  #settings-modal.active, #controls-modal.active {
+    display: flex;
   }
   .settings-frame {
     width: 100%;
@@ -5385,6 +5415,7 @@ function getViewportDimensions() {
 }
 
 function switchView(viewName) {
+  currentViewMode = viewName;
   const panels = document.querySelectorAll('.view-panel');
   panels.forEach(p => p.classList.remove('active'));
   
@@ -5435,6 +5466,7 @@ let baseLightsGroup = new THREE.Group();
 let destinationWorlds = {};
 let activeDestinationWorld = null;
 let currentLocation = 'base'; // 'base', 'desert', 'mountain', 'city', 'stonehenge', 'island', 'space'
+let currentViewMode = 'walkthrough';
 let isTransiting = false;
 
 // Seamless controller shim for pointer lock compatibility without conflicting event listeners
@@ -16290,6 +16322,8 @@ function buildIslandWorld() {
     metalness: 0.02
   });
   atollMat.normalScale.set(1.4, 1.4);
+  // CORR-05: Define the island shelf geometry before constructing the atoll mesh.
+  const atollGeo = new THREE.CylinderGeometry(28.5, 30.0, 2.4, 64);
   const atoll = new THREE.Mesh(atollGeo, atollMat);
   atoll.position.set(0, -1.2, 5);
   atoll.receiveShadow = true;
@@ -21194,7 +21228,7 @@ function switchActiveEnvironment(targetKey) {
     });
     activeDestinationWorld = null;
 
-    showcaseMeshGroup.visible = true;
+    if (showcaseMeshGroup) showcaseMeshGroup.visible = true;
     if (terminalGroup) terminalGroup.visible = true;
     if (vortexMesh) vortexMesh.visible = true;
     if (baseLightsGroup) baseLightsGroup.visible = true;
@@ -21222,7 +21256,7 @@ function switchActiveEnvironment(targetKey) {
     if (typeof postProcessing !== 'undefined' && postProcessing) postProcessing.setWorld(targetKey);
     activeWorldObj = WORLDS[targetKey];
 
-    showcaseMeshGroup.visible = false;
+    if (showcaseMeshGroup) showcaseMeshGroup.visible = false;
     if (terminalGroup) terminalGroup.visible = false;
     if (vortexMesh) vortexMesh.visible = false;
     if (baseLightsGroup) baseLightsGroup.visible = false;
@@ -21272,6 +21306,7 @@ function switchActiveEnvironment(targetKey) {
     if (el) el.classList.toggle('active', targetKey === v.world);
   });
   if (typeof showBiomeTitleBanner === 'function') showBiomeTitleBanner(targetKey);
+  if (typeof WorldEvents !== 'undefined') WorldEvents.emit('world:entered', { worldKey: targetKey, location: currentLocation });
   if (typeof UrlRouterEngine !== 'undefined' && UrlRouterEngine.setHash) UrlRouterEngine.setHash(targetKey, currentViewMode);
 
   isZeroGJumping = false;
@@ -21349,6 +21384,12 @@ function initThreeScene() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
+  WebGLErrorBoundary.init(renderer.domElement);
+  RendererCapabilityProfile.detect(renderer);
+  AssetPreloadQueue.warmCriticalAssets();
+  FrameRateGovernor.reset();
+  applyStoredSettingsToRuntime();
+  StateSnapshotEngine.initAutosave();
   
   // Phase 16: Initialize Cinematic Compositor (only if enabled)
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
@@ -21442,6 +21483,8 @@ function initThreeScene() {
   // Instantiate Base 20 Enhancements
   baseEnhancements = buildBaseEnhancements();
   freezeStaticTransforms(baseEnhancements.group);
+  StateSnapshotEngine.applyPending();
+  if (!SpatialHashGrid.activeScope) SpatialHashGrid.rebuildForScope(currentLocation === 'base' ? 'base' : currentLocation);
   
   // Tactical Shoulder Flashlight
   playerFlashlight = new THREE.SpotLight(0xfffaed, 0, 45, Math.PI / 6, 0.45, 1.2);
@@ -21503,6 +21546,7 @@ function loadShowcaseModel() {
       });
       scene.add(model);
       showcaseMeshGroup = model;
+      showcaseMeshGroup.visible = currentLocation === 'base';
       freezeStaticTransforms(model);
       
       loaderEl.style.opacity = '0';
@@ -22633,7 +22677,8 @@ function updateInteractionPrompt(html, display = 'flex') {
 function animate() {
   requestAnimationFrame(animate);
   if (typeof camera === 'undefined' || !camera) return;
-  const delta = clock.getDelta();
+  if (typeof WebGLErrorBoundary !== 'undefined' && WebGLErrorBoundary.contextLost) return;
+  const delta = (typeof FrameRateGovernor !== 'undefined') ? FrameRateGovernor.getClampedDelta() : clock.getDelta();
   const time = clock.getElapsedTime();
   
   // Physical Stargate Aperture Traversal
@@ -22698,8 +22743,7 @@ function animate() {
   }
   
   // Dynamic Proximity Interaction Prompts & Multi-World Targets (Throttled to 20 Hz / 50ms)
-  if (time - _lastProximityCheckTime > 0.05) {
-    _lastProximityCheckTime = time;
+  if (typeof UpdateBudgetScheduler === 'undefined' || UpdateBudgetScheduler.shouldRun('proximity', time, 0.05)) {
     const p = camera.position;
     if (isLoreModalOpen || isTerminalModalOpen) {
       updateInteractionPrompt('', 'none');
@@ -23000,8 +23044,7 @@ function animate() {
   }
   
   // Update Telemetry HUD (Throttled to 10 Hz & skipped when UI is hidden)
-  if (!document.body.classList.contains('ui-hidden') && (time - _lastTelemetryUpdateTime > 0.1)) {
-    _lastTelemetryUpdateTime = time;
+  if (!document.body.classList.contains('ui-hidden') && (typeof UpdateBudgetScheduler === 'undefined' || UpdateBudgetScheduler.shouldRun('telemetry', time, 0.1))) {
     if (!_cachedDomPosTelemetry) _cachedDomPosTelemetry = document.getElementById("posTelemetry");
     if (_cachedDomPosTelemetry) {
       const p = camera.position;
@@ -23350,11 +23393,15 @@ const ProceduralSoundscape = {
 // =============================================================
 const FrameRateGovernor = {
   lastTime: performance.now(),
+  maxDelta: 0.1,
+  reset() {
+    this.lastTime = performance.now();
+  },
   getClampedDelta() {
     const now = performance.now();
     const rawDelta = (now - this.lastTime) / 1000;
     this.lastTime = now;
-    return Math.min(Math.max(rawDelta, 0.001), 0.1);
+    return Math.min(Math.max(rawDelta, 0.001), this.maxDelta);
   }
 };
 
@@ -23398,52 +23445,109 @@ const TelemetryLogger = {
 // BACK-09: WEBGL ERROR BOUNDARY & RECOVERY
 // =============================================================
 const WebGLErrorBoundary = {
+  canvas: null,
+  contextLost: false,
   init(canvas) {
-    if (!canvas) return;
+    if (!canvas || this.canvas === canvas) return;
+    this.canvas = canvas;
     canvas.addEventListener('webglcontextlost', e => {
       e.preventDefault();
-      console.warn('WebGL Context Lost. Halting render loop.');
+      this.contextLost = true;
+      console.warn('WebGL Context Lost. Halting render work until restoration.');
       showToast('⚠️ GPU Context Lost. Reconnecting...', 'warning');
     }, false);
     canvas.addEventListener('webglcontextrestored', () => {
+      this.contextLost = false;
       console.info('WebGL Context Restored.');
       showToast('✅ GPU Context Restored.', 'success');
       if (typeof renderer !== 'undefined' && renderer) {
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        const dims = getViewportDimensions();
+        renderer.setSize(dims.width, dims.height);
       }
     }, false);
   }
 };
 
 // =============================================================
-// BACK-10: SHADER PREPROCESSOR & GPU DETECTION
+// BACK-10: RENDERER CAPABILITY PROFILE
 // =============================================================
-const ShaderPreprocessor = {
+const RendererCapabilityProfile = {
   capabilities: {
-    highPrecision: true,
-    maxTextures: 16
+    precision: 'unknown',
+    maxTextures: 0,
+    maxTextureSize: 0,
+    maxAnisotropy: 0
   },
-  detect(renderer) {
-    if (!renderer || !renderer.capabilities) return;
-    this.capabilities.maxTextures = renderer.capabilities.maxTextures || 16;
+  detect(activeRenderer) {
+    if (!activeRenderer || !activeRenderer.capabilities) return this.capabilities;
+    const caps = activeRenderer.capabilities;
+    this.capabilities.precision = caps.precision || 'unknown';
+    this.capabilities.maxTextures = caps.maxTextures || 0;
+    this.capabilities.maxTextureSize = caps.maxTextureSize || 0;
+    this.capabilities.maxAnisotropy = typeof caps.getMaxAnisotropy === 'function' ? caps.getMaxAnisotropy() : 0;
+    return { ...this.capabilities };
   }
 };
 
 // =============================================================
 // BACK-11: SPATIAL HASH GRID FOR FAST PROXIMITY QUERIES
 // =============================================================
+// Runtime interaction coordinates are deliberately separate from narrative lore coordinates.
+const LORE_WORLD_POSITIONS = Object.freeze({
+  base_telemetry: [-3.8, 2.4], base_override: [-2.8, -6.0], base_turbines: [18.5, 0],
+  base_submersible: [-9.5, 0], base_xenobiology: [-11.5, -24.0],
+  desert_relic: [8.0, 6.0], desert_cistern: [12.0, -4.0], desert_kettle: [6.5, 4.2],
+  desert_temple: [36.0, 0], desert_oasis: [-36.0, -14.0],
+  mountain_laptop: [9.2, 9.8], mountain_drill: [6.5, 8.0], mountain_flare: [4.5, -6.0],
+  mountain_ice_cavern: [-24.0, -24.0], mountain_survey_deck: [36.0, 16.0],
+  city_vending: [9.0, 6.0], city_bar: [6.0, 8.0], city_jukebox: [-4.5, -9.0],
+  city_maglev: [0, 40.0], city_penthouse: [-13.0, -45.0],
+  stonehenge_runestone: [2.5, -2.5], stonehenge_brazier: [0, -4.0], stonehenge_lithophone: [3.2, 3.2],
+  stonehenge_barrow: [32.0, 1.0], stonehenge_cursus: [0, -42.0],
+  island_bottle: [6.0, 8.0], island_conch: [2.0, 5.0], island_chest: [4.0, -12.0],
+  island_grotto: [-30.0, -18.0], island_boardwalk: [36.0, 34.0],
+  space_eva: [6.0, 4.0], space_crane: [-6.0, 2.0], space_airlock_hatch: [2.0, -6.5],
+  space_cupola: [-14.0, 8.5], space_rover: [14.0, 27.5],
+  volcano_caldera: [0, 20.0], volcano_monitoring: [-12.0, -5.0],
+  biolum_eldertree: [0, 18.0], biolum_spores: [14.0, -6.0],
+  abyss_monolith: [0, 15.0], abyss_trench: [-15.0, 8.0],
+  mars_habitat: [14.0, 12.0], mars_rover: [-12.0, -8.0],
+  crystal_geode: [0, 16.0], crystal_resonance: [12.0, 0],
+  swamp_hut: [10.0, 12.0], swamp_altar: [-10.0, 14.0],
+  cavern_stalactite: [0, 12.0], cavern_vein: [-14.0, -10.0],
+  acid_pipeline: [8.0, 10.0], acid_vat: [-12.0, 14.0],
+  taiga_cabin: [12.0, 10.0], taiga_shrine: [-12.0, -12.0],
+  sky_nexus: [0, 10.0], sky_glider: [10.0, -6.0]
+});
+
 const SpatialHashGrid = {
   cellSize: 10,
   grid: {},
+  activeScope: null,
   _key(x, z) {
     const cx = Math.floor(x / this.cellSize);
     const cz = Math.floor(z / this.cellSize);
     return `${cx},${cz}`;
   },
+  clear() {
+    this.grid = {};
+    this.activeScope = null;
+  },
   insert(poi) {
     const k = this._key(poi.x, poi.z);
     if (!this.grid[k]) this.grid[k] = [];
     this.grid[k].push(poi);
+  },
+  rebuildForScope(scope) {
+    this.grid = {};
+    this.activeScope = scope;
+    const prefix = `${scope}_`;
+    Object.entries(LORE_DATABASE).forEach(([key, lore]) => {
+      if (!key.startsWith(prefix) || !lore) return;
+      const position = LORE_WORLD_POSITIONS[key];
+      if (!position) return;
+      this.insert({ key, title: lore.title, classification: lore.classification, x: position[0], z: position[1] });
+    });
   },
   queryNear(x, z, radius = 15) {
     const results = [];
@@ -23453,10 +23557,10 @@ const SpatialHashGrid = {
     const maxZ = Math.floor((z + radius) / this.cellSize);
     for (let cx = minX; cx <= maxX; cx++) {
       for (let cz = minZ; cz <= maxZ; cz++) {
-        const k = `${cx},${cz}`;
-        if (this.grid[k]) {
-          this.grid[k].forEach(p => results.push(p));
-        }
+        const bucket = this.grid[`${cx},${cz}`] || [];
+        bucket.forEach(p => {
+          if (Math.hypot(x - p.x, z - p.z) <= radius) results.push(p);
+        });
       }
     }
     return results;
@@ -23470,22 +23574,33 @@ const InputEventBus = {
   actions: {},
   bindAction(actionName, callback) {
     if (!this.actions[actionName]) this.actions[actionName] = [];
-    this.actions[actionName].push(callback);
+    if (!this.actions[actionName].includes(callback)) this.actions[actionName].push(callback);
   },
   trigger(actionName, data = null) {
-    if (!this.actions[actionName]) return;
-    this.actions[actionName].forEach(cb => cb(data));
+    const callbacks = this.actions[actionName] || [];
+    callbacks.forEach(cb => {
+      try { cb(data); } catch (error) { console.error(`Input action failed: ${actionName}`, error); }
+    });
+    return callbacks.length > 0;
   }
 };
 
 // =============================================================
-// BACK-13: DYNAMIC LOD & DISTANCE CULLING MANAGER
+// BACK-13: ADAPTIVE UPDATE BUDGET SCHEDULER
 // =============================================================
-const DynamicLODManager = {
-  lodDistanceFar: 80,
-  updateLOD(scene, camPos) {
-    if (!scene) return;
-    // Adapt particle & visual update frequency based on distance
+const UpdateBudgetScheduler = {
+  lastRun: {},
+  shouldRun(channel, nowSeconds, baseIntervalSeconds) {
+    const fps = (typeof TelemetryLogger !== 'undefined' && TelemetryLogger.currentFPS) ? TelemetryLogger.currentFPS : 60;
+    const multiplier = fps < 30 ? 2.0 : (fps < 45 ? 1.5 : 1.0);
+    const interval = baseIntervalSeconds * multiplier;
+    const previous = this.lastRun[channel] ?? -Infinity;
+    if ((nowSeconds - previous) < interval) return false;
+    this.lastRun[channel] = nowSeconds;
+    return true;
+  },
+  reset() {
+    this.lastRun = {};
   }
 };
 
@@ -23509,6 +23624,7 @@ const PerformanceMemoryMonitor = {
 const GamepadAPISubsystem = {
   connectedIndex: -1,
   deadzone: 0.18,
+  previousButtons: [],
   init() {
     window.addEventListener('gamepadconnected', e => {
       this.connectedIndex = e.gamepad.index;
@@ -23516,6 +23632,7 @@ const GamepadAPISubsystem = {
     });
     window.addEventListener('gamepaddisconnected', () => {
       this.connectedIndex = -1;
+      this.previousButtons = [];
       showToast('🎮 Gamepad Disconnected', 'info');
     });
   },
@@ -23545,32 +23662,15 @@ const GamepadAPISubsystem = {
       playerPitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, playerPitch));
     }
 
-    // Button actions:
-    // A (0) = Jump
-    if (gp.buttons[0] && gp.buttons[0].pressed && !isJumping) {
-      triggerPlayerJump();
-    }
-    // B (1) = Crouch
-    if (gp.buttons[1] && gp.buttons[1].pressed) {
-      toggleCrouch();
-    }
-    // X (2) = Interact
-    if (gp.buttons[2] && gp.buttons[2].pressed) {
-      const eEvent = new KeyboardEvent('keydown', { code: 'KeyE' });
-      document.dispatchEvent(eEvent);
-    }
-    // Y (3) = AR Scan
-    if (gp.buttons[3] && gp.buttons[3].pressed) {
-      triggerARScannerPulse();
-    }
-    // Start (9) = Codex
-    if (gp.buttons[9] && gp.buttons[9].pressed) {
-      openCodexModal();
-    }
-    // Back (8) = Settings
-    if (gp.buttons[8] && gp.buttons[8].pressed) {
-      openSettingsModal();
-    }
+    // Edge-triggered button actions prevent held buttons from toggling repeatedly every frame.
+    const pressedOnce = index => !!(gp.buttons[index] && gp.buttons[index].pressed) && !this.previousButtons[index];
+    if (pressedOnce(0)) InputEventBus.trigger('jump');
+    if (pressedOnce(1)) InputEventBus.trigger('crouch');
+    if (pressedOnce(2)) InputEventBus.trigger('interact');
+    if (pressedOnce(3)) InputEventBus.trigger('scan');
+    if (pressedOnce(9)) InputEventBus.trigger('codex-toggle');
+    if (pressedOnce(8)) InputEventBus.trigger('settings-toggle');
+    this.previousButtons = gp.buttons.map(button => !!button.pressed);
   },
   pulseHaptics(durationMs = 150, intensity = 0.6) {
     if (!userControlSettings.gamepadVibration || this.connectedIndex === -1) return;
@@ -23643,9 +23743,23 @@ const UrlRouterEngine = {
 // BACK-19: ASSET PRELOAD QUEUE
 // =============================================================
 const AssetPreloadQueue = {
+  seen: new Set(),
   preloadTexture(url) {
+    if (!url || this.seen.has(url)) return false;
+    this.seen.add(url);
     const img = new Image();
+    img.decoding = 'async';
     img.src = url;
+    return true;
+  },
+  warmCriticalAssets() {
+    [
+      'renders/showcase/showcase_360_panorama.png',
+      'textures/tex_concrete_albedo.png',
+      'textures/tex_steel_albedo.png',
+      'textures/tex_hazard_albedo.png'
+    ].forEach(url => this.preloadTexture(url));
+    return this.seen.size;
   }
 };
 
@@ -23653,23 +23767,61 @@ const AssetPreloadQueue = {
 // BACK-20: STATE SNAPSHOT ENGINE
 // =============================================================
 const StateSnapshotEngine = {
+  pending: null,
+  autosaveTimer: null,
   save() {
-    if (typeof camera === 'undefined' || !camera) return;
+    if (typeof camera === 'undefined' || !camera) return false;
     const snap = {
       pos: [camera.position.x, camera.position.y, camera.position.z],
       yaw: playerYaw,
       pitch: playerPitch,
       world: activeWorldKey,
+      location: currentLocation,
       discovered: Array.from(discoveredBiomes),
-      settings: { graphics: userGraphicsSettings, audio: userAudioSettings, controls: userControlSettings }
+      savedAt: Date.now()
     };
     LocalStorageEngine.set('session_snapshot', snap);
+    return true;
   },
   restore() {
     const snap = LocalStorageEngine.get('session_snapshot');
-    if (!snap) return false;
-    if (snap.discovered) snap.discovered.forEach(b => discoveredBiomes.add(b));
+    if (!snap || typeof snap !== 'object') return false;
+    this.pending = snap;
+    if (Array.isArray(snap.discovered)) {
+      snap.discovered.filter(key => WORLDS[key]).forEach(key => discoveredBiomes.add(key));
+    }
     return true;
+  },
+  applyPending() {
+    const snap = this.pending;
+    if (!snap || typeof camera === 'undefined' || !camera) return false;
+    const routeParams = new URLSearchParams(window.location.hash.slice(1));
+    const routeWorld = routeParams.get('world');
+    const snapshotWorld = snap.location && snap.location !== 'base' ? snap.location : (snap.world || 'aquifer');
+    if (routeWorld && routeWorld !== snapshotWorld) { this.pending = null; return false; }
+    const dialedWorld = snap.world && WORLDS[snap.world] ? snap.world : 'aquifer';
+    activeWorldKey = dialedWorld;
+    activeWorldObj = WORLDS[dialedWorld];
+    const targetLocation = snap.location || (dialedWorld === 'aquifer' ? 'base' : dialedWorld);
+    if (targetLocation === 'base') switchActiveEnvironment('aquifer');
+    else if (WORLDS[targetLocation]) switchActiveEnvironment(targetLocation);
+    if (Array.isArray(snap.pos) && snap.pos.length === 3 && snap.pos.every(Number.isFinite)) {
+      camera.position.set(snap.pos[0], snap.pos[1], snap.pos[2]);
+    }
+    if (Number.isFinite(snap.yaw)) playerYaw = snap.yaw;
+    if (Number.isFinite(snap.pitch)) playerPitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, snap.pitch));
+    camera.rotation.order = 'YXZ';
+    camera.rotation.y = playerYaw;
+    camera.rotation.x = playerPitch;
+    camera.rotation.z = 0;
+    this.pending = null;
+    this.save();
+    return true;
+  },
+  initAutosave() {
+    if (this.autosaveTimer) return;
+    this.autosaveTimer = setInterval(() => this.save(), 15000);
+    window.addEventListener('pagehide', () => this.save());
   }
 };
 
@@ -24090,11 +24242,58 @@ function showBiomeTitleBanner(worldKey) {
 // =============================================================
 // SETTINGS & CONFIGURATION MODAL (UIUX-10, QOL-12)
 // =============================================================
-let userGraphicsSettings = { renderScale: 1.0, shadows: 'high', fov: 65, postFX: true };
-let userAudioSettings = { masterVol: 80, ambienceVol: 70, sfxVol: 90 };
-let userControlSettings = { mouseSens: 10, invertY: false, gamepadVibration: true, showTelemetry: false };
+const DEFAULT_GRAPHICS_SETTINGS = Object.freeze({ renderScale: 1.0, shadows: 'high', fov: 65, postFX: true });
+const DEFAULT_AUDIO_SETTINGS = Object.freeze({ masterVol: 80, ambienceVol: 70, sfxVol: 90 });
+const DEFAULT_CONTROL_SETTINGS = Object.freeze({ mouseSens: 10, invertY: false, gamepadVibration: true, showTelemetry: false });
+
+function loadStoredSettings(key, defaults) {
+  const stored = LocalStorageEngine.get(key, {});
+  return { ...defaults, ...(stored && typeof stored === 'object' ? stored : {}) };
+}
+
+let userGraphicsSettings = loadStoredSettings('settings_graphics', DEFAULT_GRAPHICS_SETTINGS);
+let userAudioSettings = loadStoredSettings('settings_audio', DEFAULT_AUDIO_SETTINGS);
+let userControlSettings = loadStoredSettings('settings_controls', DEFAULT_CONTROL_SETTINGS);
+
+function hydrateSettingsControls() {
+  const pairs = [
+    ['cfgRenderScale', userGraphicsSettings.renderScale], ['cfgShadows', userGraphicsSettings.shadows],
+    ['cfgFOV', userGraphicsSettings.fov], ['cfgMasterVol', userAudioSettings.masterVol],
+    ['cfgAmbienceVol', userAudioSettings.ambienceVol], ['cfgSFXVol', userAudioSettings.sfxVol],
+    ['cfgMouseSens', userControlSettings.mouseSens]
+  ];
+  pairs.forEach(([id, value]) => { const el = document.getElementById(id); if (el) el.value = String(value); });
+  const postFX = document.getElementById('cfgPostFX'); if (postFX) postFX.checked = userGraphicsSettings.postFX !== false;
+  const invertY = document.getElementById('cfgInvertY'); if (invertY) invertY.checked = !!userControlSettings.invertY;
+  const haptics = document.getElementById('cfgHaptics'); if (haptics) haptics.checked = userControlSettings.gamepadVibration !== false;
+  const fovDisplay = document.getElementById('cfgFOVDisplay'); if (fovDisplay) fovDisplay.innerText = `${userGraphicsSettings.fov}°`;
+  const masterDisplay = document.getElementById('cfgMasterVolDisplay'); if (masterDisplay) masterDisplay.innerText = `${userAudioSettings.masterVol}%`;
+  const ambienceDisplay = document.getElementById('cfgAmbienceVolDisplay'); if (ambienceDisplay) ambienceDisplay.innerText = `${userAudioSettings.ambienceVol}%`;
+  const sfxDisplay = document.getElementById('cfgSFXVolDisplay'); if (sfxDisplay) sfxDisplay.innerText = `${userAudioSettings.sfxVol}%`;
+  const sensDisplay = document.getElementById('cfgMouseSensDisplay'); if (sensDisplay) sensDisplay.innerText = `${(userControlSettings.mouseSens / 10).toFixed(1)}x`;
+}
+
+function applyStoredSettingsToRuntime() {
+  hydrateSettingsControls();
+  if (typeof renderer !== 'undefined' && renderer) {
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * userGraphicsSettings.renderScale, 2.0));
+    if (renderer.shadowMap) renderer.shadowMap.enabled = userGraphicsSettings.shadows !== 'off';
+  }
+  if (typeof camera !== 'undefined' && camera) {
+    camera.fov = userGraphicsSettings.fov;
+    camera.updateProjectionMatrix();
+  }
+  if (typeof postProcessing !== 'undefined' && postProcessing) postProcessing.enabled = userGraphicsSettings.postFX !== false;
+  AudioMixerBus.setVolumes(userAudioSettings.masterVol, userAudioSettings.ambienceVol, userAudioSettings.sfxVol);
+  if (typeof isTelemetryVisible !== 'undefined') {
+    isTelemetryVisible = !!userControlSettings.showTelemetry;
+    const telemetryHud = document.getElementById('telemetry-graph-hud');
+    if (telemetryHud) telemetryHud.classList.toggle('active', isTelemetryVisible);
+  }
+}
 
 function openSettingsModal() {
+  hydrateSettingsControls();
   const m = document.getElementById('settings-modal');
   if (m) m.classList.add('active');
   playTorchClick();
@@ -24115,7 +24314,7 @@ function applyUserGraphicsSettings() {
   userGraphicsSettings = { renderScale: scale, shadows, fov, postFX };
 
   if (typeof renderer !== 'undefined' && renderer) {
-    renderer.setPixelRatio(window.devicePixelRatio * scale);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * scale, 2.0));
     if (renderer.shadowMap) {
       renderer.shadowMap.enabled = shadows !== 'off';
     }
@@ -24124,6 +24323,7 @@ function applyUserGraphicsSettings() {
     camera.fov = fov;
     camera.updateProjectionMatrix();
   }
+  if (typeof postProcessing !== 'undefined' && postProcessing) postProcessing.enabled = postFX;
   LocalStorageEngine.set('settings_graphics', userGraphicsSettings);
 }
 
@@ -24147,14 +24347,14 @@ function applyUserInputSettings() {
   const haptics = document.getElementById('cfgHaptics').checked;
 
   document.getElementById('cfgMouseSensDisplay').innerText = (sens / 10).toFixed(1) + 'x';
-  userControlSettings = { mouseSens: sens, invertY, gamepadVibration: haptics };
+  userControlSettings = { ...userControlSettings, mouseSens: sens, invertY, gamepadVibration: haptics };
   LocalStorageEngine.set('settings_controls', userControlSettings);
 }
 
 function resetUserSettings() {
-  userGraphicsSettings = { renderScale: 1.0, shadows: 'high', fov: 65, postFX: true };
-  userAudioSettings = { masterVol: 80, ambienceVol: 70, sfxVol: 90 };
-  userControlSettings = { mouseSens: 10, invertY: false, gamepadVibration: true };
+  userGraphicsSettings = { ...DEFAULT_GRAPHICS_SETTINGS };
+  userAudioSettings = { ...DEFAULT_AUDIO_SETTINGS };
+  userControlSettings = { ...DEFAULT_CONTROL_SETTINGS };
 
   document.getElementById('cfgRenderScale').value = '1.0';
   document.getElementById('cfgShadows').value = 'high';
@@ -24193,6 +24393,8 @@ function togglePerfTelemetry(forcedState = null) {
   isTelemetryVisible = (forcedState !== null) ? forcedState : !isTelemetryVisible;
   const hud = document.getElementById('telemetry-graph-hud');
   if (hud) hud.classList.toggle('active', isTelemetryVisible);
+  userControlSettings = { ...userControlSettings, showTelemetry: isTelemetryVisible };
+  LocalStorageEngine.set('settings_controls', userControlSettings);
   showToast(isTelemetryVisible ? 'TELEMETRY HUD ACTIVE [T]' : 'TELEMETRY HUD HIDDEN [T]', 'info', 1200);
 }
 
@@ -24331,6 +24533,7 @@ function playCameraShutter() {
 // Part A: Tactical AR Sonar Scanner [Q]
 let isARScanning = false;
 let arScanTimer = 0;
+let lastScannedPOIKey = null;
 
 function triggerARScannerPulse() {
   if (isARScanning) return;
@@ -24358,47 +24561,43 @@ function triggerARScannerPulse() {
 function scanForNearbyPOIs() {
   if (!camera) return;
   const p = camera.position;
+  const scope = currentLocation === 'base' ? 'base' : currentLocation;
+  if (SpatialHashGrid.activeScope !== scope) SpatialHashGrid.rebuildForScope(scope);
+  const candidates = SpatialHashGrid.queryNear(p.x, p.z, 50.0);
   let closestPOI = null;
   let minDist = 50.0;
-
-  // Search active world POIs
-  Object.keys(LORE_DATABASE).forEach(k => {
-    const lore = LORE_DATABASE[k];
-    if (lore && lore.coords) {
-      const match = lore.coords.match(/\[X:\s*([-\d.]+),\s*Z:\s*([-\d.]+)\]/);
-      if (match) {
-        const poiX = parseFloat(match[1]);
-        const poiZ = parseFloat(match[2]);
-        const d = Math.hypot(p.x - poiX, p.z - poiZ);
-        if (d < minDist) {
-          minDist = d;
-          closestPOI = { key: k, title: lore.title, dist: d, x: poiX, z: poiZ, classification: lore.classification };
-        }
-      }
+  candidates.forEach(candidate => {
+    const d = Math.hypot(p.x - candidate.x, p.z - candidate.z);
+    if (d < minDist) {
+      minDist = d;
+      closestPOI = { ...candidate, dist: d };
     }
   });
 
+  lastScannedPOIKey = null;
   const reticle = document.getElementById('scanner-reticle');
   const distEl = document.getElementById('scanner-reticle-dist');
   const titleEl = document.getElementById('scanner-target-name');
   const detailsEl = document.getElementById('scanner-target-details');
 
   if (closestPOI && reticle) {
-    const coords = CoordinateTransformer.worldToScreen(StaticObjectPool.getVec3(closestPOI.x, 1.8, closestPOI.z), camera);
+    const coords = CoordinateTransformer.worldToScreen({ x: closestPOI.x, y: 1.8, z: closestPOI.z }, camera);
     if (coords.inFront) {
+      lastScannedPOIKey = closestPOI.key;
       reticle.style.display = 'block';
       reticle.style.left = coords.x + 'px';
       reticle.style.top = coords.y + 'px';
       if (distEl) distEl.innerText = `${closestPOI.dist.toFixed(1)} M`;
       if (titleEl) titleEl.innerText = closestPOI.title;
-      if (detailsEl) detailsEl.innerText = `CLASS: ${closestPOI.classification} // HARMONICS NOMINAL`;
+      if (detailsEl) detailsEl.innerText = `CLASS: ${closestPOI.classification} // [M] OPEN TARGET IN CODEX`;
       playTargetLockedBeep();
+      WorldEvents.emit('scanner:lock', { key: closestPOI.key, scope, distance: closestPOI.dist });
       return;
     }
   }
 
   if (reticle) reticle.style.display = 'none';
-  if (titleEl) titleEl.innerText = 'NO RECEPTIVE ANOMALIES IN RANGE';
+  if (titleEl) titleEl.innerText = `NO ${scope.toUpperCase()} ANOMALIES IN RANGE`;
   if (detailsEl) detailsEl.innerText = 'ACOUSTIC SONAR SCAN COMPLETED // 0 TARGETS LOCKED';
 }
 
@@ -24622,6 +24821,25 @@ function buildCodex3DModel(key) {
   codex3DScene.add(codex3DMesh);
 }
 
+function initializeInputActions() {
+  InputEventBus.bindAction('scan', () => triggerARScannerPulse());
+  InputEventBus.bindAction('codex-toggle', () => {
+    if (isCodexOpen) closeCodexModal();
+    else openCodexModal(lastScannedPOIKey || null);
+  });
+  InputEventBus.bindAction('photo-toggle', () => isPhotoMode ? exitPhotoMode() : enterPhotoMode());
+  InputEventBus.bindAction('vision-cycle', () => cycleVisionMode());
+  InputEventBus.bindAction('telemetry-toggle', () => togglePerfTelemetry());
+  InputEventBus.bindAction('settings-toggle', () => {
+    const modal = document.getElementById('settings-modal');
+    if (modal && modal.classList.contains('active')) closeSettingsModal();
+    else openSettingsModal();
+  });
+  InputEventBus.bindAction('jump', () => { if (!isJumping) triggerPlayerJump(); });
+  InputEventBus.bindAction('crouch', () => toggleCrouch());
+  InputEventBus.bindAction('interact', () => document.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyE', key: 'e' })));
+}
+
 // =============================================================
 // GLOBAL INPUT EVENT HOOKS (KEYBOARD & QOL HOTKEYS)
 // =============================================================
@@ -24639,21 +24857,19 @@ window.addEventListener('keydown', function(e) {
 
   // [M]: Holographic Codex
   if (e.code === 'KeyM' && !isLoreModalOpen && !isTerminalModalOpen) {
-    if (isCodexOpen) closeCodexModal();
-    else openCodexModal();
+    InputEventBus.trigger('codex-toggle');
     return;
   }
 
   // [Q]: AR Sonar Scanner
   if (e.code === 'KeyQ' && !isLoreModalOpen && !isTerminalModalOpen) {
-    triggerARScannerPulse();
+    InputEventBus.trigger('scan');
     return;
   }
 
   // [P]: Photo Mode
   if (e.code === 'KeyP' && !isLoreModalOpen && !isTerminalModalOpen) {
-    if (isPhotoMode) exitPhotoMode();
-    else enterPhotoMode();
+    InputEventBus.trigger('photo-toggle');
     return;
   }
 
@@ -24665,33 +24881,25 @@ window.addEventListener('keydown', function(e) {
 
   // [C]: Crouch Toggle
   if (e.code === 'KeyC' && !isLoreModalOpen && !isTerminalModalOpen) {
-    toggleCrouch();
-    return;
-  }
-
-  // [F]: Flashlight Toggle
-  if (e.code === 'KeyF' && !isLoreModalOpen && !isTerminalModalOpen) {
-    toggleFlashlight();
+    InputEventBus.trigger('crouch');
     return;
   }
 
   // [V]: Vision Mode Cycle
   if (e.code === 'KeyV' && !isLoreModalOpen && !isTerminalModalOpen) {
-    cycleVisionMode();
+    InputEventBus.trigger('vision-cycle');
     return;
   }
 
   // [T]: Telemetry Diagnostics
   if (e.code === 'KeyT' && !isLoreModalOpen && !isTerminalModalOpen) {
-    togglePerfTelemetry();
+    InputEventBus.trigger('telemetry-toggle');
     return;
   }
 
   // [O]: Settings Modal
   if (e.code === 'KeyO' && !isLoreModalOpen && !isTerminalModalOpen) {
-    const sm = document.getElementById('settings-modal');
-    if (sm && sm.classList.contains('active')) closeSettingsModal();
-    else openSettingsModal();
+    InputEventBus.trigger('settings-toggle');
     return;
   }
 
@@ -24773,9 +24981,15 @@ document.addEventListener('visibilitychange', function() {
 });
 
 // Initialize subsystems upon document load
+initializeInputActions();
+WorldEvents.on('world:entered', ({ worldKey, location }) => {
+  const scope = location === 'base' ? 'base' : worldKey;
+  SpatialHashGrid.rebuildForScope(scope);
+  StateSnapshotEngine.save();
+});
+StateSnapshotEngine.restore();
 GamepadAPISubsystem.init();
 UrlRouterEngine.init();
-StateSnapshotEngine.restore();
 
 
 // Robust Boot Sequence: triggers whether DOM is already interactive, completed, or loading
