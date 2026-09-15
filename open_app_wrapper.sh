@@ -17,7 +17,10 @@ fi
 
 echo "[Wrapper] Launching World Set in dedicated standalone wrapper window..."
 
-if [ -d "/Applications/Google Chrome.app" ]; then
+if [ -d "/Applications/World Set.app" ]; then
+  open "/Applications/World Set.app"
+  echo "[Wrapper] Launched via native macOS World Set.app wrapper."
+elif [ -d "/Applications/Google Chrome.app" ]; then
   open -na "Google Chrome" --args --app="${URL}" --window-size=1440,900
   echo "[Wrapper] Launched successfully in Google Chrome App Mode."
 elif [ -d "/Applications/Brave Browser.app" ]; then
