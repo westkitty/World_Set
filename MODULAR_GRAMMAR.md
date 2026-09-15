@@ -19,7 +19,7 @@ All structural components in WORLD KIT adhere to a strict Cartesian snapping gri
 ```
   +-----------------------+-----------------------+  Z = 4.0m (Ceiling Plane)
   |                       |                       |
-  |  WK_WALL_SOLID_A_01   |  WK_WALL_DOORFRAME_01 |
+  |  WK_WALL_SOLID_A_01   | WK_WALL_DOORFRAME_A_01|
   |      [ 4m x 4m ]      |     [ 4m x 4m ]       |
   |                       |      +---------+      |
   |                       |      | Door    |      |  Z = 2.5m (Door Head)

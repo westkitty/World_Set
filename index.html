@@ -21338,7 +21338,7 @@ function initThreeScene() {
   camera.rotation.z = 0;
   
   // Renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", stencil: false });
+  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", stencil: false, preserveDrawingBuffer: true });
   renderer.setSize(initDims.width, initDims.height);
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.setSize(initDims.width, initDims.height);
@@ -22129,32 +22129,45 @@ function onWindowResize() {
 function toggleOrbitMode() {
   isOrbitMode = !isOrbitMode;
   const btn = document.getElementById("orbitToggleBtn");
+  const crosshair = document.getElementById("crosshair");
   if (isOrbitMode) {
     if (document.exitPointerLock) {
       try { document.exitPointerLock(); } catch(e) {}
     }
-    orbitControls.enabled = true;
-    const lookDir = new THREE.Vector3();
-    camera.getWorldDirection(lookDir);
-    orbitControls.target.copy(camera.position).addScaledVector(lookDir, 5.0);
-    orbitControls.update();
-    btn.innerText = "Mode: Orbit View";
-    btn.style.background = "var(--accent-yellow)";
-    btn.style.color = "#000";
-    document.getElementById("crosshair").style.display = "none";
+    if (typeof controls !== 'undefined' && controls) controls.enabled = false;
+    if (typeof orbitControls !== 'undefined' && orbitControls) {
+      orbitControls.enabled = true;
+      if (typeof camera !== 'undefined' && camera) {
+        const lookDir = new THREE.Vector3();
+        camera.getWorldDirection(lookDir);
+        orbitControls.target.copy(camera.position).addScaledVector(lookDir, 5.0);
+        orbitControls.update();
+      }
+    }
+    if (btn) {
+      btn.innerText = "Mode: Orbit View";
+      btn.style.background = "var(--accent-yellow)";
+      btn.style.color = "#000";
+    }
+    if (crosshair) crosshair.style.display = "none";
   } else {
-    orbitControls.enabled = false;
-    btn.innerText = "Mode: First-Person";
-    btn.style.background = "#1e2632";
-    btn.style.color = "var(--text-primary)";
-    document.getElementById("crosshair").style.display = "block";
-    const syncModeEuler = new THREE.Euler(0, 0, 0, 'YXZ').setFromQuaternion(camera.quaternion);
-    playerYaw = syncModeEuler.y;
-    playerPitch = syncModeEuler.x;
-    camera.rotation.order = 'YXZ';
-    camera.rotation.y = playerYaw;
-    camera.rotation.x = playerPitch;
-    camera.rotation.z = 0;
+    if (typeof orbitControls !== 'undefined' && orbitControls) orbitControls.enabled = false;
+    if (typeof controls !== 'undefined' && controls) controls.enabled = true;
+    if (btn) {
+      btn.innerText = "Mode: First-Person";
+      btn.style.background = "#1e2632";
+      btn.style.color = "var(--text-primary)";
+    }
+    if (crosshair) crosshair.style.display = "block";
+    if (typeof camera !== 'undefined' && camera) {
+      const syncModeEuler = new THREE.Euler(0, 0, 0, 'YXZ').setFromQuaternion(camera.quaternion);
+      playerYaw = syncModeEuler.y;
+      playerPitch = syncModeEuler.x;
+      camera.rotation.order = 'YXZ';
+      camera.rotation.y = playerYaw;
+      camera.rotation.x = playerPitch;
+      camera.rotation.z = 0;
+    }
   }
 }
 
@@ -22172,6 +22185,7 @@ const waypoints = {
 function teleportTo(dest) {
   const wp = waypoints[dest];
   if (!wp) return;
+  if (typeof camera === 'undefined' || !camera) return;
   camera.position.set(...wp.pos);
   camera.lookAt(...wp.target);
   const syncWpEuler = new THREE.Euler(0, 0, 0, 'YXZ').setFromQuaternion(camera.quaternion);
@@ -22181,7 +22195,7 @@ function teleportTo(dest) {
   camera.rotation.y = playerYaw;
   camera.rotation.x = playerPitch;
   camera.rotation.z = 0;
-  if (isOrbitMode) {
+  if (isOrbitMode && typeof orbitControls !== 'undefined' && orbitControls) {
     orbitControls.target.set(...wp.target);
     orbitControls.update();
   }
@@ -22618,6 +22632,7 @@ function updateInteractionPrompt(html, display = 'flex') {
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
+  if (typeof camera === 'undefined' || !camera) return;
   const delta = clock.getDelta();
   const time = clock.getElapsedTime();
   
