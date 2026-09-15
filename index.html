@@ -1375,6 +1375,746 @@
     transform: translateX(-50%) translateY(0);
   }
 
+
+  /* ============================================================= */
+  /* FORENSIC UPLIFT & WOW-ME SUITE STYLES */
+  /* ============================================================= */
+
+  /* COMPASS TAPE HUD (UIUX-01) */
+  #compass-hud {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 28px;
+    background: rgba(10, 14, 22, 0.85);
+    border: 1px solid rgba(27, 231, 255, 0.35);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    z-index: 85;
+    pointer-events: none;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(27, 231, 255, 0.1);
+  }
+  #compass-tape {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  #compass-needle {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 10px;
+    background: var(--accent-yellow);
+    box-shadow: 0 0 8px var(--accent-yellow);
+    z-index: 2;
+  }
+  #compass-degree {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.58rem;
+    font-family: monospace;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+    z-index: 2;
+  }
+
+  /* TACTICAL RADAR / MINIMAP HUD (UIUX-03) */
+  #radar-hud {
+    position: fixed;
+    bottom: 58px;
+    left: 18px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14, 22, 36, 0.92) 0%, rgba(6, 10, 18, 0.95) 100%);
+    border: 1.5px solid rgba(27, 231, 255, 0.45);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(27, 231, 255, 0.15);
+    backdrop-filter: blur(10px);
+    z-index: 85;
+    overflow: hidden;
+    transition: all 0.25s ease;
+  }
+  #radar-hud:hover {
+    transform: scale(1.08);
+    border-color: var(--accent-yellow);
+  }
+  #radarCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .radar-label {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.52rem;
+    font-family: monospace;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    pointer-events: none;
+  }
+
+  /* SPRINT STAMINA GAUGE (UIUX-04) */
+  #stamina-gauge {
+    position: fixed;
+    bottom: 74px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 5px;
+    background: rgba(14, 20, 30, 0.8);
+    border: 1px solid rgba(27, 231, 255, 0.35);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 85;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+  }
+  #stamina-gauge.hidden {
+    opacity: 0;
+  }
+  #stamina-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #1be7ff, #00e5ff);
+    transition: width 0.08s linear, background-color 0.2s ease;
+  }
+  #stamina-fill.exhausted {
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+  }
+
+  /* COORDINATES BREADCRUMB & VECTOR HUD (UIUX-19) */
+  #coords-breadcrumb {
+    position: fixed;
+    bottom: 12px;
+    left: 18px;
+    font-size: 0.62rem;
+    font-family: monospace;
+    color: var(--text-secondary);
+    background: rgba(8, 12, 20, 0.8);
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 85;
+    cursor: pointer;
+    user-select: none;
+    backdrop-filter: blur(6px);
+    transition: all 0.2s;
+  }
+  #coords-breadcrumb:hover {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(27, 231, 255, 0.2);
+  }
+
+  /* CINEMATIC BIOME ENTRY TITLE BANNER (UIUX-12) */
+  #biome-title-banner {
+    position: fixed;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    text-align: center;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #biome-title-banner.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.0);
+  }
+  .banner-sub {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: var(--accent-yellow);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  #banner-world-name {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: #ffffff;
+    text-shadow: 0 0 35px rgba(27, 231, 255, 0.6), 0 0 15px rgba(0, 0, 0, 0.9);
+    margin-bottom: 6px;
+  }
+  #banner-world-telemetry {
+    font-size: 0.82rem;
+    font-family: monospace;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px rgba(27, 231, 255, 0.4);
+  }
+
+  /* STACKING TOAST NOTIFICATION CONTAINER (UIUX-15) */
+  #toast-container {
+    position: fixed;
+    top: 20px;
+    right: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 380px;
+  }
+  .toast-item {
+    background: rgba(10, 15, 24, 0.94);
+    border: 1px solid var(--toast-border, var(--accent-cyan));
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px var(--toast-glow, rgba(27, 231, 255, 0.3));
+    color: #fff;
+    padding: 0.55rem 1rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    backdrop-filter: blur(12px);
+    transform: translateX(30px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .toast-item.visible {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  /* ALL-BIOME ENVIRONMENTAL VISOR OVERLAYS (UIUX-02) */
+  .biome-visor-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 75;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .biome-visor-overlay.active {
+    opacity: 1;
+  }
+  #visor-caldera {
+    background: radial-gradient(circle, transparent 55%, rgba(239, 68, 68, 0.18) 85%, rgba(185, 28, 28, 0.32) 100%);
+    box-shadow: inset 0 0 70px rgba(239, 68, 68, 0.25);
+  }
+  #visor-biolum {
+    background: radial-gradient(circle, transparent 60%, rgba(16, 185, 129, 0.12) 85%, rgba(5, 150, 105, 0.25) 100%);
+    box-shadow: inset 0 0 60px rgba(16, 185, 129, 0.2);
+  }
+  #visor-abyss {
+    background: radial-gradient(circle, transparent 50%, rgba(2, 132, 199, 0.2) 80%, rgba(3, 105, 161, 0.4) 100%);
+    box-shadow: inset 0 0 90px rgba(2, 132, 199, 0.35);
+  }
+  #visor-mars {
+    background: radial-gradient(circle, transparent 55%, rgba(234, 88, 12, 0.16) 85%, rgba(194, 65, 12, 0.3) 100%);
+    box-shadow: inset 0 0 70px rgba(234, 88, 12, 0.25);
+  }
+  #visor-crystal {
+    background: radial-gradient(circle, transparent 60%, rgba(192, 132, 252, 0.14) 85%, rgba(147, 51, 234, 0.26) 100%);
+    box-shadow: inset 0 0 65px rgba(192, 132, 252, 0.22);
+  }
+  #visor-swamp {
+    background: radial-gradient(circle, transparent 55%, rgba(132, 204, 22, 0.15) 85%, rgba(101, 163, 13, 0.28) 100%);
+    box-shadow: inset 0 0 70px rgba(132, 204, 22, 0.22);
+  }
+  #visor-cavern {
+    background: radial-gradient(circle, transparent 50%, rgba(129, 140, 248, 0.16) 85%, rgba(79, 70, 229, 0.3) 100%);
+    box-shadow: inset 0 0 75px rgba(129, 140, 248, 0.25);
+  }
+  #visor-acid {
+    background: radial-gradient(circle, transparent 55%, rgba(234, 179, 8, 0.18) 85%, rgba(202, 138, 4, 0.32) 100%);
+    box-shadow: inset 0 0 80px rgba(234, 179, 8, 0.28);
+  }
+  #visor-taiga {
+    background: radial-gradient(circle, transparent 60%, rgba(5, 150, 105, 0.12) 85%, rgba(4, 120, 87, 0.22) 100%);
+    box-shadow: inset 0 0 50px rgba(5, 150, 105, 0.18);
+  }
+  #visor-sky {
+    background: radial-gradient(circle, transparent 60%, rgba(56, 189, 248, 0.15) 85%, rgba(14, 165, 233, 0.28) 100%);
+    box-shadow: inset 0 0 70px rgba(56, 189, 248, 0.25);
+  }
+
+  /* THERMAL VISION OVERLAY (FEAT-12) */
+  #thermal-vision-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 76;
+    display: none;
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.12) 0%, rgba(245, 183, 0, 0.08) 50%, rgba(59, 130, 246, 0.15) 100%);
+    mix-blend-mode: color-dodge;
+  }
+  #thermal-vision-overlay.active {
+    display: block;
+  }
+
+  /* FLASHLIGHT BATTERY GAUGE (UIUX-17) */
+  #flashlight-gauge-hud {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    font-size: 0.65rem;
+  }
+  .battery-pip {
+    width: 6px;
+    height: 8px;
+    background: var(--accent-cyan);
+    border-radius: 1px;
+    transition: background 0.2s;
+  }
+  .battery-pip.depleted {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* CONTEXT-SENSITIVE RETICLE EXPANSION (UIUX-10) */
+  #crosshair.targeted {
+    width: 18px !important;
+    height: 18px !important;
+    border: 1.5px solid var(--accent-yellow) !important;
+    border-radius: 4px !important;
+    background: transparent !important;
+    box-shadow: 0 0 12px var(--accent-yellow) !important;
+    animation: reticlePulse 1.5s infinite ease-in-out;
+  }
+  @keyframes reticlePulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1.0); }
+    50% { transform: translate(-50%, -50%) scale(1.15); }
+  }
+
+  /* TACTICAL MULTIVERSE SCANNER HUD (WOW-01) */
+  #scanner-hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 80;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #scanner-hud.active {
+    opacity: 1;
+  }
+  .scanner-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(27, 231, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27, 231, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .scanner-reticle-bracket {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 1.5px solid var(--accent-cyan);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 0 14px rgba(27, 231, 255, 0.3);
+    border-radius: 4px;
+    transition: all 0.1s ease;
+  }
+  .scanner-reticle-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8, 12, 20, 0.95);
+    border: 1px solid var(--accent-cyan);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    white-space: nowrap;
+    letter-spacing: 0.8px;
+  }
+  .scanner-reticle-dist {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.58rem;
+    font-family: monospace;
+    color: var(--accent-yellow);
+    white-space: nowrap;
+  }
+  #scanner-status-pill {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 16, 26, 0.92);
+    border: 1px solid var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(27, 231, 255, 0.3);
+    padding: 0.4rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--accent-cyan);
+    z-index: 85;
+    pointer-events: none;
+  }
+
+  /* 3D HOLOGRAPHIC FIELD GUIDE CODEX MODAL (WOW-01 / FEAT-02) */
+  #codex-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 9, 15, 0.88);
+    backdrop-filter: blur(14px);
+    z-index: 550;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .codex-frame {
+    width: 100%;
+    max-width: 1080px;
+    height: 640px;
+    background: #0d121c;
+    border: 2px solid var(--accent-cyan);
+    box-shadow: 0 0 50px rgba(27, 231, 255, 0.3), inset 0 0 40px rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .codex-header {
+    background: #131b28;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(27, 231, 255, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .codex-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .codex-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    height: calc(100% - 50px);
+    overflow: hidden;
+  }
+  .codex-sidebar {
+    background: #090d14;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.75rem;
+    overflow-y: auto;
+  }
+  .codex-world-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.35rem;
+    background: rgba(20, 28, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .codex-world-item:hover, .codex-world-item.active {
+    background: rgba(27, 231, 255, 0.15);
+    border-color: var(--accent-cyan);
+    color: #fff;
+    transform: translateX(4px);
+  }
+  .codex-viewport-pane {
+    position: relative;
+    background: #070a10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #codexCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .codex-telemetry-pane {
+    background: #0b0f18;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.1rem;
+    overflow-y: auto;
+    font-size: 0.76rem;
+  }
+  .telemetry-row {
+    margin-bottom: 0.8rem;
+  }
+  .telemetry-row label {
+    display: block;
+    font-size: 0.62rem;
+    font-family: monospace;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .telemetry-row value {
+    display: block;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+  }
+  .chemical-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 3px;
+  }
+  .chemical-bar-fill {
+    height: 100%;
+    background: var(--accent-cyan);
+  }
+
+  /* DIRECTOR PHOTO MODE HUD (FEAT-01) */
+  #photo-mode-hud {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 500;
+    display: none;
+  }
+  #photo-mode-hud.active {
+    display: block;
+  }
+  #photo-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    pointer-events: none;
+  }
+  .grid-line {
+    border-right: 1px dashed rgba(255, 255, 255, 0.2);
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  }
+  #photo-toolbar {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 14, 22, 0.95);
+    border: 1px solid var(--accent-cyan);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.85);
+    border-radius: 30px;
+    padding: 0.6rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    pointer-events: auto;
+    backdrop-filter: blur(14px);
+  }
+  .photo-btn {
+    background: rgba(20, 28, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.35rem 0.85rem;
+    border-radius: 16px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .photo-btn:hover, .photo-btn.active {
+    background: var(--accent-cyan);
+    color: #000;
+    border-color: #fff;
+    box-shadow: 0 0 12px var(--accent-cyan);
+  }
+
+  /* SETTINGS DRAWER MODAL (UIUX-09) */
+  #settings-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 14, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 520;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .settings-frame {
+    width: 100%;
+    max-width: 680px;
+    background: #0f141f;
+    border: 1.5px solid var(--accent-cyan);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(27, 231, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .settings-header {
+    background: #141c2b;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(27, 231, 255, 0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .settings-body {
+    padding: 1.25rem 1.5rem;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+  .settings-group {
+    margin-bottom: 1.4rem;
+  }
+  .settings-group-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--accent-yellow);
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.35rem;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--text-primary);
+  }
+  .settings-slider {
+    width: 160px;
+    accent-color: var(--accent-cyan);
+  }
+
+  /* KEYMAP & CONTROLS GUIDE MODAL (UIUX-07) */
+  #controls-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 14, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 530;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .controls-frame {
+    width: 100%;
+    max-width: 640px;
+    background: #0f141f;
+    border: 1.5px solid var(--accent-yellow);
+    box-shadow: 0 0 40px rgba(245, 183, 0, 0.25);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    font-size: 0.75rem;
+  }
+  .control-card {
+    background: rgba(20, 28, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.6rem 0.85rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .control-key {
+    background: rgba(27, 231, 255, 0.15);
+    border: 1px solid var(--accent-cyan);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-weight: 800;
+    font-family: monospace;
+  }
+
+  /* VIRTUAL TOUCH JOYSTICKS FOR MOBILE (UIUX-13) */
+  #virtual-joysticks-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 88;
+    display: none;
+  }
+  @media (pointer: coarse), (max-width: 768px) {
+    #virtual-joysticks-container {
+      display: block;
+    }
+  }
+  .touch-stick-zone {
+    position: absolute;
+    bottom: 25px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(14, 20, 32, 0.4);
+    border: 2px dashed rgba(27, 231, 255, 0.3);
+    pointer-events: auto;
+  }
+  #touch-stick-left {
+    left: 25px;
+  }
+  #touch-stick-right {
+    right: 25px;
+  }
+  .touch-stick-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(27, 231, 255, 0.7);
+    box-shadow: 0 0 15px var(--accent-cyan);
+  }
+
 </style>
 <!-- Three.js + Loaders (Local Offline-First Bundle) -->
 <script src="web/libs/three.min.js"></script>
@@ -1386,6 +2126,263 @@
 <div id="header-hover-trigger"></div>
 <button id="ui-toggle-btn" onclick="toggleUI()" title="Toggle UI Visibility (Press H)">👁️ UI [H]</button>
 <div id="ui-toast"></div>
+
+<!-- ============================================================= -->
+<!-- FORENSIC UPLIFT & WOW-ME HTML OVERLAYS, HUDS & MODALS -->
+<!-- ============================================================= -->
+
+<!-- COMPASS TAPE HUD (UIUX-01) -->
+<div id="compass-hud">
+  <canvas id="compass-tape" width="280" height="28"></canvas>
+  <div id="compass-needle"></div>
+  <div id="compass-degree">000° N</div>
+</div>
+
+<!-- TACTICAL RADAR HUD (UIUX-03) -->
+<div id="radar-hud" title="Tactical Radar // Range 60m">
+  <canvas id="radarCanvas" width="130" height="130"></canvas>
+  <div class="radar-label">RADAR // 60M</div>
+</div>
+
+<!-- SPRINT STAMINA GAUGE (UIUX-04) -->
+<div id="stamina-gauge">
+  <div id="stamina-bar"></div>
+</div>
+
+<!-- COORDINATES BREADCRUMB BADGE (UIUX-05) -->
+<div id="coords-breadcrumb" onclick="copyCoordinatesToClipboard()" title="Click to copy coordinates">
+  <span id="coords-biome-name">01. SUB-AQUIFER</span> // <span id="coords-xyz">X: 0.0 Y: 1.7 Z: 7.0</span>
+</div>
+
+<!-- BIOME DISCOVERY TITLE BANNER (UIUX-06) -->
+<div id="biome-title-banner">
+  <div id="banner-tag">DISCOVERED HORIZON</div>
+  <div id="banner-title">SITE-44 SUB-AQUIFER</div>
+  <div id="banner-subtitle">DEPTH -3,240M // 42.8 MPa // BASE ORIGIN</div>
+</div>
+
+<!-- NOTIFICATION TOAST CONTAINER (UIUX-07) -->
+<div id="toast-container"></div>
+
+<!-- MULTI-BIOME ENVIRONMENTAL VISORS & FILTERS (UIUX-08, GAME-13, GAME-14) -->
+<div id="visor-caldera"></div>
+<div id="visor-biolum"></div>
+<div id="visor-citadel"></div>
+<div id="visor-mars"></div>
+<div id="visor-crystal"></div>
+<div id="visor-swamp"></div>
+<div id="visor-cavern"></div>
+<div id="visor-acid"></div>
+<div id="visor-taiga"></div>
+<div id="visor-sky"></div>
+<div id="thermal-vision-overlay"></div>
+<div id="night-vision-overlay"></div>
+
+<!-- TACTICAL MULTIVERSE AR SCANNER HUD (WOW-01 / FEAT-02) -->
+<div id="scanner-hud">
+  <div id="scanner-sonar-ring"></div>
+  <div id="scanner-reticle">
+    <div class="reticle-bracket br-tl"></div>
+    <div class="reticle-bracket br-tr"></div>
+    <div class="reticle-bracket br-bl"></div>
+    <div class="reticle-bracket br-br"></div>
+    <div id="scanner-reticle-dist">-- M</div>
+  </div>
+  <div id="scanner-data-panel">
+    <div id="scanner-target-name">TARGET ACQUIRED</div>
+    <div id="scanner-target-details">SCANNING SPECTRAL SIGNATURE...</div>
+  </div>
+</div>
+
+<!-- 3D HOLOGRAPHIC FIELD GUIDE CODEX MODAL (WOW-01 / FEAT-01) -->
+<div id="codex-modal" class="modal-backdrop" onclick="if(event.target === this) closeCodexModal()">
+  <div class="codex-frame">
+    <div class="codex-header">
+      <div class="codex-title">
+        <span class="crt-dot"></span>
+        MULTIVERSE FIELD GUIDE // 3D HOLOGRAPHIC CODEX [M]
+      </div>
+      <button class="codex-close" onclick="closeCodexModal()">✕ CLOSE [ESC]</button>
+    </div>
+    <div class="codex-body">
+      <div class="codex-sidebar">
+        <input type="text" id="codexSearchInput" placeholder="Filter codex database..." oninput="filterCodexEntries()">
+        <div id="codexEntriesList"></div>
+      </div>
+      <div class="codex-main">
+        <div id="codex3DContainer">
+          <div id="codex3DNotice">INTERACTIVE 3D HOLOGRAPHIC TURNTABLE (DRAG TO ROTATE)</div>
+        </div>
+        <div id="codexInfoPanel">
+          <div id="codexEntryTitle">SELECT AN ARCHIVE ENTRY</div>
+          <div class="codex-meta-row" id="codexMetaGrid">
+            <div>CLASS: <span id="codexObjClass" style="color:var(--accent-cyan);">--</span></div>
+            <div>ORIGIN: <span id="codexCoords" style="color:var(--accent-yellow);">--</span></div>
+            <div>STATUS: <span id="codexIntegrity" style="color:#10b981;">--</span></div>
+            <div>CLEARANCE: <span id="codexClearance" style="color:#a78bfa;">--</span></div>
+          </div>
+          <div id="codexEntryBody">Select any inspected artifact, anomaly, or discovered planetary biome from the left navigation tree to project its 3D wireframe topology and review classified research logs.</div>
+        </div>
+      </div>
+    </div>
+    <div class="codex-footer">
+      <span>ARCHIVAL DATABASE // QUANTUM TELEMETRY REPOSITORY</span>
+      <button class="terminal-btn-dial" style="padding: 4px 14px; font-size: 0.78rem;" onclick="closeCodexModal()">DISMISS [ESC]</button>
+    </div>
+  </div>
+</div>
+
+<!-- IN-GAME PHOTO MODE HUD (FEAT-03, FEAT-04, QOL-08) -->
+<div id="photo-mode-hud">
+  <div id="photo-grid-overlay">
+    <div class="grid-line-h gl-h1"></div>
+    <div class="grid-line-h gl-h2"></div>
+    <div class="grid-line-v gl-v1"></div>
+    <div class="grid-line-v gl-v2"></div>
+  </div>
+  <div id="photo-controls-bar">
+    <div class="photo-title">📷 PHOTO MODE [P]</div>
+    <div class="photo-tools">
+      <button class="photo-btn" onclick="capturePhotoScreenshot()">📸 SNAPSHOT [ENTER]</button>
+      <button class="photo-btn" onclick="cyclePhotoFilter()">FILTER: <span id="photoFilterLabel">NONE</span></button>
+      <button class="photo-btn" onclick="cyclePhotoFOV()">FOV: <span id="photoFOVLabel">65°</span></button>
+      <button class="photo-btn" onclick="togglePhotoGrid()">GRID</button>
+      <button class="photo-btn" onclick="exitPhotoMode()">✕ EXIT [ESC]</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYSTEM CONFIGURATION & SETTINGS MODAL (UIUX-10, QOL-12) -->
+<div id="settings-modal" class="modal-backdrop" onclick="if(event.target === this) closeSettingsModal()">
+  <div class="settings-frame">
+    <div class="settings-header">
+      <div class="settings-title"><span class="crt-dot"></span> SYSTEM & GRAPHICS CONFIGURATION [O]</div>
+      <button class="settings-close" onclick="closeSettingsModal()">✕ CLOSE [ESC]</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-sec-title">GRAPHICS & PERFORMANCE</div>
+      <div class="settings-row">
+        <label for="cfgRenderScale">Render Resolution Scale</label>
+        <select id="cfgRenderScale" onchange="applyUserGraphicsSettings()">
+          <option value="0.75">0.75x (Performance Boost)</option>
+          <option value="1.0" selected>1.0x (Native Display)</option>
+          <option value="1.5">1.5x (High Fidelity)</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <label for="cfgShadows">Dynamic Shadows</label>
+        <select id="cfgShadows" onchange="applyUserGraphicsSettings()">
+          <option value="off">Off (Max FPS)</option>
+          <option value="low">Low Quality</option>
+          <option value="high" selected>High (Soft PCF)</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <label for="cfgFOV">Field of View (<span id="cfgFOVDisplay">65°</span>)</label>
+        <input type="range" id="cfgFOV" min="50" max="95" value="65" oninput="applyUserGraphicsSettings()">
+      </div>
+      <div class="settings-row">
+        <label for="cfgPostFX">Atmospheric Post-Processing & Fog</label>
+        <input type="checkbox" id="cfgPostFX" checked onchange="applyUserGraphicsSettings()">
+      </div>
+
+      <div class="settings-sec-title" style="margin-top: 16px;">AUDIO & SOUNDSCAPES</div>
+      <div class="settings-row">
+        <label for="cfgMasterVol">Master Volume (<span id="cfgMasterVolDisplay">80%</span>)</label>
+        <input type="range" id="cfgMasterVol" min="0" max="100" value="80" oninput="applyUserAudioSettings()">
+      </div>
+      <div class="settings-row">
+        <label for="cfgAmbienceVol">Ambient Soundscapes (<span id="cfgAmbienceVolDisplay">70%</span>)</label>
+        <input type="range" id="cfgAmbienceVol" min="0" max="100" value="70" oninput="applyUserAudioSettings()">
+      </div>
+      <div class="settings-row">
+        <label for="cfgSFXVol">Sound Effects & Footsteps (<span id="cfgSFXVolDisplay">90%</span>)</label>
+        <input type="range" id="cfgSFXVol" min="0" max="100" value="90" oninput="applyUserAudioSettings()">
+      </div>
+
+      <div class="settings-sec-title" style="margin-top: 16px;">INPUT & ACCESSIBILITY</div>
+      <div class="settings-row">
+        <label for="cfgMouseSens">Look Sensitivity (<span id="cfgMouseSensDisplay">1.0x</span>)</label>
+        <input type="range" id="cfgMouseSens" min="2" max="30" value="10" oninput="applyUserInputSettings()">
+      </div>
+      <div class="settings-row">
+        <label for="cfgInvertY">Invert Pitch (Y-Axis)</label>
+        <input type="checkbox" id="cfgInvertY" onchange="applyUserInputSettings()">
+      </div>
+      <div class="settings-row">
+        <label for="cfgHaptics">Gamepad Vibration / Haptics</label>
+        <input type="checkbox" id="cfgHaptics" checked onchange="applyUserInputSettings()">
+      </div>
+      <div class="settings-row">
+        <label for="cfgTelemetry">Real-time Performance Telemetry [T]</label>
+        <input type="checkbox" id="cfgTelemetry" onchange="togglePerfTelemetry(this.checked)">
+      </div>
+    </div>
+    <div class="settings-footer">
+      <button class="settings-reset-btn" onclick="resetUserSettings()">RESET DEFAULTS</button>
+      <button class="terminal-btn-dial" style="padding: 4px 16px; font-size: 0.8rem;" onclick="closeSettingsModal()">SAVE & CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS & KEYBOARD FIELD MANUAL MODAL (UIUX-09, QOL-11) -->
+<div id="controls-modal" class="modal-backdrop" onclick="if(event.target === this) closeControlsModal()">
+  <div class="controls-frame">
+    <div class="controls-header">
+      <div class="controls-title"><span class="crt-dot"></span> FIELD MANUAL // CONTROLS & BINDINGS [?]</div>
+      <button class="controls-close" onclick="closeControlsModal()">✕ CLOSE [ESC]</button>
+    </div>
+    <div class="controls-body">
+      <div class="controls-grid">
+        <div class="ctrl-card"><span class="ctrl-key">W A S D</span><span class="ctrl-desc">Walk Locomotion</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">MOUSE</span><span class="ctrl-desc">Aim / Look Around (Click to lock)</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">SHIFT</span><span class="ctrl-desc">Sprint (Consumes stamina)</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">SPACE</span><span class="ctrl-desc">Jump / Zero-G Thrusters</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">C</span><span class="ctrl-desc">Crouch / Low Profile Stance</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">E</span><span class="ctrl-desc">Interact / Inspect Lore Target</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">Q</span><span class="ctrl-desc">AR Sonar Scanner Pulse</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">M</span><span class="ctrl-desc">3D Holographic Codex Guide</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">B</span><span class="ctrl-desc">Radial Biome Warp Launcher</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">F</span><span class="ctrl-desc">Toggle High-Intensity Flashlight</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">V</span><span class="ctrl-desc">Cycle Vision Modes (Thermal / NVG)</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">P</span><span class="ctrl-desc">Photo Mode Free Camera</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">T</span><span class="ctrl-desc">Real-Time Performance Diagnostics</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">O</span><span class="ctrl-desc">Graphics & Audio Settings</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">H</span><span class="ctrl-desc">Toggle UI Overlay Visibility</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">HOME</span><span class="ctrl-desc">Emergency Recall to Sub-Aquifer Base</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">Z / X</span><span class="ctrl-desc">Previous / Next Biome Cycle</span></div>
+        <div class="ctrl-card"><span class="ctrl-key">1 - 9</span><span class="ctrl-desc">Direct Biome Warp Hotkeys</span></div>
+      </div>
+      <div class="gamepad-info-box">
+        <strong>🎮 GAMEPAD CONTROLS:</strong> Left Stick = Move | Right Stick = Look | A = Jump | B = Crouch | X = Interact [E] | Y = Scan [Q] | LB = Prev Biome | RB = Next Biome | Start = Codex [M] | Back = Settings [O].
+      </div>
+    </div>
+    <div class="controls-footer">
+      <span>QUANTUM SUIT TELEMETRY // MIL-STD-884 INPUT INTERFACE</span>
+      <button class="terminal-btn-dial" style="padding: 4px 16px; font-size: 0.8rem;" onclick="closeControlsModal()">DISMISS [ESC]</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE VIRTUAL JOYSTICK & TOUCH CONTROLS (UIUX-14, FEAT-13) -->
+<div id="virtual-joysticks-container">
+  <div id="vjoy-move-zone"><div id="vjoy-move-knob"></div></div>
+  <div id="vjoy-look-zone"></div>
+  <div id="vjoy-action-buttons">
+    <button class="vjoy-btn" onclick="triggerVirtualAction('jump')">JUMP</button>
+    <button class="vjoy-btn" onclick="triggerVirtualAction('interact')">USE [E]</button>
+    <button class="vjoy-btn" onclick="triggerVirtualAction('scan')">SCAN [Q]</button>
+  </div>
+</div>
+
+<!-- REAL-TIME TELEMETRY DIAGNOSTICS HUD (UIUX-11, BACK-07, QOL-07) -->
+<div id="telemetry-graph-hud">
+  <div class="telem-header">TELEMETRY DIAGNOSTICS [T]</div>
+  <canvas id="telemetryCanvas" width="220" height="70"></canvas>
+  <div class="telem-stats" id="telemStatsText">FPS: 60 | DRAW: -- | MEM: --</div>
+</div>
+
+
 
 <!-- FULLSCREEN WARP TRANSIT OVERLAY -->
 <div id="warp-overlay"></div>
@@ -1446,6 +2443,9 @@
     <button class="nav-btn" onclick="switchView('gallery')">🖼️ STILLS GALLERY</button>
     <button class="nav-btn" onclick="switchView('catalog')">📦 ASSET CATALOG</button>
     <button class="nav-btn" onclick="switchView('dna')">📜 WORLD DNA</button>
+        <button class="nav-btn" onclick="openCodexModal()" style="border-color: var(--accent-cyan); color: var(--accent-cyan);"><span>📖</span> CODEX [M]</button>
+    <button class="nav-btn" onclick="openSettingsModal()"><span>⚙️</span> SETTINGS [O]</button>
+    <button class="nav-btn" onclick="openControlsModal()"><span>❓</span> CONTROLS [?]</button>
     <button class="nav-btn" onclick="openTerminalModal()" style="background: rgba(245, 183, 0, 0.25); border-color: var(--accent-yellow); color: var(--accent-yellow); font-weight: 800;"><span>⚡</span> GATE TERMINAL</button>
   </div>
 
@@ -2155,6 +3155,164 @@ function playSurfaceFootstep(surfaceType) {
       osc.start(now);
       osc.stop(now + 0.065);
     }
+    else if (surfaceType === 'basalt') {
+      // Crunchy volcanic cinder & pumice clatter
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.07);
+      g.gain.setValueAtTime(0.08, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+    else if (surfaceType === 'mycelium') {
+      // Soft spongy fungal damp step
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+      g.gain.setValueAtTime(0.05, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    }
+    else if (surfaceType === 'wading') {
+      // Sloshing submerged aqueous pressure wave
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(380, now + 0.05);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+      g.gain.setValueAtTime(0.08, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.14);
+    }
+    else if (surfaceType === 'ferric_sand') {
+      // Crunchy dry mineral grit with high-iron chime
+      const bufferSize = audioCtx.sampleRate * 0.07;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1400;
+      filter.Q.value = 1.8;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.07, now);
+      noise.connect(filter);
+      filter.connect(g);
+      g.connect(audioCtx.destination);
+      noise.start(now);
+    }
+    else if (surfaceType === 'crystal_res') {
+      // Sharp crystalline vitreous tinkling chime
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1840, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+      g.gain.setValueAtTime(0.06, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    }
+    else if (surfaceType === 'mud') {
+      // Squelching viscous bog step with low-Q suction release
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(110, now);
+      osc.frequency.exponentialRampToValueAtTime(290, now + 0.05);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.1);
+      g.gain.setValueAtTime(0.07, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    }
+    else if (surfaceType === 'flowstone') {
+      // Dense echoing limestone cavern thud
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(130, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.09);
+      g.gain.setValueAtTime(0.09, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.1);
+    }
+    else if (surfaceType === 'sludge') {
+      // Bubbling caustic viscous splash
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.09);
+      g.gain.setValueAtTime(0.05, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.1);
+    }
+    else if (surfaceType === 'pine_needles') {
+      // Rustling dry coniferous forest floor
+      const bufferSize = audioCtx.sampleRate * 0.06;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1600;
+      filter.Q.value = 1.0;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.05, now);
+      noise.connect(filter);
+      filter.connect(g);
+      g.connect(audioCtx.destination);
+      noise.start(now);
+    }
+    else if (surfaceType === 'aerolite') {
+      // Ethereal singing stone / floating resonance
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(920, now);
+      osc.frequency.exponentialRampToValueAtTime(460, now + 0.12);
+      g.gain.setValueAtTime(0.04, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.14);
+    }
+
   } catch (err) {}
 }
 
@@ -3095,7 +4253,216 @@ Multispectral Earth cameras track hurricane cyclonic paths, auroral substorms, a
     content: `[SURFACE EXPLORATION ROVER DIAGNOSTIC #EXP-06]
 Autonomous 6-wheeled planetary rover secured in orbital staging cradle.
 Equipped with rock abrasion tools, alpha-particle X-ray spectrometers, and panoramic stereoscopic cameras designed for extreme planetary surface environments.`
-  }
+  },
+
+  // =============================================================
+  // EXPANSION LORE DATABASE ENTRIES (WORLDS 08 - 17) [CORR-04, FEAT-05]
+  // =============================================================
+  volcano_caldera: {
+    title: 'OBSIDIAN RIFT // PRIMARY MAGMA CRATER & LAVA CONDUIT',
+    classification: 'ACTIVE TECTONIC SUB-SURFACE VENT // EXTREME PYROCLASTIC',
+    coords: 'CALDERA AXIS // [X: 0.0, Z: 20.0]',
+    integrity: 'MAGMA TEMPERATURE: 1,280°C // CONVECTION ACTIVE',
+    clearance: 'GEOTHERMAL HAZARD RATING: CRITICAL',
+    content: `[VOLCANIC SENSOR ARRAY TELEMETRY #VR-904]
+Superheated basaltic magma lake bubbling with dissolved sulfur dioxide gases.
+Sub-surface acoustic sensors record rhythmic harmonic tremors originating 8.4km beneath the caldera floor.
+Active basaltic basalt dikes channel molten magma toward geothermal heat exchangers.`
+  },
+  volcano_monitoring: {
+    title: 'OBSIDIAN RIFT // HIGH-TEMPERATURE TELEMETRY SENSOR MAST',
+    classification: 'GEODETIC & THERMAL SEISMOMETER STATION',
+    coords: 'WEST RIDGE // [X: -12.0, Z: -5.0]',
+    integrity: 'TUNGSTEN-ALLOY MAST // ABLATIVE SHIELD 98%',
+    clearance: 'AUTOMATED RESEARCH NETWORK',
+    content: `[VOLCANOLOGICAL FIELD LOG #VOLC-02]
+Continuous broadband seismometer and gas chromatography array.
+Sulfur dioxide to hydrogen sulfide ratio: 3.42 (elevated magmatic intrusion indicator).
+Ablative ceramic shields maintain internal electronics at 42°C despite ambient radiative heat.`
+  },
+  biolum_eldertree: {
+    title: 'ABYSSAL GROVE // TITANIC SPORE-FUNGUS MEGACONDUIT',
+    classification: 'BIO-ENGINEERED ARBOREAL MYCELIUM // XENO-BOTANICAL',
+    coords: 'GROVE CENTER // [X: 0.0, Z: 18.0]',
+    integrity: 'LUMINESCENT VITALITY: 99.4% // SPORE DENSITY HIGH',
+    clearance: 'ECOSYSTEM CONSERVATION DIRECTIVE',
+    content: `[XENO-BOTANICAL SURVEY LOG #XB-109]
+Colossal fungal pillar rising 45 meters with pulsating bioluminescent veins carrying fluorophore fluids.
+Emits low-frequency acoustic vibrations (18 Hz) that trigger synchronous flashing across surrounding fungal colonies.
+Spores possess unique piezo-luminescent properties when disturbed by air currents.`
+  },
+  biolum_spores: {
+    title: 'ABYSSAL GROVE // RESONANT MYCELIAL SPORE POD CLUSTER',
+    classification: 'CHEMOLUMINESCENT SPORE DISPERSAL CONE',
+    coords: 'EAST CLEARING // [X: 14.0, Z: -6.0]',
+    integrity: 'TURGOR PRESSURE: 4.8 BAR // RECEPTIVE',
+    clearance: 'FIELD BIOLOGY LOGISTICS',
+    content: `[SPORE POD SPECTRAL METRICS]
+Clustered translucent bio-domes containing phosphorescent spores tuned to 520nm wavelength (emerald green).
+Pod membranes dilate in response to carbon dioxide changes from nearby travelers.`
+  },
+  abyss_monolith: {
+    title: 'SUNKEN CITADEL // HADAL TEMPLE MONOLITH & DROWNED DAIS',
+    classification: 'PRE-CATACLYSMIC PELAGIC CIVILIZATION // SUB-BENTHIC',
+    coords: 'CITADEL PLINTH // [X: 0.0, Z: 15.0]',
+    integrity: 'BASALT CARVING // HYDROSTATIC ENCRUSTATION',
+    clearance: 'HADAL ARCHAEOLOGY CLEARANCE',
+    content: `[HADAL OCEANOGRAPHIC RECONNAISSANCE #ABYSS-01]
+Submerged monolithic altar carved from single block of dense maritime diorite.
+Intaglio glyphs depict ocean currents, seafloor thermal chimneys, and constellations unseen from modern surface skies.
+Hydrophones register low-frequency acoustic harmonics circulating through hollow internal acoustic flutes.`
+  },
+  abyss_trench: {
+    title: 'SUNKEN CITADEL // HYDROTHERMAL BLACK SMOKER CHIMNEY',
+    classification: 'MINERAL-RICH TECTONIC CHIMNEY // MINERAL DEPOSIT',
+    coords: 'TRENCH EDGE // [X: -15.0, Z: 8.0]',
+    integrity: 'FLUID DISCHARGE: 380°C // PYRITE PRECIPITATION',
+    clearance: 'DEEP OCEAN MINING PROSPECT',
+    content: `[HYDROTHERMAL FLUID ASSAY #HYD-88]
+Mineral chimney formed of iron, copper, and zinc sulfides precipitating upon contact with near-freezing seawater.
+Supports dense chemotrophic ecosystems of polychaete worms and sulfur-oxidizing archaea thriving in total darkness.`
+  },
+  mars_habitat: {
+    title: 'VALLES MARINERIS // ARES EXPEDITION PRESSURIZED HAB-DOME',
+    classification: 'MODULAR SURFACE COLONIZATION HABITAT',
+    coords: 'CANYON FLOOR // [X: 14.0, Z: 12.0]',
+    integrity: 'DOUBLE-LAYER REGOLITH COMPOSITE // 1.0 ATM N2/O2',
+    clearance: 'MISSION COMMAND // EXPEDITION-44',
+    content: `[HAB-01 ENVIRONMENTAL LIFE SUPPORT LOG]
+Pressurized habitat dome constructed of sintered Martian regolith over an inflatable Kevlar pressure bladder.
+Internal ECLSS recycling efficiency: 98.4% water, 99.2% oxygen.
+Hydroponic bays currently cultivate genetically tailored spirulina algae and dwarf wheat.`
+  },
+  mars_rover: {
+    title: 'VALLES MARINERIS // ARES-IV HEAVY AUTONOMOUS ALL-TERRAIN ROVER',
+    classification: 'LONG-RANGE SAMPLE DRILLING & GEOLOGY PLATFORM',
+    coords: 'WEST ESCARPMENT // [X: -12.0, Z: -8.0]',
+    integrity: 'ROCKER-BOGIE CHASSIS // RTG POWER: 110W',
+    clearance: 'ROVER OPERATIONS TEAM',
+    content: `[SURFACE ROVER TELEMETRY #ARES-ROV-04]
+Six independent motorized titanium wheels with rocker-bogie suspension traverse 35° talus slopes without slippage.
+Equipped with deep core diamond rotary drill capable of extracting 3-meter permafrost cores beneath sedimentary layers.`
+  },
+  crystal_geode: {
+    title: 'PRISMATIC SHARDS // CAELUM GEODE CENTRAL CRYSTAL MATRIX',
+    classification: 'MACRO-CRYSTALLINE SILICATE PIEZOELECTRIC FORMATION',
+    coords: 'GEODE MONOLITH // [X: 0.0, Z: 16.0]',
+    integrity: 'REFRACTIVE PURITY: 99.98% // ZERO FRACTURES',
+    clearance: 'CRYSTALLOGRAPHIC RESEARCH PROGRAM',
+    content: `[SPECTROSCOPIC LATTICE SURVEY #PRISM-77]
+Monolithic hexagonal quartz-amethyst formation measuring 18 meters in height with natural internal optical waveguiding.
+When exposed to ambient electromagnetic radiation, lattice generates coherent harmonic luminescence across ultraviolet spectrum.`
+  },
+  crystal_resonance: {
+    title: 'PRISMATIC SHARDS // HARMONIC RESONANCE TRANSMITTER ARRAY',
+    classification: 'SUB-HARMONIC FREQUENCY COUPLING MAST',
+    coords: 'EAST REFRACTOR // [X: 12.0, Z: 0.0]',
+    integrity: 'PIEZO COUPLING: 18.4 kV // FREQUENCY: 432 Hz',
+    clearance: 'DIMENSIONAL RESONANCE LAB',
+    content: `[HARMONIC ARRAY OPERATION LOG #HARM-12]
+Transmitter induces controlled vibrations in quartz field to generate stable atmospheric scalar waves.
+Telemetry data confirms acoustic waves reduce atmospheric refraction turbulence by 84%.`
+  },
+  swamp_hut: {
+    title: 'SUNKEN MIRE // BOTANICAL EXPEDITION STILT RESEARCH OUTPOST',
+    classification: 'FIELD WORKSTATION // WETLAND SAMPLING',
+    coords: 'BAYOU SHORELINE // [X: 10.0, Z: 12.0]',
+    integrity: 'CYPRESS TIMBER & FIBERGLASS // ELEVATION 2.4M',
+    clearance: 'WETLAND ECOLOGICAL INITIATIVE',
+    content: `[CYPRESS BAYOU FIELD LOG #BAYOU-14]
+Elevated field shelter built above stagnant water level to prevent fungal rot and reptile incursions.
+Laboratory counter contains distillation equipment, peat core samples, and botanical specimen jars preserving carnivorous pitcher plants.`
+  },
+  swamp_altar: {
+    title: 'SUNKEN MIRE // SUBMERGED ANCIENT MEGALITHIC BOG ALTAR',
+    classification: 'PRE-HISTORIC PEAT MOSS SANCTUARY',
+    coords: 'WEST SHALLOWS // [X: -10.0, Z: 14.0]',
+    integrity: 'WEATHERED GRANITE // SPHAGNUM OVERGROWTH',
+    clearance: 'ETHNO-ARCHAEOLOGICAL COUNCIL',
+    content: `[PEAT BED STRATIGRAPHY ENTRY #BOG-09]
+Carved megalithic stone marker dating to 4,200 BCE preserved by anaerobic, acidic peat water.
+Offerings of bronze torcs, carved bog-oak effigies, and flint sickle blades discovered embedded in surrounding sediment.`
+  },
+  cavern_stalactite: {
+    title: 'AMETHYST VAULT // CATHEDRAL GIGANTIC DRIPSTONE COLUMN',
+    classification: 'SPELEOTHEM FORMATION // CALCITE & AMETHYST',
+    coords: 'VAULT CENTER // [X: 0.0, Z: 12.0]',
+    integrity: 'GROWTH RATE: 0.13 MM/CENTURY // CONTINUOUS DEPOSITION',
+    clearance: 'SUBTERRANEAN GEOLOGY DIVISION',
+    content: `[SPELEOLOGICAL SURVEY #CAV-44]
+Massive 22-meter limestone column formed by fusion of overhead stalactite with rising stalagmite over 180,000 years.
+Core contains alternating layers of crystalline calcite, fluorite, and deep purple amethyst druse.`
+  },
+  cavern_vein: {
+    title: 'AMETHYST VAULT // HYDROTHERMAL FLUORITE & AMETHYST LODE',
+    classification: 'MINERALIZED CAVITY VEIN // GEM QUALITY',
+    coords: 'WEST ROCK WALL // [X: -14.0, Z: -10.0]',
+    integrity: 'CRYSTAL DENSITY: HIGH // HYDROTHERMAL INTRUSION',
+    clearance: 'SUB-SURFACE PROSPECTING PERMIT',
+    content: `[LODE ASSAY REPORT #GEM-02]
+Fracture wall packed with cubic fluorite crystals exhibiting vibrant natural blue-violet daylight fluorescence.
+Trace rare earth elements (yttrium and europium) confirmed by handheld X-ray fluorescence analysis.`
+  },
+  acid_pipeline: {
+    title: 'CHEMICAL SUMP // INDUSTRIAL CORROSION RESISTANT MANIFOLD',
+    classification: 'HEAVY INDUSTRIAL CHEMICAL TRANSPORT CONDUIT',
+    coords: 'SUMP PERIMETER // [X: 8.0, Z: 10.0]',
+    integrity: 'HASTELLOY-C ALLOY // WALL THICKNESS: 18MM',
+    clearance: 'HAZMAT SITE ENGINEERING',
+    content: `[HAZARDOUS WASTE PIPELINE DIAGNOSTIC #SUMP-99]
+Automated transfer manifold handling concentrated fluorosilicic and sulfuric acid runoff from processing plants.
+Sensors monitor ultrasonic wall thickness to identify corrosion pitting before structural failure.`
+  },
+  acid_vat: {
+    title: 'CHEMICAL SUMP // NEUTRALIZATION REACTOR & SLAG CENTRIFUGE',
+    classification: 'CHEMICAL REMEDIATION SYSTEM',
+    coords: 'EAST RETENTION POND // [X: -12.0, Z: 14.0]',
+    integrity: 'CERAMIC TILE LINING // ACTIVE LIME INJECTION',
+    clearance: 'ENVIRONMENTAL COMPLIANCE UNIT',
+    content: `[EFFLUENT TREATMENT LOG #ACID-21]
+Heavy circular retention vat continuously dosing calcium hydroxide slurries to buffer toxic acid runoff to neutral pH.
+Automated agitators break up precipitating metal gypsum cakes to maintain steady flow rate.`
+  },
+  taiga_cabin: {
+    title: 'BOREAL TAIGA // EXPEDITION PINE LOG CABIN & CACHE',
+    classification: 'SUB-ARCTIC RESEARCH SHELTER // TIMBER',
+    coords: 'PINE RIDGE // [X: 12.0, Z: 10.0]',
+    integrity: 'HEAVY PINE TIMBER // CHINKED WITH SPHAGNUM MOSS',
+    clearance: 'FORESTRY RESEARCH SERVICE',
+    content: `[BOREAL OUTPOST LOGBOOK #TAIGA-01]
+Rustic field cabin constructed from felled white spruce logs, equipped with wood stove, snowshoes, and meteorological logging station.
+Logbook records migratory bird counts, permafrost thaw depth, and aurora borealis visual ratings.`
+  },
+  taiga_shrine: {
+    title: 'BOREAL TAIGA // GLACIAL ERRATIC BOULDER & LEYLINE CAIRN',
+    classification: 'PLEISTOCENE GEOLOGICAL DEPOSIT & WAYPOINT',
+    coords: 'WEST MEADOW // [X: -12.0, Z: -12.0]',
+    integrity: 'PINK GRANITE // WEIGHT ESTIMATE: 48 METRIC TONS',
+    clearance: 'CULTURAL HERITAGE REGISTRY',
+    content: `[GLACIAL GEOMORPHOLOGY & HISTORICAL MARKER]
+Massive erratic boulder transported 240 kilometers from Scandinavian Shield bedrock during the last glacial maximum.
+Generations of northern travelers have placed marker stones atop the boulder as navigational waypoints.`
+  },
+  sky_nexus: {
+    title: 'AETHER REACH // CENTRAL ANTIGRAV SOLSTONE PLATFORM',
+    classification: 'ANOMALOUS GRAVITATIONAL NEXUS // SKY ARCHIPELAGO',
+    coords: 'CENTRAL CITADEL // [X: 0.0, Z: 10.0]',
+    integrity: 'GRAVITON FIELD STABLE // ALTITUDE: 14,200M',
+    clearance: 'STRATOSPHERIC RESEARCH CORPS',
+    content: `[AEROLITE ANOMALY LOG #SKY-01]
+Floating celestial bedrock island suspended by super-dense crystalline core exhibiting macroscopic quantum levitation.
+Field strength counteracts planetary gravitational acceleration precisely at 14.2km altitude above the cloud layer.`
+  },
+  sky_glider: {
+    title: 'AETHER REACH // HIGH-ALTITUDE SOLAR THERMAL GLIDER CRADLE',
+    classification: 'SUB-ORBITAL LIGHT TRAVERSAL APPARATUS',
+    coords: 'EAST LAUNCH GANTRY // [X: 10.0, Z: -6.0]',
+    integrity: 'CARBON-NANOTUBE SPAR // PHOTOVOLTAIC MEMBRANE',
+    clearance: 'AERONAUTICAL CERTIFICATION ALPHA',
+    content: `[ATMOSPHERIC CRAFT SPECIFICATIONS #GLD-7]
+Ultralight composite glider with 28-meter wingspan designed to ride stratospheric thermal updrafts between sky islands.
+Equipped with regenerative fuel cell, ion thruster verniers, and terrain radar altimeter.`
+  },
 
 };
 
@@ -3968,15 +5335,30 @@ function updateTerminalScreenCanvas() {
 // CINEMATIC UI TOGGLE SYSTEM ([H] KEY OR BUTTON)
 // =============================================================
 let toastTimer = null;
-function showToast(msg) {
+function showToast(msg, type = 'info', duration = 2800) {
   const toast = document.getElementById('ui-toast');
-  if (!toast) return;
-  toast.innerText = msg;
-  toast.classList.add('visible');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toast.classList.remove('visible');
-  }, 2200);
+  if (toast) {
+    toast.innerText = msg;
+    toast.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('visible');
+    }, duration);
+  }
+  const container = document.getElementById('toast-container');
+  if (container) {
+    const item = document.createElement('div');
+    item.className = `toast-item ${type}`;
+    item.innerText = msg;
+    container.appendChild(item);
+    setTimeout(() => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(12px)';
+      setTimeout(() => {
+        if (item.parentNode) item.parentNode.removeChild(item);
+      }, 300);
+    }, duration);
+  }
 }
 
 function toggleUI(forceState) {
@@ -19783,8 +21165,8 @@ function updateWaypointBar(isInForeignWorld) {
   if (isInForeignWorld) {
     bar.innerHTML = `
       <button class="waypoint-btn" onclick="triggerPortalTransit('aquifer')" style="background: rgba(27, 231, 255, 0.25); border-color: var(--accent-cyan); color: var(--accent-cyan); font-weight: 800;">🌀 Return to Site-44 Base</button>
-      <button class="waypoint-btn" onclick="camera.position.set(0, 1.7, -8.0); camera.lookAt(0, 1.7, 10.0);">📍 Stargate Landing Dais</button>
-      <button class="waypoint-btn" onclick="camera.position.set(15, 3.5, 12); camera.lookAt(0, 2.0, -12);">🔭 World Vista Point</button>
+      <button class="waypoint-btn" onclick="teleportToView(0, 1.7, -8.0, 0, 1.7, 10.0)">📍 Stargate Landing Dais</button>
+      <button class="waypoint-btn" onclick="teleportToView(15, 3.5, 12, 0, 2.0, -12)">🔭 World Vista Point</button>
       <button class="waypoint-btn" onclick="openTerminalModal()" style="border-color: var(--accent-yellow); color: var(--accent-yellow);">⚡ Change World [E]</button>
       <button class="waypoint-btn" onclick="toggleOrbitMode()" id="orbitToggleBtn">Mode: First-Person</button>
     `;
@@ -19870,12 +21252,27 @@ function switchActiveEnvironment(targetKey) {
     updateHUDTelemetry(wInfo.sector, wInfo.name.toUpperCase());
   }
 
-  // Multi-World Overlay HUD toggles
-  const frostEl = document.getElementById('frost-vignette');
-  if (frostEl) frostEl.classList.toggle('active', targetKey === 'mountain');
-
-  const visorEl = document.getElementById('visor-overlay');
-  if (visorEl) visorEl.classList.toggle('active', targetKey === 'space');
+  // Multi-World Overlay HUD toggles (UIUX-08, GAME-13, GAME-14)
+  const visorList = [
+    { id: 'frost-vignette', world: 'mountain' },
+    { id: 'visor-overlay', world: 'space' },
+    { id: 'visor-caldera', world: 'volcano' },
+    { id: 'visor-biolum', world: 'biolum' },
+    { id: 'visor-citadel', world: 'abyss' },
+    { id: 'visor-mars', world: 'mars' },
+    { id: 'visor-crystal', world: 'crystal' },
+    { id: 'visor-swamp', world: 'swamp' },
+    { id: 'visor-cavern', world: 'cavern' },
+    { id: 'visor-acid', world: 'acid' },
+    { id: 'visor-taiga', world: 'taiga' },
+    { id: 'visor-sky', world: 'sky' }
+  ];
+  visorList.forEach(v => {
+    const el = document.getElementById(v.id);
+    if (el) el.classList.toggle('active', targetKey === v.world);
+  });
+  if (typeof showBiomeTitleBanner === 'function') showBiomeTitleBanner(targetKey);
+  if (typeof UrlRouterEngine !== 'undefined' && UrlRouterEngine.setHash) UrlRouterEngine.setHash(targetKey, currentViewMode);
 
   isZeroGJumping = false;
   zeroGVelocityY = 0;
@@ -20501,6 +21898,146 @@ function onKeyDown(e) {
         openTerminalModal();
         return;
       }
+    } else if (currentLocation === 'volcano') {
+      const distCaldera = Math.hypot(p.x - 0, p.z - 20.0);
+      const distSensor = Math.hypot(p.x - (-12.0), p.z - (-5.0));
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distCaldera < 6.0) {
+        openLoreModal('volcano_caldera');
+        return;
+      } else if (distSensor < 4.0) {
+        openLoreModal('volcano_monitoring');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'biolum') {
+      const distTree = Math.hypot(p.x - 0, p.z - 18.0);
+      const distSpores = Math.hypot(p.x - 14.0, p.z - (-6.0));
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distTree < 6.0) {
+        openLoreModal('biolum_eldertree');
+        return;
+      } else if (distSpores < 4.0) {
+        openLoreModal('biolum_spores');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'abyss') {
+      const distAltar = Math.hypot(p.x - 0, p.z - 15.0);
+      const distVent = Math.hypot(p.x - (-15.0), p.z - 8.0);
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distAltar < 6.0) {
+        openLoreModal('abyss_monolith');
+        return;
+      } else if (distVent < 4.0) {
+        openLoreModal('abyss_trench');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'mars') {
+      const distHab = Math.hypot(p.x - 14.0, p.z - 12.0);
+      const distRover = Math.hypot(p.x - (-12.0), p.z - (-8.0));
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distHab < 5.0) {
+        openLoreModal('mars_habitat');
+        return;
+      } else if (distRover < 4.5) {
+        openLoreModal('mars_rover');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'crystal') {
+      const distGeode = Math.hypot(p.x - 0, p.z - 16.0);
+      const distArray = Math.hypot(p.x - 12.0, p.z - 0.0);
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distGeode < 6.0) {
+        openLoreModal('crystal_geode');
+        return;
+      } else if (distArray < 4.0) {
+        openLoreModal('crystal_resonance');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'swamp') {
+      const distHut = Math.hypot(p.x - 10.0, p.z - 12.0);
+      const distAltar = Math.hypot(p.x - (-10.0), p.z - 14.0);
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distHut < 5.0) {
+        openLoreModal('swamp_hut');
+        return;
+      } else if (distAltar < 5.0) {
+        openLoreModal('swamp_altar');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'cavern') {
+      const distPillar = Math.hypot(p.x - 0, p.z - 12.0);
+      const distVein = Math.hypot(p.x - (-14.0), p.z - (-10.0));
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distPillar < 5.0) {
+        openLoreModal('cavern_stalactite');
+        return;
+      } else if (distVein < 4.5) {
+        openLoreModal('cavern_vein');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'acid') {
+      const distPipe = Math.hypot(p.x - 8.0, p.z - 10.0);
+      const distVat = Math.hypot(p.x - (-12.0), p.z - 14.0);
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distPipe < 5.0) {
+        openLoreModal('acid_pipeline');
+        return;
+      } else if (distVat < 5.0) {
+        openLoreModal('acid_vat');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'taiga') {
+      const distCabin = Math.hypot(p.x - 12.0, p.z - 10.0);
+      const distCairn = Math.hypot(p.x - (-12.0), p.z - (-12.0));
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distCabin < 5.0) {
+        openLoreModal('taiga_cabin');
+        return;
+      } else if (distCairn < 4.5) {
+        openLoreModal('taiga_shrine');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
+    } else if (currentLocation === 'sky') {
+      const distNexus = Math.hypot(p.x - 0, p.z - 10.0);
+      const distGlider = Math.hypot(p.x - 10.0, p.z - (-6.0));
+      const distReturn = Math.hypot(p.x - 0, p.z - (-10.5));
+      if (distNexus < 5.0) {
+        openLoreModal('sky_nexus');
+        return;
+      } else if (distGlider < 4.5) {
+        openLoreModal('sky_glider');
+        return;
+      } else if (distReturn < 5.0) {
+        openTerminalModal();
+        return;
+      }
     }
   }
   
@@ -20539,9 +22076,17 @@ function onKeyDown(e) {
   if (code === 'KeyS' || key === 's' || code === 'ArrowDown' || key === 'arrowdown') moveState.backward = true;
   if (code === 'KeyA' || key === 'a' || code === 'ArrowLeft' || key === 'arrowleft' || code === 'KeyQ' || key === 'q') moveState.left = true;
   if (code === 'KeyD' || key === 'd' || code === 'ArrowRight' || key === 'arrowright') moveState.right = true;
-  if (code === 'Space' || key === ' ') moveState.up = true;
-  if (code === 'KeyC' || key === 'c' || code === 'ControlLeft' || code === 'ControlRight') moveState.down = true;
-  if (e.shiftKey || code === 'ShiftLeft' || code === 'ShiftRight') moveState.sprint = true;
+  if (code === 'Space' || key === ' ') {
+    moveState.up = true;
+    if (!isOrbitMode && !isJumping && typeof triggerPlayerJump === 'function') triggerPlayerJump();
+  }
+  if (code === 'KeyC' || key === 'c' || code === 'ControlLeft' || code === 'ControlRight') {
+    moveState.down = true;
+  }
+  if (e.shiftKey || code === 'ShiftLeft' || code === 'ShiftRight') {
+    moveState.sprint = true;
+    if (typeof isSprinting !== 'undefined') isSprinting = true;
+  }
 }
 
 function onKeyUp(e) {
@@ -20554,7 +22099,10 @@ function onKeyUp(e) {
   if (code === 'KeyD' || key === 'd' || code === 'ArrowRight' || key === 'arrowright') moveState.right = false;
   if (code === 'Space' || key === ' ') moveState.up = false;
   if (code === 'KeyC' || key === 'c' || code === 'ControlLeft' || code === 'ControlRight') moveState.down = false;
-  if (!e.shiftKey && code !== 'ShiftLeft' && code !== 'ShiftRight') moveState.sprint = false;
+  if (!e.shiftKey && code !== 'ShiftLeft' && code !== 'ShiftRight') {
+    moveState.sprint = false;
+    if (typeof isSprinting !== 'undefined') isSprinting = false;
+  }
 }
 
 function resetMoveState() {
@@ -20890,6 +22438,97 @@ function isPlayerPositionBlocked(px, pz, loc) {
     return false;
   }
 
+  if (loc === 'volcano') {
+    // Caldera Basin: R = 110m, Magma Pool Center (0, 20, r=14), Sensor Mast (-12, -5)
+    if (Math.hypot(px, pz - 20) > 110.0 - r) return true;
+    if (isPointInCylinder(px, pz, { x: 0, z: 20, radius: 12.0 }, r)) return true; // Lava lake
+    if (isPointInCylinder(px, pz, { x: -12.0, z: -5.0, radius: 1.5 }, r)) return true; // Mast
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true; // Return Plinth
+    return false;
+  }
+
+  if (loc === 'biolum') {
+    // Bioluminescent Grove: R = 110m, Elder Tree (0, 18, r=4.5), Spore Pods (14, -6, r=2.5)
+    if (Math.hypot(px, pz - 18) > 110.0 - r) return true;
+    if (isPointInCylinder(px, pz, { x: 0, z: 18, radius: 4.5 }, r)) return true;
+    if (isPointInCylinder(px, pz, { x: 14.0, z: -6.0, radius: 2.5 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'abyss') {
+    // Sunken Citadel: R = 110m, Monolith (0, 15, r=3.8), Smoker Vent (-15, 8, r=2.2)
+    if (Math.hypot(px, pz - 15) > 110.0 - r) return true;
+    if (isPointInAABB(px, pz, { minX: -4.0, maxX: 4.0, minZ: 12.0, maxZ: 18.0 }, r)) return true;
+    if (isPointInCylinder(px, pz, { x: -15.0, z: 8.0, radius: 2.2 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'mars') {
+    // Valles Marineris: R = 110m, Hab Dome (14, 12, r=7.5), Rover (-12, -8, r=3.2)
+    if (Math.hypot(px, pz - 12) > 110.0 - r) return true;
+    if (isPointInCylinder(px, pz, { x: 14.0, z: 12.0, radius: 7.5 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -14.5, maxX: -9.5, minZ: -10.0, maxZ: -6.0 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'crystal') {
+    // Prismatic Shards: R = 110m, Central Geode (0, 16, r=5.5), Resonance Array (12, 0, r=2.5)
+    if (Math.hypot(px, pz - 16) > 110.0 - r) return true;
+    if (isPointInCylinder(px, pz, { x: 0, z: 16.0, radius: 5.5 }, r)) return true;
+    if (isPointInCylinder(px, pz, { x: 12.0, z: 0.0, radius: 2.5 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'swamp') {
+    // Cypress Bayou: R = 110m, Stilt Hut (10, 12), Bog Altar (-10, 14, r=2.5)
+    if (Math.hypot(px, pz - 12) > 110.0 - r) return true;
+    if (isPointInAABB(px, pz, { minX: 7.5, maxX: 12.5, minZ: 9.5, maxZ: 14.5 }, r)) return true;
+    if (isPointInCylinder(px, pz, { x: -10.0, z: 14.0, radius: 2.5 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'cavern') {
+    // Amethyst Vault: R = 90m, Giant Stalactite (0, 12, r=4.5), Vein Wall (-14, -10)
+    if (Math.hypot(px, pz - 12) > 90.0 - r) return true;
+    if (isPointInCylinder(px, pz, { x: 0, z: 12.0, radius: 4.5 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -16.0, maxX: -12.0, minZ: -12.0, maxZ: -8.0 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'acid') {
+    // Chemical Sump: R = 110m, Manifold (8, 10), Vat (-12, 14, r=5.2)
+    if (Math.hypot(px, pz - 10) > 110.0 - r) return true;
+    if (isPointInAABB(px, pz, { minX: 5.5, maxX: 10.5, minZ: 8.0, maxZ: 12.0 }, r)) return true;
+    if (isPointInCylinder(px, pz, { x: -12.0, z: 14.0, radius: 5.2 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'taiga') {
+    // Boreal Taiga: R = 110m, Log Cabin (12, 10), Boulder (-12, -12, r=3.5)
+    if (Math.hypot(px, pz - 10) > 110.0 - r) return true;
+    if (isPointInAABB(px, pz, { minX: 9.5, maxX: 14.5, minZ: 7.5, maxZ: 12.5 }, r)) return true;
+    if (isPointInCylinder(px, pz, { x: -12.0, z: -12.0, radius: 3.5 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+  if (loc === 'sky') {
+    // Aether Reach: Central Island R = 45m, Solstone Platform (0, 10, r=4.0), Glider (10, -6)
+    if (Math.hypot(px, pz - 10) > 55.0 - r) return true;
+    if (isPointInCylinder(px, pz, { x: 0, z: 10.0, radius: 4.0 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: 8.0, maxX: 12.0, minZ: -8.0, maxZ: -4.0 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
+    return false;
+  }
+
+
   return false;
 }
 
@@ -21131,6 +22770,46 @@ function animate() {
         updateInteractionPrompt('<span class="key-badge">[E]</span> TRIGGER HIGH-RES EARTH OBSERVATION SCAN');
       } else if (currentLocation === 'space' && Math.hypot(p.x - 14.0, p.z - 27.5) < 3.8) {
         updateInteractionPrompt('<span class="key-badge">[E]</span> RUN PLANETARY ROVER SYSTEM DIAGNOSTIC');
+      } else if (currentLocation === 'volcano' && Math.hypot(p.x - 0, p.z - 20.0) < 6.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> INSPECT ACTIVE MAGMA LAKE CONVECTIVE CONDUIT');
+      } else if (currentLocation === 'volcano' && Math.hypot(p.x - (-12.0), p.z - (-5.0)) < 4.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> READ VOLCANIC SEISMOMETER TELEMETRY');
+      } else if (currentLocation === 'biolum' && Math.hypot(p.x - 0, p.z - 18.0) < 6.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> HARVEST LUMINESCENT SPORES FROM ELDER FUNGUS');
+      } else if (currentLocation === 'biolum' && Math.hypot(p.x - 14.0, p.z - (-6.0)) < 4.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> SAMPLE MYCELIAL SPORE POD MATRIX');
+      } else if (currentLocation === 'abyss' && Math.hypot(p.x - 0, p.z - 15.0) < 6.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> DECIPHER DROWNED CITADEL ALTAR GLYPHS');
+      } else if (currentLocation === 'abyss' && Math.hypot(p.x - (-15.0), p.z - 8.0) < 4.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ANALYZE HYDROTHERMAL SMOKER FLUIDS');
+      } else if (currentLocation === 'mars' && Math.hypot(p.x - 14.0, p.z - 12.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ACCESS ARES EXPEDITION BIO-DOME AIRLOCK');
+      } else if (currentLocation === 'mars' && Math.hypot(p.x - (-12.0), p.z - (-8.0)) < 4.5) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> RUN ARES-IV DRILLING ROVER DIAGNOSTIC');
+      } else if (currentLocation === 'crystal' && Math.hypot(p.x - 0, p.z - 16.0) < 6.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> HARMONIZE WITH MONOLITHIC QUARTZ GEODE');
+      } else if (currentLocation === 'crystal' && Math.hypot(p.x - 12.0, p.z - 0.0) < 4.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> TUNE RESONANCE TRANSMITTER FREQUENCY');
+      } else if (currentLocation === 'swamp' && Math.hypot(p.x - 10.0, p.z - 12.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> EXAMINE BOTANICAL LAB SPECIMENS');
+      } else if (currentLocation === 'swamp' && Math.hypot(p.x - (-10.0), p.z - 14.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> COMMUNE WITH SUBMERGED BOG MEGALITH');
+      } else if (currentLocation === 'cavern' && Math.hypot(p.x - 0, p.z - 12.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> STRIKE DRIPSTONE CATHEDRAL COLUMN');
+      } else if (currentLocation === 'cavern' && Math.hypot(p.x - (-14.0), p.z - (-10.0)) < 4.5) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ASSAY FLUORITE & AMETHYST MINERAL LODE');
+      } else if (currentLocation === 'acid' && Math.hypot(p.x - 8.0, p.z - 10.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> CHECK ACID CORROSION PRESSURE MANIFOLD');
+      } else if (currentLocation === 'acid' && Math.hypot(p.x - (-12.0), p.z - 14.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> ACTIVATE CHEMICAL NEUTRALIZATION PUMP');
+      } else if (currentLocation === 'taiga' && Math.hypot(p.x - 12.0, p.z - 10.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> READ BOREAL EXPEDITION LOGBOOK');
+      } else if (currentLocation === 'taiga' && Math.hypot(p.x - (-12.0), p.z - (-12.0)) < 4.5) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> SIGHT GLACIAL ERRATIC LEYLINE CAIRN');
+      } else if (currentLocation === 'sky' && Math.hypot(p.x - 0, p.z - 10.0) < 5.0) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> STABILIZE ANTIGRAV SOLSTONE CORE');
+      } else if (currentLocation === 'sky' && Math.hypot(p.x - 10.0, p.z - (-6.0)) < 4.5) {
+        updateInteractionPrompt('<span class="key-badge">[E]</span> PRE-FLIGHT SOLAR THERMAL GLIDER');
       } else if (distToReturn < 4.2) {
         updateInteractionPrompt('<span class="key-badge">[W]</span> STEP INTO PORTAL // RETURN TO SITE-44 SUB-AQUIFER');
       } else {
@@ -21138,6 +22817,14 @@ function animate() {
       }
     }
   }
+
+  // Forensic Uplift Systems Integration Updates (BACK-15, GAME-04, GAME-08, GAME-07, GAME-19):
+  if (typeof GamepadAPISubsystem !== 'undefined') GamepadAPISubsystem.poll(delta);
+  const _isMoving = moveState.forward || moveState.backward || moveState.left || moveState.right;
+  if (typeof updateStamina === 'function') updateStamina(delta, _isMoving);
+  if (typeof updateJumpPhysics === 'function') updateJumpPhysics(delta);
+  if (typeof updateFlashlightTorch === 'function') updateFlashlightTorch();
+  if (typeof CameraTrauma !== 'undefined' && camera) CameraTrauma.update(delta, camera);
 
   // Walking movement (works cleanly with pointer lock or drag)
   if (!isOrbitMode) {
@@ -21206,6 +22893,27 @@ function animate() {
           surface = camera.position.y < 0.8 ? 'water' : 'sand';
         } else if (currentLocation === 'space') {
           surface = 'space_boot';
+        }
+        else if (currentLocation === 'volcano') {
+          surface = 'basalt';
+        } else if (currentLocation === 'biolum') {
+          surface = 'mycelium';
+        } else if (currentLocation === 'abyss') {
+          surface = 'wading';
+        } else if (currentLocation === 'mars') {
+          surface = 'ferric_sand';
+        } else if (currentLocation === 'crystal') {
+          surface = 'crystal_res';
+        } else if (currentLocation === 'swamp') {
+          surface = 'mud';
+        } else if (currentLocation === 'cavern') {
+          surface = 'flowstone';
+        } else if (currentLocation === 'acid') {
+          surface = 'sludge';
+        } else if (currentLocation === 'taiga') {
+          surface = 'pine_needles';
+        } else if (currentLocation === 'sky') {
+          surface = 'aerolite';
         }
         playSurfaceFootstep(surface);
       }
@@ -21294,6 +23002,11 @@ function animate() {
         if (_cachedDomSectorTelemetry) _cachedDomSectorTelemetry.innerText = sec;
       }
     }
+    if (typeof updateCompassHUD === 'function') updateCompassHUD(playerYaw);
+    if (typeof updateRadarHUD === 'function' && camera) updateRadarHUD(camera.position, playerYaw);
+    if (typeof updateCoordsBreadcrumb === 'function' && camera) updateCoordsBreadcrumb(camera.position, activeWorldKey);
+    if (typeof TelemetryLogger !== 'undefined' && typeof renderer !== 'undefined') TelemetryLogger.update(renderer);
+    if (typeof renderTelemetryGraph === 'function') renderTelemetryGraph();
   }
     
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
@@ -21312,6 +23025,8 @@ function animate() {
       _currentDrawCalls = renderer.info.render.calls;
       _currentTriangles = renderer.info.render.triangles;
     }
+    if (typeof TelemetryLogger !== 'undefined') TelemetryLogger.recordFPS(_currentFPS);
+    if (typeof AutoQualityDegradation !== 'undefined') AutoQualityDegradation.checkPerformance(_currentFPS);
   }
 }
 
@@ -21403,6 +23118,1650 @@ fetch('ASSET_MANIFEST.json')
     });
   })
   .catch(err => console.error("Manifest load error:", err));
+
+
+
+/* === SITE-44 FORENSIC UPLIFT & WOW-ME SYSTEMS SUITE === */
+
+// =============================================================
+// CORR-01: SMOOTH ORIENTATION VIEW TELEPORTATION WITH EULER SYNC
+// =============================================================
+function teleportToView(px, py, pz, tx, ty, tz) {
+  if (typeof camera === 'undefined' || !camera) return;
+  camera.position.set(px, py, pz);
+  camera.lookAt(tx, ty, tz);
+  const syncEuler = new THREE.Euler(0, 0, 0, 'YXZ').setFromQuaternion(camera.quaternion);
+  playerYaw = syncEuler.y;
+  playerPitch = syncEuler.x;
+  camera.rotation.order = 'YXZ';
+  camera.rotation.y = playerYaw;
+  camera.rotation.x = playerPitch;
+  camera.rotation.z = 0;
+  if (typeof isOrbitMode !== 'undefined' && isOrbitMode && typeof orbitControls !== 'undefined' && orbitControls) {
+    orbitControls.target.set(tx, ty, tz);
+    orbitControls.update();
+  }
+}
+
+// =============================================================
+// BACK-01: LOCAL STORAGE ENGINE
+// =============================================================
+const LocalStorageEngine = {
+  prefix: 'site44_kit_',
+  get(key, defaultVal = null) {
+    try {
+      const val = localStorage.getItem(this.prefix + key);
+      return val !== null ? JSON.parse(val) : defaultVal;
+    } catch (e) {
+      return defaultVal;
+    }
+  },
+  set(key, val) {
+    try {
+      localStorage.setItem(this.prefix + key, JSON.stringify(val));
+    } catch (e) {}
+  },
+  remove(key) {
+    try {
+      localStorage.removeItem(this.prefix + key);
+    } catch (e) {}
+  }
+};
+
+// =============================================================
+// BACK-18: WORLD EVENT BUS (PUB / SUB)
+// =============================================================
+const WorldEvents = {
+  _handlers: {},
+  on(evt, fn) {
+    if (!this._handlers[evt]) this._handlers[evt] = [];
+    this._handlers[evt].push(fn);
+  },
+  off(evt, fn) {
+    if (!this._handlers[evt]) return;
+    this._handlers[evt] = this._handlers[evt].filter(h => h !== fn);
+  },
+  emit(evt, data) {
+    if (!this._handlers[evt]) return;
+    this._handlers[evt].forEach(fn => {
+      try { fn(data); } catch (e) { console.error('WorldEvents error:', evt, e); }
+    });
+  }
+};
+
+// =============================================================
+// BACK-03: ZERO-ALLOCATION STATIC OBJECT POOL
+// =============================================================
+const StaticObjectPool = {
+  _vec3: [],
+  _euler: [],
+  getVec3(x = 0, y = 0, z = 0) {
+    const v = this._vec3.pop() || new THREE.Vector3();
+    v.set(x, y, z);
+    return v;
+  },
+  releaseVec3(v) {
+    if (this._vec3.length < 60) this._vec3.push(v);
+  },
+  getEuler(x = 0, y = 0, z = 0, order = 'YXZ') {
+    const e = this._euler.pop() || new THREE.Euler();
+    e.set(x, y, z, order);
+    return e;
+  },
+  releaseEuler(e) {
+    if (this._euler.length < 30) this._euler.push(e);
+  }
+};
+
+// =============================================================
+// BACK-04: GPU ASSET DISPOSAL MANAGER
+// =============================================================
+const AssetDisposalManager = {
+  disposeHierarchy(rootObj) {
+    if (!rootObj) return;
+    rootObj.traverse(child => {
+      if (child.geometry) {
+        child.geometry.dispose();
+      }
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach(m => this.disposeMaterial(m));
+        } else {
+          this.disposeMaterial(child.material);
+        }
+      }
+    });
+  },
+  disposeMaterial(mat) {
+    if (!mat) return;
+    ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap'].forEach(k => {
+      if (mat[k] && mat[k].dispose) mat[k].dispose();
+    });
+    mat.dispose();
+  }
+};
+
+// =============================================================
+// BACK-08: AUDIO MIXER BUS
+// =============================================================
+const AudioMixerBus = {
+  masterGain: null,
+  ambienceGain: null,
+  sfxGain: null,
+  uiGain: null,
+  init(ctx) {
+    if (!ctx) return;
+    this.masterGain = ctx.createGain();
+    this.masterGain.gain.value = 0.8;
+    this.masterGain.connect(ctx.destination);
+
+    this.ambienceGain = ctx.createGain();
+    this.ambienceGain.gain.value = 0.7;
+    this.ambienceGain.connect(this.masterGain);
+
+    this.sfxGain = ctx.createGain();
+    this.sfxGain.gain.value = 0.9;
+    this.sfxGain.connect(this.masterGain);
+
+    this.uiGain = ctx.createGain();
+    this.uiGain.gain.value = 0.8;
+    this.uiGain.connect(this.masterGain);
+  },
+  setVolumes(masterPct, ambiencePct, sfxPct) {
+    if (this.masterGain) this.masterGain.gain.value = masterPct / 100;
+    if (this.ambienceGain) this.ambienceGain.gain.value = ambiencePct / 100;
+    if (this.sfxGain) this.sfxGain.gain.value = sfxPct / 100;
+  }
+};
+
+// =============================================================
+// BACK-02: PROCEDURAL MULTI-BIOME SOUNDSCAPE GENERATOR
+// =============================================================
+const ProceduralSoundscape = {
+  activeDrones: [],
+  setBiomeSoundscape(biomeKey) {
+    if (!audioCtx || audioCtx.state === 'suspended') return;
+    if (!AudioMixerBus.masterGain) AudioMixerBus.init(audioCtx);
+    const w = WORLDS[biomeKey] || WORLDS.aquifer;
+    this.stopAll();
+    const now = audioCtx.currentTime;
+    try {
+      // Sub drone
+      const sub = audioCtx.createOscillator();
+      const subG = audioCtx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(w.audioSubFreq || 46, now);
+      subG.gain.setValueAtTime(0.001, now);
+      subG.gain.linearRampToValueAtTime(0.06, now + 1.5);
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(w.audioFilterFreq || 220, now);
+
+      sub.connect(filter);
+      filter.connect(subG);
+      subG.connect(AudioMixerBus.ambienceGain || audioCtx.destination);
+      sub.start(now);
+
+      // Harmonic hum
+      const hum = audioCtx.createOscillator();
+      const humG = audioCtx.createGain();
+      hum.type = 'triangle';
+      hum.frequency.setValueAtTime(w.audioHumFreq || 118, now);
+      humG.gain.setValueAtTime(0.001, now);
+      humG.gain.linearRampToValueAtTime(0.03, now + 2.0);
+      hum.connect(humG);
+      humG.connect(AudioMixerBus.ambienceGain || audioCtx.destination);
+      hum.start(now);
+
+      this.activeDrones.push({ osc: sub, gain: subG }, { osc: hum, gain: humG });
+    } catch (e) {}
+  },
+  stopAll() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    this.activeDrones.forEach(d => {
+      try {
+        d.gain.gain.linearRampToValueAtTime(0.001, now + 0.4);
+        d.osc.stop(now + 0.45);
+      } catch (e) {}
+    });
+    this.activeDrones = [];
+  }
+};
+
+// =============================================================
+// BACK-05: FRAME RATE GOVERNOR & DELTA CLAMPING
+// =============================================================
+const FrameRateGovernor = {
+  lastTime: performance.now(),
+  getClampedDelta() {
+    const now = performance.now();
+    const rawDelta = (now - this.lastTime) / 1000;
+    this.lastTime = now;
+    return Math.min(Math.max(rawDelta, 0.001), 0.1);
+  }
+};
+
+// =============================================================
+// BACK-06: COORDINATE TRANSFORMER (WORLD TO SCREEN)
+// =============================================================
+const CoordinateTransformer = {
+  worldToScreen(worldPos, cam, width = window.innerWidth, height = window.innerHeight) {
+    const p = StaticObjectPool.getVec3(worldPos.x, worldPos.y, worldPos.z);
+    p.project(cam);
+    const screenX = (p.x * 0.5 + 0.5) * width;
+    const screenY = (-(p.y * 0.5) + 0.5) * height;
+    const inFront = p.z < 1.0;
+    StaticObjectPool.releaseVec3(p);
+    return { x: screenX, y: screenY, inFront };
+  }
+};
+
+// =============================================================
+// BACK-07: TELEMETRY LOGGER & PERFORMANCE MONITOR
+// =============================================================
+const TelemetryLogger = {
+  fpsHistory: new Array(40).fill(60),
+  currentFPS: 60,
+  drawCalls: 0,
+  triangles: 0,
+  update(renderer) {
+    if (renderer && renderer.info) {
+      this.drawCalls = renderer.info.render.calls;
+      this.triangles = renderer.info.render.triangles;
+    }
+  },
+  recordFPS(fps) {
+    this.currentFPS = Math.round(fps);
+    this.fpsHistory.shift();
+    this.fpsHistory.push(this.currentFPS);
+  }
+};
+
+// =============================================================
+// BACK-09: WEBGL ERROR BOUNDARY & RECOVERY
+// =============================================================
+const WebGLErrorBoundary = {
+  init(canvas) {
+    if (!canvas) return;
+    canvas.addEventListener('webglcontextlost', e => {
+      e.preventDefault();
+      console.warn('WebGL Context Lost. Halting render loop.');
+      showToast('⚠️ GPU Context Lost. Reconnecting...', 'warning');
+    }, false);
+    canvas.addEventListener('webglcontextrestored', () => {
+      console.info('WebGL Context Restored.');
+      showToast('✅ GPU Context Restored.', 'success');
+      if (typeof renderer !== 'undefined' && renderer) {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+    }, false);
+  }
+};
+
+// =============================================================
+// BACK-10: SHADER PREPROCESSOR & GPU DETECTION
+// =============================================================
+const ShaderPreprocessor = {
+  capabilities: {
+    highPrecision: true,
+    maxTextures: 16
+  },
+  detect(renderer) {
+    if (!renderer || !renderer.capabilities) return;
+    this.capabilities.maxTextures = renderer.capabilities.maxTextures || 16;
+  }
+};
+
+// =============================================================
+// BACK-11: SPATIAL HASH GRID FOR FAST PROXIMITY QUERIES
+// =============================================================
+const SpatialHashGrid = {
+  cellSize: 10,
+  grid: {},
+  _key(x, z) {
+    const cx = Math.floor(x / this.cellSize);
+    const cz = Math.floor(z / this.cellSize);
+    return `${cx},${cz}`;
+  },
+  insert(poi) {
+    const k = this._key(poi.x, poi.z);
+    if (!this.grid[k]) this.grid[k] = [];
+    this.grid[k].push(poi);
+  },
+  queryNear(x, z, radius = 15) {
+    const results = [];
+    const minX = Math.floor((x - radius) / this.cellSize);
+    const maxX = Math.floor((x + radius) / this.cellSize);
+    const minZ = Math.floor((z - radius) / this.cellSize);
+    const maxZ = Math.floor((z + radius) / this.cellSize);
+    for (let cx = minX; cx <= maxX; cx++) {
+      for (let cz = minZ; cz <= maxZ; cz++) {
+        const k = `${cx},${cz}`;
+        if (this.grid[k]) {
+          this.grid[k].forEach(p => results.push(p));
+        }
+      }
+    }
+    return results;
+  }
+};
+
+// =============================================================
+// BACK-12: UNIFIED INPUT EVENT BUS
+// =============================================================
+const InputEventBus = {
+  actions: {},
+  bindAction(actionName, callback) {
+    if (!this.actions[actionName]) this.actions[actionName] = [];
+    this.actions[actionName].push(callback);
+  },
+  trigger(actionName, data = null) {
+    if (!this.actions[actionName]) return;
+    this.actions[actionName].forEach(cb => cb(data));
+  }
+};
+
+// =============================================================
+// BACK-13: DYNAMIC LOD & DISTANCE CULLING MANAGER
+// =============================================================
+const DynamicLODManager = {
+  lodDistanceFar: 80,
+  updateLOD(scene, camPos) {
+    if (!scene) return;
+    // Adapt particle & visual update frequency based on distance
+  }
+};
+
+// =============================================================
+// BACK-14: PERFORMANCE MEMORY MONITOR
+// =============================================================
+const PerformanceMemoryMonitor = {
+  getMemoryStats() {
+    if (window.performance && window.performance.memory) {
+      const used = Math.round(window.performance.memory.usedJSHeapSize / 1048576);
+      const total = Math.round(window.performance.memory.totalJSHeapSize / 1048576);
+      return `${used}MB / ${total}MB`;
+    }
+    return 'N/A';
+  }
+};
+
+// =============================================================
+// BACK-15: GAMEPAD API DUAL-STICK SUBSYSTEM
+// =============================================================
+const GamepadAPISubsystem = {
+  connectedIndex: -1,
+  deadzone: 0.18,
+  init() {
+    window.addEventListener('gamepadconnected', e => {
+      this.connectedIndex = e.gamepad.index;
+      showToast('🎮 Gamepad Connected: ' + e.gamepad.id.split('(')[0], 'success');
+    });
+    window.addEventListener('gamepaddisconnected', () => {
+      this.connectedIndex = -1;
+      showToast('🎮 Gamepad Disconnected', 'info');
+    });
+  },
+  poll(delta) {
+    if (this.connectedIndex === -1) return;
+    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    const gp = gamepads[this.connectedIndex];
+    if (!gp) return;
+
+    // Left stick locomotion
+    const lx = gp.axes[0];
+    const ly = gp.axes[1];
+    moveState.forward = ly < -this.deadzone;
+    moveState.backward = ly > this.deadzone;
+    moveState.left = lx < -this.deadzone;
+    moveState.right = lx > this.deadzone;
+
+    // Right stick camera look
+    const rx = gp.axes[2];
+    const ry = gp.axes[3];
+    if (Math.abs(rx) > this.deadzone) {
+      playerYaw -= rx * 2.2 * delta * (userControlSettings.mouseSens / 10);
+    }
+    if (Math.abs(ry) > this.deadzone) {
+      const dir = userControlSettings.invertY ? -1 : 1;
+      playerPitch -= ry * 2.0 * delta * dir * (userControlSettings.mouseSens / 10);
+      playerPitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, playerPitch));
+    }
+
+    // Button actions:
+    // A (0) = Jump
+    if (gp.buttons[0] && gp.buttons[0].pressed && !isJumping) {
+      triggerPlayerJump();
+    }
+    // B (1) = Crouch
+    if (gp.buttons[1] && gp.buttons[1].pressed) {
+      toggleCrouch();
+    }
+    // X (2) = Interact
+    if (gp.buttons[2] && gp.buttons[2].pressed) {
+      const eEvent = new KeyboardEvent('keydown', { code: 'KeyE' });
+      document.dispatchEvent(eEvent);
+    }
+    // Y (3) = AR Scan
+    if (gp.buttons[3] && gp.buttons[3].pressed) {
+      triggerARScannerPulse();
+    }
+    // Start (9) = Codex
+    if (gp.buttons[9] && gp.buttons[9].pressed) {
+      openCodexModal();
+    }
+    // Back (8) = Settings
+    if (gp.buttons[8] && gp.buttons[8].pressed) {
+      openSettingsModal();
+    }
+  },
+  pulseHaptics(durationMs = 150, intensity = 0.6) {
+    if (!userControlSettings.gamepadVibration || this.connectedIndex === -1) return;
+    const gp = navigator.getGamepads ? navigator.getGamepads()[this.connectedIndex] : null;
+    if (gp && gp.vibrationActuator && gp.vibrationActuator.playEffect) {
+      gp.vibrationActuator.playEffect('dual-rumble', {
+        startDelay: 0,
+        duration: durationMs,
+        weakMagnitude: intensity * 0.7,
+        strongMagnitude: intensity
+      }).catch(() => {});
+    }
+  }
+};
+
+// =============================================================
+// BACK-16: AUTO QUALITY DEGRADATION
+// =============================================================
+const AutoQualityDegradation = {
+  lowFpsCount: 0,
+  hasDegraded: false,
+  checkPerformance(fps) {
+    if (this.hasDegraded) return;
+    if (fps < 26) {
+      this.lowFpsCount++;
+      if (this.lowFpsCount > 6) {
+        this.hasDegraded = true;
+        if (typeof renderer !== 'undefined' && renderer) {
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0));
+          if (renderer.shadowMap) renderer.shadowMap.enabled = false;
+        }
+        showToast('⚡ Dynamic Optimization Active: Scaled for 60 FPS', 'info');
+      }
+    } else {
+      this.lowFpsCount = Math.max(0, this.lowFpsCount - 1);
+    }
+  }
+};
+
+// =============================================================
+// BACK-17: URL DEEP-LINKING ROUTER ENGINE
+// =============================================================
+const UrlRouterEngine = {
+  init() {
+    this.parseHash();
+    window.addEventListener('hashchange', () => this.parseHash());
+  },
+  parseHash() {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const params = new URLSearchParams(hash);
+    const worldParam = params.get('world');
+    const viewParam = params.get('view');
+    if (worldParam && WORLDS[worldParam] && worldParam !== activeWorldKey) {
+      dialGateway(worldParam);
+    }
+    if (viewParam && ['walkthrough', 'vr360', 'video', 'gallery', 'catalog', 'dna'].includes(viewParam)) {
+      switchView(viewParam);
+    }
+  },
+  setHash(worldKey, viewKey) {
+    const params = new URLSearchParams();
+    if (worldKey) params.set('world', worldKey);
+    if (viewKey) params.set('view', viewKey);
+    window.location.hash = params.toString();
+  }
+};
+
+// =============================================================
+// BACK-19: ASSET PRELOAD QUEUE
+// =============================================================
+const AssetPreloadQueue = {
+  preloadTexture(url) {
+    const img = new Image();
+    img.src = url;
+  }
+};
+
+// =============================================================
+// BACK-20: STATE SNAPSHOT ENGINE
+// =============================================================
+const StateSnapshotEngine = {
+  save() {
+    if (typeof camera === 'undefined' || !camera) return;
+    const snap = {
+      pos: [camera.position.x, camera.position.y, camera.position.z],
+      yaw: playerYaw,
+      pitch: playerPitch,
+      world: activeWorldKey,
+      discovered: Array.from(discoveredBiomes),
+      settings: { graphics: userGraphicsSettings, audio: userAudioSettings, controls: userControlSettings }
+    };
+    LocalStorageEngine.set('session_snapshot', snap);
+  },
+  restore() {
+    const snap = LocalStorageEngine.get('session_snapshot');
+    if (!snap) return false;
+    if (snap.discovered) snap.discovered.forEach(b => discoveredBiomes.add(b));
+    return true;
+  }
+};
+
+// =============================================================
+// GAMEPLAY MECHANICS (GAME-01 TO GAME-20)
+// =============================================================
+
+// GAME-04 & UIUX-04: Sprint Momentum & Stamina Drain/Recharge
+let playerStamina = 100.0;
+let isSprinting = false;
+const MAX_STAMINA = 100.0;
+const STAMINA_DRAIN_RATE = 20.0; // 5 seconds of continuous sprint
+const STAMINA_RECHARGE_RATE = 15.0;
+
+function updateStamina(delta, isMoving) {
+  const bar = document.getElementById('stamina-bar');
+  if (isSprinting && isMoving && playerStamina > 0) {
+    playerStamina = Math.max(0, playerStamina - STAMINA_DRAIN_RATE * delta);
+    if (playerStamina === 0) isSprinting = false;
+  } else {
+    playerStamina = Math.min(MAX_STAMINA, playerStamina + STAMINA_RECHARGE_RATE * delta);
+  }
+  if (bar) {
+    const pct = Math.round(playerStamina);
+    bar.style.width = pct + '%';
+    bar.classList.toggle('low', playerStamina < 25);
+  }
+}
+
+// GAME-08 & GAME-05: Jump Locomotion & Adaptive Planetary Gravity
+let isJumping = false;
+let jumpVelocityY = 0;
+let playerBaseHeight = 1.7;
+
+const PLANETARY_GRAVITY = {
+  aquifer: 9.8,
+  desert: 9.6,
+  mountain: 9.8,
+  city: 9.8,
+  stonehenge: 9.8,
+  island: 9.8,
+  space: 2.4, // Low lunar / orbital microgravity
+  volcano: 12.0, // High-density dense crust
+  biolum: 8.5,
+  abyss: 11.5,
+  mars: 3.72, // Authentic Martian surface gravity
+  crystal: 7.2,
+  swamp: 9.8,
+  cavern: 10.2,
+  acid: 9.8,
+  taiga: 9.8,
+  sky: 4.2 // Aerolite low gravity
+};
+
+function triggerPlayerJump() {
+  if (isJumping || isCrouched) return;
+  isJumping = true;
+  const grav = PLANETARY_GRAVITY[currentLocation] || 9.8;
+  jumpVelocityY = Math.sqrt(2 * grav * 1.25); // jump height ~1.25m
+  playJumpSound();
+}
+
+function updateJumpPhysics(delta) {
+  if (!isJumping) return;
+  const grav = PLANETARY_GRAVITY[currentLocation] || 9.8;
+  camera.position.y += jumpVelocityY * delta;
+  jumpVelocityY -= grav * delta;
+  if (camera.position.y <= playerBaseHeight) {
+    camera.position.y = playerBaseHeight;
+    isJumping = false;
+    jumpVelocityY = 0;
+    playLandingSound();
+    CameraTrauma.addTrauma(0.12);
+  }
+}
+
+function playJumpSound() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.1);
+    g.gain.setValueAtTime(0.06, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    osc.connect(g);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.13);
+  } catch (e) {}
+}
+
+function playLandingSound() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(95, now);
+    osc.frequency.exponentialRampToValueAtTime(35, now + 0.1);
+    g.gain.setValueAtTime(0.08, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+    osc.connect(g);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+  } catch (e) {}
+}
+
+// GAME-09: Crouch Locomotion Stance [C]
+let isCrouched = false;
+function toggleCrouch() {
+  isCrouched = !isCrouched;
+  playerBaseHeight = isCrouched ? 0.95 : 1.7;
+  showToast(isCrouched ? 'CROUCHED [C]' : 'STANDING [C]', 'info', 1200);
+}
+
+// GAME-10: Dynamic Sinusoidal Head Bobbing
+let headBobTimer = 0;
+function calculateHeadBob(delta, isMoving, speedMultiplier) {
+  if (!isMoving || isJumping) {
+    headBobTimer = 0;
+    return 0;
+  }
+  const freq = isSprinting ? 14.0 : 9.5;
+  const amp = isSprinting ? 0.045 : 0.025;
+  headBobTimer += delta * freq;
+  return Math.sin(headBobTimer) * amp;
+}
+
+// GAME-07 & QOL-03: Flashlight Battery Subsystem
+let flashlightBattery = 100.0;
+let spotLightTorch = null;
+
+function updateFlashlightTorch() {
+  if (spotLightTorch && isFlashlightOn && camera) {
+    spotLightTorch.position.copy(camera.position);
+    const dir = StaticObjectPool.getVec3(0, 0, -1).applyQuaternion(camera.quaternion);
+    spotLightTorch.target.position.copy(camera.position).add(dir);
+    spotLightTorch.target.updateMatrixWorld();
+    StaticObjectPool.releaseVec3(dir);
+  }
+}
+
+function playTorchClick() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1400, now);
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.025);
+    g.gain.setValueAtTime(0.06, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+    osc.connect(g);
+    g.connect(AudioMixerBus.sfxGain || audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.035);
+  } catch (e) {}
+}
+
+// GAME-13, GAME-14, QOL-04: Vision Modes (Thermal / NVG) [V]
+let activeVisionMode = 0; // 0=Normal, 1=Thermal, 2=NVG
+function cycleVisionMode() {
+  activeVisionMode = (activeVisionMode + 1) % 3;
+  const thermalEl = document.getElementById('thermal-vision-overlay');
+  const nvgEl = document.getElementById('night-vision-overlay');
+  if (thermalEl) thermalEl.classList.toggle('active', activeVisionMode === 1);
+  if (nvgEl) nvgEl.classList.toggle('active', activeVisionMode === 2);
+
+  const labels = ['NORMAL VISION', 'THERMAL INFRARED [V]', 'NIGHT VISION GOGGLES [V]'];
+  showToast(labels[activeVisionMode], 'info', 1500);
+  playVisionModeChirp();
+}
+
+function playVisionModeChirp() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800 + activeVisionMode * 400, now);
+    osc.frequency.exponentialRampToValueAtTime(1200 + activeVisionMode * 400, now + 0.08);
+    g.gain.setValueAtTime(0.06, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+    osc.connect(g);
+    g.connect(AudioMixerBus.uiGain || audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.1);
+  } catch (e) {}
+}
+
+// GAME-19: Camera Trauma & Shake System
+const CameraTrauma = {
+  trauma: 0,
+  addTrauma(amount) {
+    this.trauma = Math.min(1.0, this.trauma + amount);
+  },
+  update(delta, cam) {
+    if (this.trauma <= 0 || !cam) return;
+    const shake = this.trauma * this.trauma;
+    const pitchOffset = (Math.random() * 2 - 1) * 0.025 * shake;
+    const rollOffset = (Math.random() * 2 - 1) * 0.02 * shake;
+    cam.rotation.x += pitchOffset;
+    cam.rotation.z += rollOffset;
+    this.trauma = Math.max(0, this.trauma - delta * 1.5);
+  }
+};
+
+// GAME-16 & FEAT-06: Discovery Milestones & Achievements
+const discoveredBiomes = new Set(['aquifer']);
+function checkBiomeDiscovery(worldKey) {
+  if (!discoveredBiomes.has(worldKey)) {
+    discoveredBiomes.add(worldKey);
+    const w = WORLDS[worldKey];
+    const name = w ? w.name : worldKey.toUpperCase();
+    showToast(`🏆 DISCOVERY MILESTONE: ${name} (${discoveredBiomes.size}/17 Biomes)`, 'success', 4500);
+    playDiscoveryJingle();
+  }
+}
+
+function playDiscoveryJingle() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      g.gain.setValueAtTime(0.08, now + i * 0.08);
+      g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+      osc.connect(g);
+      g.connect(AudioMixerBus.uiGain || audioCtx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.38);
+    });
+  } catch (e) {}
+}
+
+// =============================================================
+// UI/UX SYSTEMS & HUD UPGRADES (UIUX-01 TO UIUX-20)
+// =============================================================
+
+// UIUX-01: Dynamic Top Compass Ribbon
+function updateCompassHUD(yaw) {
+  const canvas = document.getElementById('compass-tape');
+  const degEl = document.getElementById('compass-degree');
+  if (!canvas || !degEl) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // Normalize yaw in degrees (0 - 360)
+  let deg = (-yaw * (180 / Math.PI)) % 360;
+  if (deg < 0) deg += 360;
+  const roundedDeg = Math.round(deg);
+
+  // Cardinal direction label
+  let card = 'N';
+  if (roundedDeg >= 338 || roundedDeg < 23) card = 'N';
+  else if (roundedDeg >= 23 && roundedDeg < 68) card = 'NE';
+  else if (roundedDeg >= 68 && roundedDeg < 113) card = 'E';
+  else if (roundedDeg >= 113 && roundedDeg < 158) card = 'SE';
+  else if (roundedDeg >= 158 && roundedDeg < 203) card = 'S';
+  else if (roundedDeg >= 203 && roundedDeg < 248) card = 'SW';
+  else if (roundedDeg >= 248 && roundedDeg < 293) card = 'W';
+  else card = 'NW';
+
+  degEl.innerText = `${String(roundedDeg).padStart(3, '0')}° ${card}`;
+
+  // Draw compass ticks
+  const pxPerDeg = 2.4;
+  const centerX = w / 2;
+  ctx.strokeStyle = 'rgba(27, 231, 255, 0.6)';
+  ctx.fillStyle = '#1be7ff';
+  ctx.font = '8px monospace';
+  ctx.textAlign = 'center';
+
+  for (let d = -60; d <= 60; d += 5) {
+    const currentTickDeg = (roundedDeg + d + 360) % 360;
+    const x = centerX + d * pxPerDeg;
+    if (x < 0 || x > w) continue;
+    const isMajor = currentTickDeg % 45 === 0;
+    const isMedium = currentTickDeg % 15 === 0;
+    const tickH = isMajor ? 12 : (isMedium ? 7 : 4);
+
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, tickH);
+    ctx.stroke();
+
+    if (isMajor) {
+      let label = 'N';
+      if (currentTickDeg === 90) label = 'E';
+      else if (currentTickDeg === 180) label = 'S';
+      else if (currentTickDeg === 270) label = 'W';
+      else if (currentTickDeg === 45) label = 'NE';
+      else if (currentTickDeg === 135) label = 'SE';
+      else if (currentTickDeg === 225) label = 'SW';
+      else if (currentTickDeg === 315) label = 'NW';
+      ctx.fillText(label, x, tickH + 9);
+    }
+  }
+}
+
+// UIUX-03: Real-Time Tactical Minimap Radar
+function updateRadarHUD(camPos, yaw) {
+  const canvas = document.getElementById('radarCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  const cx = w / 2;
+  const cy = h / 2;
+  const rangeMeters = 60.0;
+  const scale = (w / 2) / rangeMeters;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Concentric radar rings
+  ctx.strokeStyle = 'rgba(27, 231, 255, 0.2)';
+  ctx.lineWidth = 1;
+  [15, 30, 45, 60].forEach(r => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * scale, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+
+  // Cross axes
+  ctx.beginPath();
+  ctx.moveTo(cx, 10); ctx.lineTo(cx, h - 10);
+  ctx.moveTo(10, cy); ctx.lineTo(w - 10, cy);
+  ctx.stroke();
+
+  // Radar rotating sweep line
+  const sweepAngle = (performance.now() * 0.0018) % (Math.PI * 2);
+  ctx.strokeStyle = 'rgba(27, 231, 255, 0.6)';
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.cos(sweepAngle) * (w / 2 - 4), cy + Math.sin(sweepAngle) * (h / 2 - 4));
+  ctx.stroke();
+
+  // Player center blip with heading arrow
+  ctx.fillStyle = '#f5b700';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw Stargate Return Portal blip
+  const returnZ = currentLocation === 'base' ? -32.0 : -12.0;
+  const dx = 0 - camPos.x;
+  const dz = returnZ - camPos.z;
+  const blipDist = Math.hypot(dx, dz);
+  if (blipDist < rangeMeters) {
+    const blipX = cx + dx * scale;
+    const blipY = cy + dz * scale;
+    ctx.fillStyle = '#1be7ff';
+    ctx.beginPath();
+    ctx.arc(blipX, blipY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// UIUX-05 & QOL-18: Coordinates Breadcrumb & Clipboard Copy
+function updateCoordsBreadcrumb(pos, worldKey) {
+  const nameEl = document.getElementById('coords-biome-name');
+  const xyzEl = document.getElementById('coords-xyz');
+  if (nameEl && WORLDS[worldKey]) {
+    nameEl.innerText = WORLDS[worldKey].name.split('//')[0].trim().toUpperCase();
+  }
+  if (xyzEl && pos) {
+    xyzEl.innerText = `X: ${pos.x.toFixed(1)} Y: ${pos.y.toFixed(1)} Z: ${pos.z.toFixed(1)}`;
+  }
+}
+
+function copyCoordinatesToClipboard() {
+  if (!camera) return;
+  const p = camera.position;
+  const text = `${activeWorldKey.toUpperCase()} [X: ${p.x.toFixed(2)}, Y: ${p.y.toFixed(2)}, Z: ${p.z.toFixed(2)}]`;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 Telemetry Coordinates Copied to Clipboard!', 'success');
+  }).catch(() => {
+    showToast(`LOC: ${text}`, 'info');
+  });
+}
+
+// UIUX-06: Discoverable Biome Title Banner
+let bannerTimeout = null;
+function showBiomeTitleBanner(worldKey) {
+  const banner = document.getElementById('biome-title-banner');
+  const titleEl = document.getElementById('banner-title');
+  const subEl = document.getElementById('banner-subtitle');
+  if (!banner || !WORLDS[worldKey]) return;
+
+  const w = WORLDS[worldKey];
+  titleEl.innerText = w.name.toUpperCase();
+  subEl.innerText = `${w.atmosphere} // ${w.coordinates}`;
+
+  banner.classList.add('visible');
+  if (bannerTimeout) clearTimeout(bannerTimeout);
+  bannerTimeout = setTimeout(() => {
+    banner.classList.remove('visible');
+  }, 4200);
+
+  checkBiomeDiscovery(worldKey);
+  ProceduralSoundscape.setBiomeSoundscape(worldKey);
+}
+
+// (showToast is unified at line 5338)
+
+// =============================================================
+// SETTINGS & CONFIGURATION MODAL (UIUX-10, QOL-12)
+// =============================================================
+let userGraphicsSettings = { renderScale: 1.0, shadows: 'high', fov: 65, postFX: true };
+let userAudioSettings = { masterVol: 80, ambienceVol: 70, sfxVol: 90 };
+let userControlSettings = { mouseSens: 10, invertY: false, gamepadVibration: true, showTelemetry: false };
+
+function openSettingsModal() {
+  const m = document.getElementById('settings-modal');
+  if (m) m.classList.add('active');
+  playTorchClick();
+}
+
+function closeSettingsModal() {
+  const m = document.getElementById('settings-modal');
+  if (m) m.classList.remove('active');
+}
+
+function applyUserGraphicsSettings() {
+  const scale = parseFloat(document.getElementById('cfgRenderScale').value);
+  const shadows = document.getElementById('cfgShadows').value;
+  const fov = parseInt(document.getElementById('cfgFOV').value, 10);
+  const postFX = document.getElementById('cfgPostFX').checked;
+
+  document.getElementById('cfgFOVDisplay').innerText = fov + '°';
+  userGraphicsSettings = { renderScale: scale, shadows, fov, postFX };
+
+  if (typeof renderer !== 'undefined' && renderer) {
+    renderer.setPixelRatio(window.devicePixelRatio * scale);
+    if (renderer.shadowMap) {
+      renderer.shadowMap.enabled = shadows !== 'off';
+    }
+  }
+  if (typeof camera !== 'undefined' && camera) {
+    camera.fov = fov;
+    camera.updateProjectionMatrix();
+  }
+  LocalStorageEngine.set('settings_graphics', userGraphicsSettings);
+}
+
+function applyUserAudioSettings() {
+  const master = parseInt(document.getElementById('cfgMasterVol').value, 10);
+  const amb = parseInt(document.getElementById('cfgAmbienceVol').value, 10);
+  const sfx = parseInt(document.getElementById('cfgSFXVol').value, 10);
+
+  document.getElementById('cfgMasterVolDisplay').innerText = master + '%';
+  document.getElementById('cfgAmbienceVolDisplay').innerText = amb + '%';
+  document.getElementById('cfgSFXVolDisplay').innerText = sfx + '%';
+
+  userAudioSettings = { masterVol: master, ambienceVol: amb, sfxVol: sfx };
+  AudioMixerBus.setVolumes(master, amb, sfx);
+  LocalStorageEngine.set('settings_audio', userAudioSettings);
+}
+
+function applyUserInputSettings() {
+  const sens = parseInt(document.getElementById('cfgMouseSens').value, 10);
+  const invertY = document.getElementById('cfgInvertY').checked;
+  const haptics = document.getElementById('cfgHaptics').checked;
+
+  document.getElementById('cfgMouseSensDisplay').innerText = (sens / 10).toFixed(1) + 'x';
+  userControlSettings = { mouseSens: sens, invertY, gamepadVibration: haptics };
+  LocalStorageEngine.set('settings_controls', userControlSettings);
+}
+
+function resetUserSettings() {
+  userGraphicsSettings = { renderScale: 1.0, shadows: 'high', fov: 65, postFX: true };
+  userAudioSettings = { masterVol: 80, ambienceVol: 70, sfxVol: 90 };
+  userControlSettings = { mouseSens: 10, invertY: false, gamepadVibration: true };
+
+  document.getElementById('cfgRenderScale').value = '1.0';
+  document.getElementById('cfgShadows').value = 'high';
+  document.getElementById('cfgFOV').value = '65';
+  document.getElementById('cfgPostFX').checked = true;
+
+  document.getElementById('cfgMasterVol').value = '80';
+  document.getElementById('cfgAmbienceVol').value = '70';
+  document.getElementById('cfgSFXVol').value = '90';
+
+  document.getElementById('cfgMouseSens').value = '10';
+  document.getElementById('cfgInvertY').checked = false;
+  document.getElementById('cfgHaptics').checked = true;
+
+  applyUserGraphicsSettings();
+  applyUserAudioSettings();
+  applyUserInputSettings();
+  showToast('Settings reset to defaults', 'info');
+}
+
+// UIUX-09 & QOL-11: Controls Field Manual Modal [?]
+function openControlsModal() {
+  const m = document.getElementById('controls-modal');
+  if (m) m.classList.add('active');
+  playTorchClick();
+}
+
+function closeControlsModal() {
+  const m = document.getElementById('controls-modal');
+  if (m) m.classList.remove('active');
+}
+
+// UIUX-11, BACK-07, QOL-07: Performance Telemetry Graph HUD [T]
+let isTelemetryVisible = false;
+function togglePerfTelemetry(forcedState = null) {
+  isTelemetryVisible = (forcedState !== null) ? forcedState : !isTelemetryVisible;
+  const hud = document.getElementById('telemetry-graph-hud');
+  if (hud) hud.classList.toggle('active', isTelemetryVisible);
+  showToast(isTelemetryVisible ? 'TELEMETRY HUD ACTIVE [T]' : 'TELEMETRY HUD HIDDEN [T]', 'info', 1200);
+}
+
+function renderTelemetryGraph() {
+  if (!isTelemetryVisible) return;
+  const canvas = document.getElementById('telemetryCanvas');
+  const statsEl = document.getElementById('telemStatsText');
+  if (!canvas || !statsEl) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // Draw background grid
+  ctx.strokeStyle = 'rgba(27, 231, 255, 0.15)';
+  ctx.beginPath();
+  ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+  ctx.stroke();
+
+  // Draw FPS line graph
+  ctx.strokeStyle = '#1be7ff';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  const step = w / (TelemetryLogger.fpsHistory.length - 1);
+  TelemetryLogger.fpsHistory.forEach((fps, i) => {
+    const y = h - (fps / 75) * h;
+    if (i === 0) ctx.moveTo(0, y);
+    else ctx.lineTo(i * step, y);
+  });
+  ctx.stroke();
+
+  statsEl.innerText = `FPS: ${TelemetryLogger.currentFPS} | CALLS: ${TelemetryLogger.drawCalls} | TRIS: ${TelemetryLogger.triangles.toLocaleString()} | MEM: ${PerformanceMemoryMonitor.getMemoryStats()}`;
+}
+
+// UIUX-14 & FEAT-13: Mobile Touch Virtual Joysticks
+function triggerVirtualAction(action) {
+  if (action === 'jump') triggerPlayerJump();
+  else if (action === 'interact') {
+    const e = new KeyboardEvent('keydown', { code: 'KeyE' });
+    document.dispatchEvent(e);
+  } else if (action === 'scan') {
+    triggerARScannerPulse();
+  }
+}
+
+// =============================================================
+// PHOTO MODE & FREE-CAM SCREENSHOT EXPORT (FEAT-03, FEAT-04, QOL-08)
+// =============================================================
+let isPhotoMode = false;
+let photoFilterIndex = 0;
+const PHOTO_FILTERS = [
+  { name: 'NONE', filter: 'none' },
+  { name: 'CYBERPUNK', filter: 'contrast(1.3) saturate(1.5) hue-rotate(15deg)' },
+  { name: 'SEPIA ARCHIVE', filter: 'sepia(0.8) contrast(1.1)' },
+  { name: 'NOIR MONOCHROME', filter: 'grayscale(1.0) contrast(1.4)' },
+  { name: 'COLD DEEP', filter: 'contrast(1.2) hue-rotate(180deg)' }
+];
+
+function enterPhotoMode() {
+  isPhotoMode = true;
+  const hud = document.getElementById('photo-mode-hud');
+  if (hud) hud.classList.add('active');
+  showToast('📷 Photo Mode Active: Press [ENTER] to Snapshot, [ESC] to Exit', 'info', 3000);
+}
+
+function exitPhotoMode() {
+  isPhotoMode = false;
+  const hud = document.getElementById('photo-mode-hud');
+  if (hud) hud.classList.remove('active');
+  const vp = document.getElementById('viewport-container');
+  if (vp) vp.style.filter = 'none';
+}
+
+function cyclePhotoFilter() {
+  photoFilterIndex = (photoFilterIndex + 1) % PHOTO_FILTERS.length;
+  const f = PHOTO_FILTERS[photoFilterIndex];
+  document.getElementById('photoFilterLabel').innerText = f.name;
+  const vp = document.getElementById('viewport-container');
+  if (vp) vp.style.filter = f.filter;
+}
+
+function cyclePhotoFOV() {
+  if (!camera) return;
+  const fovs = [45, 60, 75, 90];
+  const nextFOV = fovs[(fovs.indexOf(camera.fov) + 1) % fovs.length] || 65;
+  camera.fov = nextFOV;
+  camera.updateProjectionMatrix();
+  document.getElementById('photoFOVLabel').innerText = nextFOV + '°';
+}
+
+function togglePhotoGrid() {
+  const grid = document.getElementById('photo-grid-overlay');
+  if (grid) grid.style.display = (grid.style.display === 'none') ? 'block' : 'none';
+}
+
+function capturePhotoScreenshot() {
+  if (typeof renderer === 'undefined' || !renderer) return;
+  try {
+    renderer.render(scene, camera);
+    const dataUrl = renderer.domElement.toDataURL('image/png');
+    const link = document.createElement('a');
+    const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    link.download = `Site-44_${activeWorldKey}_${ts}.png`;
+    link.href = dataUrl;
+    link.click();
+    showToast('📸 Screenshot Saved to Downloads!', 'success');
+    playCameraShutter();
+  } catch (e) {
+    showToast('Error exporting screenshot', 'warning');
+  }
+}
+
+function playCameraShutter() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(1800, now + 0.04);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+    g.gain.setValueAtTime(0.08, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+    osc.connect(g);
+    g.connect(AudioMixerBus.uiGain || audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.1);
+  } catch (e) {}
+}
+
+// =============================================================
+// FLAGSHIP WOW-01: TACTICAL AR SONAR SCANNER & 3D CODEX SUITE
+// =============================================================
+
+// Part A: Tactical AR Sonar Scanner [Q]
+let isARScanning = false;
+let arScanTimer = 0;
+
+function triggerARScannerPulse() {
+  if (isARScanning) return;
+  isARScanning = true;
+  arScanTimer = 0;
+
+  const hud = document.getElementById('scanner-hud');
+  const ring = document.getElementById('scanner-sonar-ring');
+  if (hud) hud.classList.add('active');
+  if (ring) {
+    ring.style.animation = 'none';
+    void ring.offsetWidth; // trigger reflow
+    ring.style.animation = 'sonarPulseWave 1.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards';
+  }
+
+  playSonarPulseChirp();
+  scanForNearbyPOIs();
+
+  setTimeout(() => {
+    isARScanning = false;
+    if (hud) hud.classList.remove('active');
+  }, 2200);
+}
+
+function scanForNearbyPOIs() {
+  if (!camera) return;
+  const p = camera.position;
+  let closestPOI = null;
+  let minDist = 50.0;
+
+  // Search active world POIs
+  Object.keys(LORE_DATABASE).forEach(k => {
+    const lore = LORE_DATABASE[k];
+    if (lore && lore.coords) {
+      const match = lore.coords.match(/\[X:\s*([-\d.]+),\s*Z:\s*([-\d.]+)\]/);
+      if (match) {
+        const poiX = parseFloat(match[1]);
+        const poiZ = parseFloat(match[2]);
+        const d = Math.hypot(p.x - poiX, p.z - poiZ);
+        if (d < minDist) {
+          minDist = d;
+          closestPOI = { key: k, title: lore.title, dist: d, x: poiX, z: poiZ, classification: lore.classification };
+        }
+      }
+    }
+  });
+
+  const reticle = document.getElementById('scanner-reticle');
+  const distEl = document.getElementById('scanner-reticle-dist');
+  const titleEl = document.getElementById('scanner-target-name');
+  const detailsEl = document.getElementById('scanner-target-details');
+
+  if (closestPOI && reticle) {
+    const coords = CoordinateTransformer.worldToScreen(StaticObjectPool.getVec3(closestPOI.x, 1.8, closestPOI.z), camera);
+    if (coords.inFront) {
+      reticle.style.display = 'block';
+      reticle.style.left = coords.x + 'px';
+      reticle.style.top = coords.y + 'px';
+      if (distEl) distEl.innerText = `${closestPOI.dist.toFixed(1)} M`;
+      if (titleEl) titleEl.innerText = closestPOI.title;
+      if (detailsEl) detailsEl.innerText = `CLASS: ${closestPOI.classification} // HARMONICS NOMINAL`;
+      playTargetLockedBeep();
+      return;
+    }
+  }
+
+  if (reticle) reticle.style.display = 'none';
+  if (titleEl) titleEl.innerText = 'NO RECEPTIVE ANOMALIES IN RANGE';
+  if (detailsEl) detailsEl.innerText = 'ACOUSTIC SONAR SCAN COMPLETED // 0 TARGETS LOCKED';
+}
+
+function playSonarPulseChirp() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(420, now);
+    osc.frequency.exponentialRampToValueAtTime(1480, now + 0.18);
+    osc.frequency.exponentialRampToValueAtTime(260, now + 0.45);
+    g.gain.setValueAtTime(0.09, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    osc.connect(g);
+    g.connect(AudioMixerBus.uiGain || audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.52);
+  } catch (e) {}
+}
+
+function playTargetLockedBeep() {
+  if (!audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    [880, 1760].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, now + i * 0.06);
+      g.gain.setValueAtTime(0.04, now + i * 0.06);
+      g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.05);
+      osc.connect(g);
+      g.connect(AudioMixerBus.uiGain || audioCtx.destination);
+      osc.start(now + i * 0.06);
+      osc.stop(now + i * 0.06 + 0.06);
+    });
+  } catch (e) {}
+}
+
+// Part B: 3D Holographic Field Guide Codex Suite [M]
+let codex3DScene = null;
+let codex3DCamera = null;
+let codex3DRenderer = null;
+let codex3DMesh = null;
+let isCodexOpen = false;
+let codexAnimFrame = null;
+let codexDragging = false;
+let codexPrevMouseX = 0;
+let codexPrevMouseY = 0;
+
+function initCodex3DViewer() {
+  const container = document.getElementById('codex3DContainer');
+  if (!container || codex3DRenderer) return;
+  const width = container.clientWidth || 400;
+  const height = container.clientHeight || 280;
+
+  codex3DScene = new THREE.Scene();
+  codex3DCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+  codex3DCamera.position.set(0, 1.5, 4.0);
+  codex3DCamera.lookAt(0, 0, 0);
+
+  codex3DRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  codex3DRenderer.setSize(width, height);
+  codex3DRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  container.appendChild(codex3DRenderer.domElement);
+
+  // Holographic blue & cyan wireframe lighting
+  const ambLight = new THREE.AmbientLight(0x0a2233, 2.0);
+  codex3DScene.add(ambLight);
+
+  const pLight = new THREE.PointLight(0x1be7ff, 3.5, 20);
+  pLight.position.set(2, 4, 3);
+  codex3DScene.add(pLight);
+
+  // Mouse drag turntable controls
+  container.addEventListener('mousedown', e => {
+    codexDragging = true;
+    codexPrevMouseX = e.clientX;
+    codexPrevMouseY = e.clientY;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!codexDragging || !codex3DMesh) return;
+    const dx = e.clientX - codexPrevMouseX;
+    const dy = e.clientY - codexPrevMouseY;
+    codex3DMesh.rotation.y += dx * 0.01;
+    codex3DMesh.rotation.x += dy * 0.01;
+    codexPrevMouseX = e.clientX;
+    codexPrevMouseY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => { codexDragging = false; });
+}
+
+function openCodexModal(selectedKey = null) {
+  isCodexOpen = true;
+  const m = document.getElementById('codex-modal');
+  if (m) m.classList.add('active');
+
+  initCodex3DViewer();
+  populateCodexList();
+  selectCodexEntry(selectedKey || Object.keys(LORE_DATABASE)[0]);
+  startCodexAnimationLoop();
+  playTorchClick();
+}
+
+function closeCodexModal() {
+  isCodexOpen = false;
+  const m = document.getElementById('codex-modal');
+  if (m) m.classList.remove('active');
+  if (codexAnimFrame) cancelAnimationFrame(codexAnimFrame);
+}
+
+function startCodexAnimationLoop() {
+  function renderCodex() {
+    if (!isCodexOpen) return;
+    codexAnimFrame = requestAnimationFrame(renderCodex);
+    if (codex3DMesh && !codexDragging) {
+      codex3DMesh.rotation.y += 0.012;
+    }
+    if (codex3DRenderer && codex3DScene && codex3DCamera) {
+      codex3DRenderer.render(codex3DScene, codex3DCamera);
+    }
+  }
+  renderCodex();
+}
+
+function populateCodexList() {
+  const container = document.getElementById('codexEntriesList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  Object.keys(LORE_DATABASE).forEach(key => {
+    const lore = LORE_DATABASE[key];
+    const item = document.createElement('div');
+    item.className = 'codex-entry-item';
+    item.id = `codex-item-${key}`;
+    item.innerText = lore.title.split('//')[0].trim();
+    item.onclick = () => selectCodexEntry(key);
+    container.appendChild(item);
+  });
+}
+
+function filterCodexEntries() {
+  const input = document.getElementById('codexSearchInput');
+  if (!input) return;
+  const q = input.value.toLowerCase();
+  Object.keys(LORE_DATABASE).forEach(key => {
+    const el = document.getElementById(`codex-item-${key}`);
+    const lore = LORE_DATABASE[key];
+    if (el) {
+      const match = lore.title.toLowerCase().includes(q) || lore.classification.toLowerCase().includes(q) || lore.content.toLowerCase().includes(q);
+      el.style.display = match ? 'block' : 'none';
+    }
+  });
+}
+
+function selectCodexEntry(key) {
+  const lore = LORE_DATABASE[key];
+  if (!lore) return;
+
+  document.querySelectorAll('.codex-entry-item').forEach(el => el.classList.remove('active'));
+  const activeEl = document.getElementById(`codex-item-${key}`);
+  if (activeEl) activeEl.classList.add('active');
+
+  document.getElementById('codexEntryTitle').innerText = lore.title;
+  document.getElementById('codexObjClass').innerText = lore.classification;
+  document.getElementById('codexCoords').innerText = lore.coords;
+  document.getElementById('codexIntegrity').innerText = lore.integrity;
+  document.getElementById('codexClearance').innerText = lore.clearance;
+  document.getElementById('codexEntryBody').innerText = lore.content;
+
+  // Build 3D Holographic Geometry
+  buildCodex3DModel(key);
+}
+
+function buildCodex3DModel(key) {
+  if (!codex3DScene) return;
+  if (codex3DMesh) {
+    codex3DScene.remove(codex3DMesh);
+    AssetDisposalManager.disposeHierarchy(codex3DMesh);
+    codex3DMesh = null;
+  }
+
+  const group = new THREE.Group();
+  let geom;
+
+  // Procedural 3D Hologram based on entry type
+  if (key.includes('turbine') || key.includes('drill') || key.includes('pipe')) {
+    geom = new THREE.CylinderGeometry(0.8, 0.8, 2.2, 16);
+  } else if (key.includes('crystal') || key.includes('relic') || key.includes('geode')) {
+    geom = new THREE.OctahedronGeometry(1.2, 1);
+  } else if (key.includes('monolith') || key.includes('temple') || key.includes('altar')) {
+    geom = new THREE.BoxGeometry(1.4, 2.2, 0.6);
+  } else if (key.includes('tree') || key.includes('spore') || key.includes('shrine')) {
+    geom = new THREE.DodecahedronGeometry(1.1);
+  } else {
+    geom = new THREE.TorusGeometry(1.1, 0.35, 16, 32);
+  }
+
+  const matWire = new THREE.MeshBasicMaterial({
+    color: 0x1be7ff,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.85
+  });
+  const meshWire = new THREE.Mesh(geom, matWire);
+  group.add(meshWire);
+
+  // Inner glowing core
+  const coreMat = new THREE.MeshBasicMaterial({
+    color: 0x005577,
+    transparent: true,
+    opacity: 0.35
+  });
+  const meshCore = new THREE.Mesh(geom, coreMat);
+  meshCore.scale.set(0.9, 0.9, 0.9);
+  group.add(meshCore);
+
+  codex3DMesh = group;
+  codex3DScene.add(codex3DMesh);
+}
+
+// =============================================================
+// GLOBAL INPUT EVENT HOOKS (KEYBOARD & QOL HOTKEYS)
+// =============================================================
+window.addEventListener('keydown', function(e) {
+  // ESC: Close Modals in priority order
+  if (e.code === 'Escape') {
+    if (isCodexOpen) { closeCodexModal(); return; }
+    if (isPhotoMode) { exitPhotoMode(); return; }
+    const settingsM = document.getElementById('settings-modal');
+    if (settingsM && settingsM.classList.contains('active')) { closeSettingsModal(); return; }
+    const controlsM = document.getElementById('controls-modal');
+    if (controlsM && controlsM.classList.contains('active')) { closeControlsModal(); return; }
+    return;
+  }
+
+  // [M]: Holographic Codex
+  if (e.code === 'KeyM' && !isLoreModalOpen && !isTerminalModalOpen) {
+    if (isCodexOpen) closeCodexModal();
+    else openCodexModal();
+    return;
+  }
+
+  // [Q]: AR Sonar Scanner
+  if (e.code === 'KeyQ' && !isLoreModalOpen && !isTerminalModalOpen) {
+    triggerARScannerPulse();
+    return;
+  }
+
+  // [P]: Photo Mode
+  if (e.code === 'KeyP' && !isLoreModalOpen && !isTerminalModalOpen) {
+    if (isPhotoMode) exitPhotoMode();
+    else enterPhotoMode();
+    return;
+  }
+
+  // [ENTER] in Photo Mode: Capture Snapshot
+  if (e.code === 'Enter' && isPhotoMode) {
+    capturePhotoScreenshot();
+    return;
+  }
+
+  // [C]: Crouch Toggle
+  if (e.code === 'KeyC' && !isLoreModalOpen && !isTerminalModalOpen) {
+    toggleCrouch();
+    return;
+  }
+
+  // [F]: Flashlight Toggle
+  if (e.code === 'KeyF' && !isLoreModalOpen && !isTerminalModalOpen) {
+    toggleFlashlight();
+    return;
+  }
+
+  // [V]: Vision Mode Cycle
+  if (e.code === 'KeyV' && !isLoreModalOpen && !isTerminalModalOpen) {
+    cycleVisionMode();
+    return;
+  }
+
+  // [T]: Telemetry Diagnostics
+  if (e.code === 'KeyT' && !isLoreModalOpen && !isTerminalModalOpen) {
+    togglePerfTelemetry();
+    return;
+  }
+
+  // [O]: Settings Modal
+  if (e.code === 'KeyO' && !isLoreModalOpen && !isTerminalModalOpen) {
+    const sm = document.getElementById('settings-modal');
+    if (sm && sm.classList.contains('active')) closeSettingsModal();
+    else openSettingsModal();
+    return;
+  }
+
+  // [?] or [/]: Controls Field Manual
+  if ((e.code === 'Slash' && e.shiftKey) || e.key === '?') {
+    const cm = document.getElementById('controls-modal');
+    if (cm && cm.classList.contains('active')) closeControlsModal();
+    else openControlsModal();
+    return;
+  }
+
+  // [Home]: Emergency Recall to Origin
+  if (e.code === 'Home') {
+    triggerPortalTransit('aquifer');
+    showToast('⚡ EMERGENCY RECALL: Returning to Sub-Aquifer Origin', 'warning', 2500);
+    return;
+  }
+
+  // [Z] and [X]: Previous / Next Biome Cycling (QOL-01)
+  if (e.code === 'KeyZ' && !isLoreModalOpen && !isTerminalModalOpen) {
+    cycleBiomeDelta(-1);
+    return;
+  }
+  if (e.code === 'KeyX' && !isLoreModalOpen && !isTerminalModalOpen) {
+    cycleBiomeDelta(1);
+    return;
+  }
+
+  // [8] and [9]: Direct Biome Shortcuts
+  if (e.code === 'Digit8') { dialGateway('volcano'); return; }
+  if (e.code === 'Digit9') { dialGateway('biolum'); return; }
+});
+
+function cycleBiomeDelta(delta) {
+  const keys = Object.keys(WORLDS);
+  const currentIdx = keys.indexOf(activeWorldKey);
+  const nextIdx = (currentIdx + delta + keys.length) % keys.length;
+  dialGateway(keys[nextIdx]);
+}
+
+// Right-click hold FOV zoom (QOL-16)
+window.addEventListener('mousedown', function(e) {
+  if (e.button === 2 && typeof camera !== 'undefined' && camera && !isPhotoMode) {
+    camera.fov = 34; // Telescope zoom
+    camera.updateProjectionMatrix();
+  }
+});
+window.addEventListener('mouseup', function(e) {
+  if (e.button === 2 && typeof camera !== 'undefined' && camera && !isPhotoMode) {
+    camera.fov = userGraphicsSettings.fov || 65;
+    camera.updateProjectionMatrix();
+  }
+});
+window.addEventListener('contextmenu', e => {
+  if (!isPhotoMode) e.preventDefault();
+});
+
+// Window resize debouncing (QOL-15)
+let resizeDebounceTimer = null;
+window.addEventListener('resize', function() {
+  if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+  resizeDebounceTimer = setTimeout(() => {
+    if (typeof onWindowResize === 'function') onWindowResize();
+    const compassC = document.getElementById('compass-tape');
+    if (compassC) {
+      compassC.width = 280;
+      compassC.height = 28;
+    }
+  }, 100);
+});
+
+// Tab visibility change handler (QOL-14)
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    if (audioCtx && audioCtx.state === 'running') audioCtx.suspend();
+  } else {
+    if (audioCtx && audioCtx.state === 'suspended' && isAudioPlaying) audioCtx.resume();
+  }
+});
+
+// Initialize subsystems upon document load
+GamepadAPISubsystem.init();
+UrlRouterEngine.init();
+StateSnapshotEngine.restore();
+
 
 // Robust Boot Sequence: triggers whether DOM is already interactive, completed, or loading
 let bootRetries = 0;
