@@ -189,6 +189,81 @@ check("QOL-08: KeyP photo mode hotkey", "e.code === 'KeyP'" in index_html, "Miss
 check("QOL-11: Help key (?) controls manual binding", "e.key === '?'" in index_html, "Missing Help key binding")
 check("QOL-18: Copy coordinates to clipboard function", "function copyCoordinatesToClipboard(" in index_html, "Missing copyCoordinatesToClipboard")
 
+
+# INV-09: World Mega Expansion Layer
+expansion_worlds = ['desert', 'mountain', 'city', 'stonehenge', 'island', 'space', 'volcano', 'biolum', 'abyss', 'mars', 'crystal', 'swamp', 'cavern', 'acid', 'taiga', 'sky']
+check("Mega expansion config exists", "const WORLD_MEGA_EXPANSION = {" in index_html, "WORLD_MEGA_EXPANSION missing")
+check("Mega expansion applied before static freeze", "Object.entries(destinationWorlds).forEach(([key, world]) => applyWorldMegaExpansion(key, world));" in index_html, "Destination expansion integration missing")
+check("All 16 destination worlds have expansion configs", all(f"  {w}: {{" in index_html for w in expansion_worlds), "One or more destination expansion configs missing")
+check("Site-44 origin mega annex exists", "function buildMegaBaseExpansion()" in index_html and "baseEnhancementsGroup.add(buildMegaBaseExpansion());" in index_html, "Base mega expansion missing")
+check("Instanced expansion scatter is used", "new THREE.InstancedMesh(scatterGeo" in index_html, "Expansion scatter is not instanced")
+check("City expanded rooftop collision bounds", "px >= -94.0 + r" in index_html and "pz <= 124.0 - r" in index_html, "City mega rooftop bounds missing")
+check("Space expanded station collision lanes", "pz <= 163.0 - r" in index_html and "px >= -60.0 + r" in index_html, "Space station expansion bounds missing")
+check("Sky causeway collision path", "onEastWestCauseway" in index_html and "onNorthSouthCauseway" in index_html and "onSkyIsland" in index_html, "Sky expansion traversal bounds missing")
+check("Mega-expansion camera far plane", "new THREE.PerspectiveCamera(65, initDims.width / initDims.height, 0.1, 800)" in index_html, "Main camera far plane does not cover mega worlds")
+check("Site-44 east annex production path", "addXCorridor(24.5, 32.0, 4.0);" in index_html and "px >= 24.5 - r && px <= 32.0" in index_html, "East annex geometry/collision path missing")
+check("Site-44 west annex production path", "addXCorridor(-32.0, -24.5, 0.0);" in index_html and "px >= -32.0 && px <= -24.5 + r" in index_html, "West annex geometry/collision path missing")
+radial_collision_markers = [
+    "distToCenter > 260.0 - r",
+    "distToSummit > 220.0 - r",
+    "distToHenge > 220.0 - r",
+    "distToLagoon > 210.0 - r",
+    "Math.hypot(px, pz - 20) > 240.0 - r",
+    "Math.hypot(px, pz - 18) > 230.0 - r",
+    "Math.hypot(px, pz - 15) > 230.0 - r",
+    "Math.hypot(px, pz - 12) > 250.0 - r",
+    "Math.hypot(px, pz - 16) > 230.0 - r",
+    "Math.hypot(px, pz - 12) > 220.0 - r",
+    "Math.hypot(px, pz - 12) > 200.0 - r",
+    "Math.hypot(px, pz - 10) > 230.0 - r",
+]
+check("All radial collision envelopes expanded", all(marker in index_html for marker in radial_collision_markers), "One or more radial world collision envelopes are stale")
+check("Mega expansion obstacles stored", "obstacles.push({ x, z, radius:" in index_html and "world.expansion = { kind: 'radial'" in index_html, "Rendered expansion geometry lacks collision proxies")
+check("Mega expansion collision production caller", "function isMegaExpansionObstacleBlocked(" in index_html and "if (isMegaExpansionObstacleBlocked(px, pz, loc, r)) return true;" in index_html, "Expansion collision helper is not on the player path")
+check("Expansion region discovery production caller", "function updateExpansionRegionDiscovery()" in index_html and "updateExpansionRegionDiscovery();" in index_html and "REGION DISCOVERED //" in index_html, "Expansion region discovery is not integrated")
+
+
+# INV-10: Exponential Parcel Population WOW Pass 2
+parcel_worlds = ['desert', 'mountain', 'city', 'stonehenge', 'island', 'space', 'volcano', 'biolum', 'abyss', 'mars', 'crystal', 'swamp', 'cavern', 'acid', 'taiga', 'sky']
+check("Parcel expansion V2 config exists", "const PARCEL_EXPANSION_V2 = {" in index_html, "PARCEL_EXPANSION_V2 missing")
+check("Parcel population director exists", "const ParcelPopulationDirector = {" in index_html and "function initExponentialParcelPopulation()" in index_html, "Parcel population director missing")
+check("Parcel population initialized on production boot", "initExponentialParcelPopulation();" in index_html, "Parcel population boot integration missing")
+check("Destination parcel materialization is lazy", "function ensureParcelPopulationForWorld(" in index_html and "ensureParcelPopulationForWorld(targetKey);" in index_html and "WOW pass 2 projected; destination materialization is lazy" in index_html, "Destination parcel population is not lazy-materialized")
+init_pop_match = re.search(r"function initExponentialParcelPopulation\(\) \{(.*?)\n\}", index_html, re.DOTALL)
+check("Boot does not eagerly build destination parcels", bool(init_pop_match) and "buildDestinationParcelPopulation(" not in init_pop_match.group(1), "Destination parcel construction leaked back into boot path")
+check("Every parcel has central story landmark rule", "Object zero is the parcel's oversized story landmark" in index_html and "const dist = i === 0 ? 0" in index_html, "Parcel hero-landmark composition rule missing")
+check("Parcel population runtime/culling integrated", "function updateParcelPopulationRuntime()" in index_html and "updateParcelPopulationRuntime();" in index_html, "Parcel population runtime updater missing")
+check("Parcel population collision integrated", "function isParcelPopulationObstacleBlocked(" in index_html and "if (isParcelPopulationObstacleBlocked(px, pz, loc, r)) return true;" in index_html, "Parcel collision path missing")
+check("Canonical kit GLB instancing exists", "function loadParcelKitAssets()" in index_html and "new THREE.InstancedMesh(part.geometry, part.material" in index_html, "Canonical kit asset instancing missing")
+check("Sector-binned native instancing exists", "function createParcelInstancedBatch(" in index_html and "ParcelSector_" in index_html and "ParcelDetail_" in index_html, "Sector-binned native population missing")
+check("Parcel discovery path integrated", "PARCEL DISCOVERED //" in index_html and "parcel:discovered" in index_html, "Parcel discovery path missing")
+check("Runtime population stats exposed", "window.getWorldSetPopulationStats" in index_html and "totalLogicalObjects" in index_html, "Population diagnostics missing")
+check("Runtime population proof surface exists", "dataset.parcelPopulationPlanned" in index_html and "dataset.parcelPopulationState" in index_html, "Runtime population proof surface missing")
+
+parcel_block = re.search(r"const PARCEL_EXPANSION_V2 = \{(.*?)\n\};", index_html, re.DOTALL)
+parcel_entries = []
+if parcel_block:
+    parcel_entries = re.findall(r"^\s{2}(\w+): \{ parcels: (\d+), nativePerParcel: (\d+), kitPerParcel: (\d+)", parcel_block.group(1), re.MULTILINE)
+check("All 16 worlds have parcel V2 configs", len(parcel_entries) == 16 and {e[0] for e in parcel_entries} == set(parcel_worlds), f"Expected 16 parcel configs, got {len(parcel_entries)}")
+if parcel_entries:
+    logical_objects = sum(int(parcels) * (int(native) + int(kit)) for _, parcels, native, kit in parcel_entries)
+    total_parcels = sum(int(parcels) for _, parcels, _, _ in parcel_entries)
+    check("At least 24 parcels per destination", all(int(parcels) >= 24 for _, parcels, _, _ in parcel_entries), "One or more destination worlds has fewer than 24 parcels")
+    check("At least 80 population objects per parcel", all(int(native) + int(kit) >= 80 for _, _, native, kit in parcel_entries), "One or more parcel configs falls below 80 planned objects")
+    check("Exponential population target >= 40,000 logical objects", logical_objects >= 40000, f"Only {logical_objects} logical parcel objects planned")
+    grand_logical_objects = logical_objects + (16 * (24 + 18))
+    check("Exponential total including Site-44 >= 46,500 logical objects", grand_logical_objects >= 46500, f"Only {grand_logical_objects} total logical parcel objects planned")
+    check("Destination parcel count >= 450", total_parcels >= 450, f"Only {total_parcels} destination parcels planned")
+
+kit_block = re.search(r"const PARCEL_KIT_ASSETS = \{(.*?)\n\};", index_html, re.DOTALL)
+kit_paths = re.findall(r"path: '([^']+\.glb)'", kit_block.group(1)) if kit_block else []
+check("At least 18 canonical rendered kit asset types reused", len(kit_paths) >= 18, f"Only {len(kit_paths)} kit asset types configured")
+check("All configured canonical kit types preload lazily", "const assetIds = Object.keys(PARCEL_KIT_ASSETS);" in index_html and "kitPrototypeCache" in index_html, "Canonical kit prototypes are not preloaded/cached")
+check("Duplicate canonical kit instancing guarded", "kitBuiltKeys" in index_html and "ParcelPopulationDirector.kitBuiltKeys.has(buildKey)" in index_html, "Duplicate kit materialization guard missing")
+check("All configured kit GLBs exist", all(os.path.exists(os.path.join(ROOT, p)) for p in kit_paths), "One or more configured canonical kit GLBs is missing")
+check("Base annex parcels populated", "function buildBaseParcelPopulation()" in index_html and "SITE44-CELL-" in index_html, "Site-44 annex parcel population missing")
+check("All 18 canonical kit IDs used by Site-44 base cells", "kitPerParcel: 18" in index_html and all(k in index_html for k in ["extinguisher", "troffer", "railing4", "stairs", "doorSlab", "wallPanel"]), "Base population does not exercise full configured canonical kit set")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")

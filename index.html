@@ -6968,6 +6968,7 @@ function buildBaseEnhancements() {
   baseEnhancementsGroup.add(stMesh);
 
   baseEnhancementsGroup.add(buildPhase26BaseExpansion());
+  baseEnhancementsGroup.add(buildMegaBaseExpansion());
   scene.add(baseEnhancementsGroup);
 
 
@@ -8921,10 +8922,16 @@ function buildPhase26BaseExpansion() {
   s3_wallS.position.set(16.0, 4.0, 8.0);
   group.add(s3_wallS);
 
-  // Sector 03 East Far Wall: X = 24.5
-  const s3_wallE = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 16.0), concreteMat);
-  s3_wallE.position.set(24.5, 4.0, 0);
-  group.add(s3_wallE);
+  // Sector 03 East Far Wall: X = 24.5, split for the 03-B continuation bulkhead at Z = 4.0
+  const s3_wallE_low = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 10.2), concreteMat);
+  s3_wallE_low.position.set(24.5, 4.0, -2.9);
+  group.add(s3_wallE_low);
+  const s3_wallE_high = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 2.2), concreteMat);
+  s3_wallE_high.position.set(24.5, 4.0, 6.9);
+  group.add(s3_wallE_high);
+  const s3_wallE_top = new THREE.Mesh(new THREE.BoxGeometry(0.4, 4.8, 3.6), concreteMat);
+  s3_wallE_top.position.set(24.5, 5.6, 4.0);
+  group.add(s3_wallE_top);
 
   // Sector 03 West Partition Walls (leaving doorway in center)
   const s3_wallW1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 6.4), concreteMat);
@@ -8985,7 +8992,7 @@ function buildPhase26BaseExpansion() {
 
   // High-Voltage Bus Ducts & Transformers along East Wall
   const transformerBank = new THREE.Mesh(new THREE.BoxGeometry(1.4, 3.2, 8.0), darkPlateMat);
-  transformerBank.position.set(23.4, 1.6, 0);
+  transformerBank.position.set(23.4, 1.6, -4.0);
   group.add(transformerBank);
 
   // Interactive Turbine Synchronizer & Speed Control Console at (18.5, 0, 0)
@@ -9034,9 +9041,16 @@ function buildPhase26BaseExpansion() {
   s6_wallS.position.set(-16.0, 4.0, 8.0);
   group.add(s6_wallS);
 
-  const s6_wallW = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 16.0), concreteMat);
-  s6_wallW.position.set(-24.5, 4.0, 0);
-  group.add(s6_wallW);
+  // Sector 06 West Far Wall: split for the 06-B continuation bulkhead at Z = 0
+  const s6_wallW_n = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 6.2), concreteMat);
+  s6_wallW_n.position.set(-24.5, 4.0, -4.9);
+  group.add(s6_wallW_n);
+  const s6_wallW_s = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 6.2), concreteMat);
+  s6_wallW_s.position.set(-24.5, 4.0, 4.9);
+  group.add(s6_wallW_s);
+  const s6_wallW_top = new THREE.Mesh(new THREE.BoxGeometry(0.4, 4.8, 3.6), concreteMat);
+  s6_wallW_top.position.set(-24.5, 5.6, 0);
+  group.add(s6_wallW_top);
 
   const s6_wallE1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 8.0, 6.4), concreteMat);
   s6_wallE1.position.set(-7.5, 4.0, -4.8);
@@ -9961,6 +9975,145 @@ function buildPhase26SpaceExpansion() {
 
 // AREA 2: KALAHARI DESERT (ARRAKIS PRIME) - 10 ENHANCEMENTS
 // -------------------------------------------------------------
+
+// -------------------------------------------------------------
+// SITE-44 MEGA EXPANSION: NORTH PRESSURE ARCHIVE + SOUTH DEEP-UTILITY ANNEX
+// Keeps the canonical 4m/2m brutalist grid and material family while tripling the explorable base footprint.
+// -------------------------------------------------------------
+function buildMegaBaseExpansion() {
+  const group = new THREE.Group();
+  group.name = 'Site44_Mega_Expansion';
+
+  const concretePBR = getGlobalConcretePBR();
+  const steelPBR = getGlobalSteelPBR();
+  const concreteMat = new THREE.MeshStandardMaterial({
+    color: 0x343a40,
+    normalMap: concretePBR.normalMap,
+    roughnessMap: concretePBR.roughnessMap,
+    roughness: 0.86,
+    metalness: 0.08
+  });
+  const steelMat = new THREE.MeshStandardMaterial({
+    color: 0x374151,
+    normalMap: steelPBR.normalMap,
+    roughnessMap: steelPBR.roughnessMap,
+    roughness: 0.5,
+    metalness: 0.72
+  });
+  const hazardMat = new THREE.MeshStandardMaterial({ color: 0xf5b700, roughness: 0.6, metalness: 0.2 });
+  const cyanMat = new THREE.MeshBasicMaterial({ color: 0x1be7ff });
+  const amberMat = new THREE.MeshBasicMaterial({ color: 0xff9f1c });
+
+  function addXCorridor(x0, x1, centerZ) {
+    const length = Math.abs(x1 - x0);
+    const centerX = (x0 + x1) * 0.5;
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(length, 0.25, 3.6), steelMat);
+    floor.position.set(centerX, -0.125, centerZ);
+    group.add(floor);
+    const ceiling = new THREE.Mesh(new THREE.BoxGeometry(length, 0.25, 3.6), steelMat);
+    ceiling.position.set(centerX, 4.1, centerZ);
+    group.add(ceiling);
+    [-1.9, 1.9].forEach(zOff => {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(length, 4.0, 0.25), concreteMat);
+      wall.position.set(centerX, 2.0, centerZ + zOff);
+      group.add(wall);
+    });
+  }
+
+  function addXHall(cx, cz, length, depth, entranceSide, accentMat, rackSide) {
+    const halfL = length * 0.5;
+    const halfD = depth * 0.5;
+    const wallThickness = 0.35;
+
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(length, 0.3, depth), concreteMat);
+    floor.position.set(cx, -0.15, cz);
+    group.add(floor);
+    const ceiling = new THREE.Mesh(new THREE.BoxGeometry(length, 0.3, depth), steelMat);
+    ceiling.position.set(cx, 8.15, cz);
+    group.add(ceiling);
+
+    const wallN = new THREE.Mesh(new THREE.BoxGeometry(length, 8.0, wallThickness), concreteMat);
+    wallN.position.set(cx, 4.0, cz - halfD);
+    group.add(wallN);
+    const wallS = wallN.clone();
+    wallS.position.z = cz + halfD;
+    group.add(wallS);
+
+    const farX = entranceSide === 'west' ? cx + halfL : cx - halfL;
+    const farWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, 8.0, depth), concreteMat);
+    farWall.position.set(farX, 4.0, cz);
+    group.add(farWall);
+
+    const nearX = entranceSide === 'west' ? cx - halfL : cx + halfL;
+    const segmentDepth = (depth - 3.6) * 0.5;
+    [-1, 1].forEach(sign => {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, 8.0, segmentDepth), concreteMat);
+      wall.position.set(nearX, 4.0, cz + sign * (1.8 + segmentDepth * 0.5));
+      group.add(wall);
+    });
+    const lintel = new THREE.Mesh(new THREE.BoxGeometry(0.55, 4.8, 3.6), hazardMat);
+    lintel.position.set(nearX, 5.6, cz);
+    group.add(lintel);
+
+    const columnGeo = new THREE.BoxGeometry(0.8, 7.5, 0.8);
+    const columnPositions = [];
+    [-0.27, 0, 0.27].forEach(xRatio => {
+      columnPositions.push([cx + length * xRatio, cz - (halfD - 3.0)]);
+      columnPositions.push([cx + length * xRatio, cz + (halfD - 3.0)]);
+    });
+    const columns = new THREE.InstancedMesh(columnGeo, steelMat, columnPositions.length);
+    const dummy = new THREE.Object3D();
+    columnPositions.forEach(([x, z], idx) => {
+      dummy.position.set(x, 3.75, z);
+      dummy.rotation.set(0, 0, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      columns.setMatrixAt(idx, dummy.matrix);
+    });
+    columns.instanceMatrix.needsUpdate = true;
+    group.add(columns);
+
+    const rackGeo = new THREE.BoxGeometry(1.3, 2.3, 1.0);
+    const racks = new THREE.InstancedMesh(rackGeo, steelMat, 14);
+    for (let i = 0; i < 14; i++) {
+      const lane = i < 7 ? -1 : 1;
+      const j = i % 7;
+      const rackX = cx - halfL + 3.0 + j * ((length - 6.0) / 6);
+      const rackZ = cz + lane * (halfD - 1.3);
+      dummy.position.set(rackX, 1.15, rackZ);
+      dummy.rotation.set(0, rackSide === 'northSouth' ? 0 : Math.PI / 2, 0);
+      dummy.scale.set(1, 1, 1);
+      dummy.updateMatrix();
+      racks.setMatrixAt(i, dummy.matrix);
+    }
+    racks.instanceMatrix.needsUpdate = true;
+    group.add(racks);
+
+    for (let x = cx - halfL + 4.0; x <= cx + halfL - 4.0; x += 8.0) {
+      const strip = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, depth - 3.0), accentMat);
+      strip.position.set(x, 7.7, cz);
+      group.add(strip);
+    }
+  }
+
+  // SECTOR 03-B: East pressure archive, entered through the Phase-26 turbine hall continuation bulkhead.
+  addXCorridor(24.5, 32.0, 4.0);
+  addXHall(46.0, 4.0, 28.0, 20.0, 'west', cyanMat, 'northSouth');
+
+  // SECTOR 06-B: West submersible maintenance annex, entered from the coolant-bay west catwalk.
+  addXCorridor(-32.0, -24.5, 0.0);
+  addXHall(-46.0, 0.0, 28.0, 20.0, 'east', amberMat, 'northSouth');
+
+  const eastSign = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.55, 5.0), cyanMat);
+  eastSign.position.set(31.85, 3.0, 4.0);
+  group.add(eastSign);
+  const westSign = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.55, 5.0), amberMat);
+  westSign.position.set(-31.85, 3.0, 0.0);
+  group.add(westSign);
+
+  return group;
+}
+
 function buildDesertWorld() {
   const group = new THREE.Group();
 
@@ -11556,7 +11709,7 @@ function buildDesertWorld() {
     group,
     returnGate,
     fogColor: 0xb45309,
-    fogDensity: 0.012,
+    fogDensity: 0.006,
     bgColor: 0xb45309,
     update: (time, delta) => {
       // Sand Dust
@@ -13135,7 +13288,7 @@ function buildMountainWorld() {
     group,
     returnGate,
     fogColor: 0x0f172a,
-    fogDensity: 0.022,
+    fogDensity: 0.009,
     bgColor: 0x0f172a,
     update: (time, delta) => {
       // Blizzard Snow
@@ -14782,7 +14935,7 @@ function buildCityWorld() {
     group,
     returnGate,
     fogColor: 0x130a24,
-    fogDensity: 0.015,
+    fogDensity: 0.007,
     bgColor: 0x130a24,
     update: (time, delta) => {
       // Speeder Movement
@@ -16207,7 +16360,7 @@ function buildStonehengeWorld() {
     group,
     returnGate,
     fogColor: 0x022c22,
-    fogDensity: 0.016,
+    fogDensity: 0.008,
     bgColor: 0x022c22,
     update: (time, delta) => {
       // Fireflies
@@ -17876,7 +18029,7 @@ function buildIslandWorld() {
     group,
     returnGate,
     fogColor: 0x0e7490,
-    fogDensity: 0.012,
+    fogDensity: 0.007,
     bgColor: 0x0e7490,
     update: (time, delta) => {
       // Water swell
@@ -20086,7 +20239,7 @@ function buildVolcanoWorld() {
     group,
     returnGate,
     fogColor: 0x450a0a,
-    fogDensity: 0.014,
+    fogDensity: 0.007,
     bgColor: 0x450a0a,
     update: (time, delta) => {
       const ep = emberGeo.attributes.position.array;
@@ -20227,7 +20380,7 @@ function buildBiolumWorld() {
     group,
     returnGate,
     fogColor: 0x022c22,
-    fogDensity: 0.015,
+    fogDensity: 0.008,
     bgColor: 0x022c22,
     update: (time, delta) => {
       const sp = sporeGeo.attributes.position.array;
@@ -20344,7 +20497,7 @@ function buildAbyssWorld() {
     group,
     returnGate,
     fogColor: 0x082f49,
-    fogDensity: 0.016,
+    fogDensity: 0.009,
     bgColor: 0x082f49,
     update: (time, delta) => {
       const sp = snowGeo.attributes.position.array;
@@ -20456,7 +20609,7 @@ function buildMarsWorld() {
     group,
     returnGate,
     fogColor: 0x7c2d12,
-    fogDensity: 0.012,
+    fogDensity: 0.006,
     bgColor: 0x7c2d12,
     update: (time, delta) => {
       dishMesh.rotation.y += delta * 0.4;
@@ -20574,7 +20727,7 @@ function buildCrystalWorld() {
     group,
     returnGate,
     fogColor: 0x3b0764,
-    fogDensity: 0.013,
+    fogDensity: 0.007,
     bgColor: 0x3b0764,
     update: (time, delta) => {
       shards.forEach((s, idx) => {
@@ -20689,7 +20842,7 @@ function buildSwampWorld() {
     group,
     returnGate,
     fogColor: 0x14532d,
-    fogDensity: 0.016,
+    fogDensity: 0.009,
     bgColor: 0x14532d,
     update: (time, delta) => {
       wisps.forEach((w, idx) => {
@@ -20810,7 +20963,7 @@ function buildCavernWorld() {
     group,
     returnGate,
     fogColor: 0x0f172a,
-    fogDensity: 0.014,
+    fogDensity: 0.009,
     bgColor: 0x0f172a,
     update: (time, delta) => {
       const dp = dropGeo.attributes.position.array;
@@ -20919,7 +21072,7 @@ function buildAcidWorld() {
     group,
     returnGate,
     fogColor: 0x3f6212,
-    fogDensity: 0.015,
+    fogDensity: 0.008,
     bgColor: 0x3f6212,
     update: (time, delta) => {
       strobeLight.intensity = (Math.sin(time * 6.0) > 0.4) ? 4.0 : 0.2;
@@ -21036,7 +21189,7 @@ function buildTaigaWorld() {
     group,
     returnGate,
     fogColor: 0x334155,
-    fogDensity: 0.012,
+    fogDensity: 0.008,
     bgColor: 0x334155,
     update: (time, delta) => {
       treeList.forEach((tr, idx) => {
@@ -21149,7 +21302,7 @@ function buildSkyWorld() {
     group,
     returnGate,
     fogColor: 0x0284c7,
-    fogDensity: 0.008,
+    fogDensity: 0.005,
     bgColor: 0x0284c7,
     update: (time, delta) => {
       satellites.forEach(sat => {
@@ -21165,6 +21318,878 @@ function buildSkyWorld() {
   };
 }
 
+
+
+// -------------------------------------------------------------
+// WORLD MEGA EXPANSION LAYER
+// Expands every destination world beyond its original handcrafted core while keeping draw-call cost bounded.
+// Repeated outer-region geometry uses InstancedMesh; the inner authored zones remain untouched.
+// -------------------------------------------------------------
+const WORLD_MEGA_EXPANSION = {
+  desert: { kind: 'radial', centerZ: -12, inner: 112, radius: 260, ground: 0xc66b1a, scatter: 0x7c3f16, accent: 0xffc857, shape: 'mesa', count: 150, seed: 101, regions: ['Glass Dune Expanse', 'Leviathan Gravefield', 'Obsidian Caravan Route', 'Buried Sun Temple'] },
+  mountain: { kind: 'radial', centerZ: -12, inner: 72, radius: 220, ground: 0x9fb8c8, scatter: 0xd8eef7, accent: 0x67e8f9, shape: 'spire', count: 130, seed: 211, regions: ['Knife-Ridge Traverse', 'Blue Ice Cathedral', 'Avalanche Observatory', 'Whiteout Shelf'] },
+  city: { kind: 'city', accent: 0xff2fa6, scatter: 0x172033, seed: 307, regions: ['Transit Stack 9', 'Rain Market Roofs', 'Antenna Forest', 'Midnight Utility Ward'] },
+  stonehenge: { kind: 'radial', centerZ: -12, inner: 58, radius: 220, ground: 0x35513c, scatter: 0x525a4d, accent: 0x34d399, shape: 'monolith', count: 96, seed: 401, regions: ['Outer Processional Ring', 'Barrow Field', 'North Ley Gate', 'Mist Cursus'] },
+  island: { kind: 'radial', centerZ: 5, inner: 52, radius: 210, ground: 0xd9b86c, scatter: 0x71563c, accent: 0x22d3ee, shape: 'stack', count: 110, seed: 503, regions: ['Storm Reef', 'Shipbreaker Cay', 'Mangrove Shelf', 'Bluewater Lookout'] },
+  space: { kind: 'space', accent: 0x00f0ff, scatter: 0x475569, seed: 601, regions: ['Habitat Spine', 'Freight Truss', 'Deep-Survey Dock', 'Radiator Farm'] },
+  volcano: { kind: 'radial', centerZ: 20, inner: 105, radius: 240, ground: 0x241815, scatter: 0x12100f, accent: 0xff5a1f, shape: 'column', count: 150, seed: 701, regions: ['Basalt Crown', 'Fumarole Basin', 'Ashfall Ridge', 'Magma Observatory'] },
+  biolum: { kind: 'radial', centerZ: 18, inner: 104, radius: 230, ground: 0x052e20, scatter: 0x0a5c45, accent: 0x5eead4, shape: 'fungus', count: 180, seed: 809, regions: ['Lantern Grove', 'Mycelial Cathedral', 'Root Chasm', 'Sporefall Basin'] },
+  abyss: { kind: 'radial', centerZ: 15, inner: 104, radius: 230, ground: 0x061827, scatter: 0x18384f, accent: 0x38bdf8, shape: 'ruin', count: 130, seed: 907, regions: ['Drowned Colonnade', 'Black Smoker Field', 'Pressure Garden', 'Sunken Archive'] },
+  mars: { kind: 'radial', centerZ: 12, inner: 104, radius: 250, ground: 0x7f2d1c, scatter: 0x9f4a2d, accent: 0xfb923c, shape: 'mesa', count: 145, seed: 1009, regions: ['Dust Basin Alpha', 'Collapsed Lava Tube', 'Survey Array', 'Red Mesa Traverse'] },
+  crystal: { kind: 'radial', centerZ: 16, inner: 104, radius: 230, ground: 0x1e1640, scatter: 0x6d28d9, accent: 0xc4b5fd, shape: 'crystal', count: 160, seed: 1103, regions: ['Prism Forest', 'Resonance Fault', 'Mirror Geode', 'Violet Crown'] },
+  swamp: { kind: 'radial', centerZ: 12, inner: 104, radius: 220, ground: 0x23351f, scatter: 0x31572c, accent: 0xa3e635, shape: 'cypress', count: 170, seed: 1201, regions: ['Drowned Cypress Maze', 'Firefly Mire', 'Stilt Village Ruins', 'Blackwater Causeway'] },
+  cavern: { kind: 'radial', centerZ: 12, inner: 86, radius: 200, ground: 0x292036, scatter: 0x5b3b73, accent: 0xd8b4fe, shape: 'stalagmite', count: 150, seed: 1301, regions: ['Needle Hall', 'Echo Vault', 'Subterranean River', 'Calcite Cathedral'] },
+  acid: { kind: 'radial', centerZ: 10, inner: 104, radius: 230, ground: 0x29310f, scatter: 0x596b18, accent: 0xc6ff00, shape: 'tank', count: 120, seed: 1409, regions: ['Corrosion Flats', 'Scrubber Farm', 'Pipe Graveyard', 'Containment Delta'] },
+  taiga: { kind: 'radial', centerZ: 10, inner: 104, radius: 230, ground: 0x16301f, scatter: 0x1f5130, accent: 0x86efac, shape: 'pine', count: 190, seed: 1511, regions: ['Old-Growth Crown', 'Frozen Logging Road', 'Firewatch Ridge', 'Wolf-Snow Basin'] },
+  sky: { kind: 'sky', accent: 0x7dd3fc, scatter: 0x475569, seed: 1601, regions: ['West Aerie', 'East Aerie', 'High Meridian', 'Stormward Isle'] }
+};
+
+function makeSeededRng(seed) {
+  let state = seed >>> 0;
+  return function() {
+    state = (Math.imul(1664525, state) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+}
+
+function makeExpansionScatterGeometry(shape) {
+  switch (shape) {
+    case 'monolith': return new THREE.BoxGeometry(1.2, 7.0, 1.8);
+    case 'column': return new THREE.CylinderGeometry(1.2, 1.5, 7.0, 6);
+    case 'ruin': return new THREE.BoxGeometry(2.4, 8.0, 2.4);
+    case 'tank': return new THREE.CylinderGeometry(1.8, 1.8, 6.0, 12);
+    case 'crystal': return new THREE.ConeGeometry(1.8, 9.0, 6);
+    case 'pine': return new THREE.ConeGeometry(2.6, 10.0, 8);
+    case 'cypress': return new THREE.ConeGeometry(2.2, 11.0, 7);
+    case 'fungus': return new THREE.ConeGeometry(2.4, 7.5, 10);
+    case 'stalagmite': return new THREE.ConeGeometry(2.0, 10.0, 7);
+    case 'stack': return new THREE.CylinderGeometry(1.5, 2.8, 8.0, 7);
+    case 'mesa': return new THREE.CylinderGeometry(2.8, 4.8, 7.0, 6);
+    default: return new THREE.ConeGeometry(2.0, 9.0, 7);
+  }
+}
+
+function addExpansionBeacon(group, x, z, accent, label, scale = 1.0, obstacles = null) {
+  const beacon = new THREE.Group();
+  beacon.position.set(x, 0, z);
+  beacon.userData.expansionRegion = label;
+  const pylonMat = new THREE.MeshStandardMaterial({ color: 0x263244, roughness: 0.45, metalness: 0.78 });
+  const glowMat = new THREE.MeshBasicMaterial({ color: accent });
+  const pylon = new THREE.Mesh(new THREE.CylinderGeometry(0.42 * scale, 0.62 * scale, 6.5 * scale, 8), pylonMat);
+  pylon.position.y = 3.25 * scale;
+  beacon.add(pylon);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.45 * scale, 0.11 * scale, 6, 24), glowMat);
+  ring.position.y = 6.1 * scale;
+  ring.rotation.x = Math.PI / 2;
+  beacon.add(ring);
+  const cap = new THREE.Mesh(new THREE.OctahedronGeometry(0.55 * scale, 0), glowMat);
+  cap.position.y = 6.1 * scale;
+  beacon.add(cap);
+  group.add(beacon);
+  if (obstacles) obstacles.push({ x, z, radius: Math.max(0.9, 0.75 * scale), kind: 'beacon', label });
+  return beacon;
+}
+
+function expansionScatterBaseRadius(shape) {
+  switch (shape) {
+    case 'monolith': return 1.1;
+    case 'column': return 1.5;
+    case 'ruin': return 1.7;
+    case 'tank': return 1.8;
+    case 'crystal': return 1.8;
+    case 'pine': return 2.6;
+    case 'cypress': return 2.2;
+    case 'fungus': return 2.4;
+    case 'stalagmite': return 2.0;
+    case 'stack': return 2.8;
+    case 'mesa': return 4.8;
+    default: return 2.0;
+  }
+}
+
+function addRadialWorldMegaExpansion(key, world, cfg) {
+  const expansion = new THREE.Group();
+  expansion.name = `MegaExpansion_${key}`;
+  const obstacles = [];
+
+  const groundMat = new THREE.MeshStandardMaterial({ color: cfg.ground, roughness: 0.9, metalness: 0.06, side: THREE.DoubleSide });
+  const ringGeo = new THREE.RingGeometry(cfg.inner, cfg.radius, 128, 6);
+  ringGeo.rotateX(-Math.PI / 2);
+  const ring = new THREE.Mesh(ringGeo, groundMat);
+  ring.position.set(0, -0.38, cfg.centerZ);
+  ring.receiveShadow = true;
+  expansion.add(ring);
+
+  const rim = new THREE.Mesh(new THREE.CylinderGeometry(cfg.radius, cfg.radius, 4.0, 96, 1, true), new THREE.MeshStandardMaterial({ color: cfg.scatter, roughness: 0.92, metalness: 0.02, side: THREE.DoubleSide }));
+  rim.position.set(0, -2.25, cfg.centerZ);
+  expansion.add(rim);
+
+  const rng = makeSeededRng(cfg.seed);
+  const scatterGeo = makeExpansionScatterGeometry(cfg.shape);
+  const scatterMat = new THREE.MeshStandardMaterial({ color: cfg.scatter, roughness: 0.82, metalness: cfg.shape === 'crystal' ? 0.3 : 0.08 });
+  if (cfg.shape === 'crystal') {
+    scatterMat.emissive = new THREE.Color(cfg.accent);
+    scatterMat.emissiveIntensity = 0.18;
+  }
+  const scatter = new THREE.InstancedMesh(scatterGeo, scatterMat, cfg.count);
+  const dummy = new THREE.Object3D();
+  const innerClear = cfg.inner + 10;
+  for (let i = 0; i < cfg.count; i++) {
+    const angle = rng() * Math.PI * 2;
+    const dist = innerClear + rng() * (cfg.radius - innerClear - 14);
+    const scale = 0.55 + rng() * 1.7;
+    const x = Math.cos(angle) * dist;
+    const z = cfg.centerZ + Math.sin(angle) * dist;
+    const sx = scale * (0.75 + rng() * 0.5);
+    const sz = scale * (0.75 + rng() * 0.5);
+    dummy.position.set(x, 2.0 + scale * 1.3, z);
+    dummy.rotation.set((rng() - 0.5) * 0.12, rng() * Math.PI * 2, (rng() - 0.5) * 0.12);
+    dummy.scale.set(sx, scale, sz);
+    dummy.updateMatrix();
+    scatter.setMatrixAt(i, dummy.matrix);
+    obstacles.push({ x, z, radius: expansionScatterBaseRadius(cfg.shape) * Math.max(sx, sz), kind: 'scatter' });
+  }
+  scatter.instanceMatrix.needsUpdate = true;
+  scatter.castShadow = false;
+  scatter.receiveShadow = true;
+  expansion.add(scatter);
+
+  const skylineGeo = new THREE.ConeGeometry(5.0, 22.0, 7);
+  const skyline = new THREE.InstancedMesh(skylineGeo, new THREE.MeshStandardMaterial({ color: cfg.scatter, roughness: 0.95 }), 24);
+  for (let i = 0; i < 24; i++) {
+    const angle = (i / 24) * Math.PI * 2 + rng() * 0.12;
+    const dist = cfg.radius * (0.82 + rng() * 0.12);
+    const sy = 0.7 + rng() * 1.8;
+    const x = Math.cos(angle) * dist;
+    const z = cfg.centerZ + Math.sin(angle) * dist;
+    const sx = 0.8 + rng() * 1.2;
+    const sz = 0.8 + rng() * 1.2;
+    dummy.position.set(x, 7.0 * sy - 1.5, z);
+    dummy.rotation.set(0, rng() * Math.PI * 2, 0);
+    dummy.scale.set(sx, sy, sz);
+    dummy.updateMatrix();
+    skyline.setMatrixAt(i, dummy.matrix);
+    obstacles.push({ x, z, radius: 5.0 * Math.max(sx, sz), kind: 'skyline' });
+  }
+  skyline.instanceMatrix.needsUpdate = true;
+  expansion.add(skyline);
+
+  const regionPoints = [];
+  cfg.regions.forEach((label, idx) => {
+    const angle = -Math.PI * 0.75 + idx * (Math.PI * 0.5);
+    const dist = cfg.radius * (0.62 + (idx % 2) * 0.08);
+    const x = Math.cos(angle) * dist;
+    const z = cfg.centerZ + Math.sin(angle) * dist;
+    addExpansionBeacon(expansion, x, z, cfg.accent, label, 1.0 + (idx % 2) * 0.18, obstacles);
+    regionPoints.push({ label, x, z });
+  });
+
+  world.group.add(expansion);
+  world.expansion = { kind: 'radial', radius: cfg.radius, centerZ: cfg.centerZ, regions: regionPoints, obstacles };
+}
+
+function addCityMegaExpansion(world, cfg) {
+  const expansion = new THREE.Group();
+  expansion.name = 'MegaExpansion_city';
+  const obstacles = [];
+  const deckMat = new THREE.MeshStandardMaterial({ color: 0x101827, roughness: 0.48, metalness: 0.58 });
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(190, 1.8, 240), deckMat);
+  deck.position.set(0, -1.05, 5);
+  deck.receiveShadow = true;
+  expansion.add(deck);
+
+  const rng = makeSeededRng(cfg.seed);
+  const towerGeo = new THREE.BoxGeometry(5.5, 28, 5.5);
+  const towerMat = new THREE.MeshStandardMaterial({ color: cfg.scatter, roughness: 0.38, metalness: 0.72 });
+  const towers = new THREE.InstancedMesh(towerGeo, towerMat, 84);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < 84; i++) {
+    let x = (rng() - 0.5) * 175;
+    let z = -105 + rng() * 220;
+    if (Math.abs(x) < 34 && z > -48 && z < 72) x += x < 0 ? -38 : 38;
+    const sy = 0.55 + rng() * 2.4;
+    const sx = 0.65 + rng() * 0.9;
+    const sz = 0.65 + rng() * 0.9;
+    dummy.position.set(x, 13.7 * sy - 0.1, z);
+    dummy.rotation.set(0, (rng() - 0.5) * 0.08, 0);
+    dummy.scale.set(sx, sy, sz);
+    dummy.updateMatrix();
+    towers.setMatrixAt(i, dummy.matrix);
+    obstacles.push({ x, z, radius: 3.9 * Math.max(sx, sz), kind: 'tower' });
+  }
+  towers.instanceMatrix.needsUpdate = true;
+  expansion.add(towers);
+
+  [-60, 60].forEach(x => {
+    const bridge = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.5, 205), new THREE.MeshStandardMaterial({ color: 0x283548, roughness: 0.35, metalness: 0.8 }));
+    bridge.position.set(x, 4.0, 5);
+    expansion.add(bridge);
+  });
+
+  const regionCoords = [[-72, -78], [72, -78], [-72, 88], [72, 88]];
+  const regions = [];
+  cfg.regions.forEach((label, idx) => {
+    const [x, z] = regionCoords[idx];
+    addExpansionBeacon(expansion, x, z, cfg.accent, label, 1.15, obstacles);
+    regions.push({ label, x, z });
+  });
+  world.group.add(expansion);
+  world.expansion = { kind: 'city', bounds: { minX: -94, maxX: 94, minZ: -114, maxZ: 124 }, regions, obstacles };
+}
+
+function addSpaceMegaExpansion(world, cfg) {
+  const expansion = new THREE.Group();
+  expansion.name = 'MegaExpansion_space';
+  const obstacles = [];
+  const steelMat = new THREE.MeshStandardMaterial({ color: 0x2f3d50, roughness: 0.34, metalness: 0.9 });
+  const spine = new THREE.Mesh(new THREE.BoxGeometry(12, 0.5, 230), steelMat);
+  spine.position.set(0, -0.45, 48);
+  expansion.add(spine);
+  [[0, 22, 96], [0, 86, 120]].forEach(([x, z, w]) => {
+    const wing = new THREE.Mesh(new THREE.BoxGeometry(w, 0.5, 12), steelMat);
+    wing.position.set(x, -0.45, z);
+    expansion.add(wing);
+  });
+
+  const rng = makeSeededRng(cfg.seed);
+  const moduleGeo = new THREE.BoxGeometry(6.5, 5.0, 10.0);
+  const modules = new THREE.InstancedMesh(moduleGeo, new THREE.MeshStandardMaterial({ color: cfg.scatter, roughness: 0.4, metalness: 0.84 }), 32);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < 32; i++) {
+    const lane = i % 2 ? -1 : 1;
+    const z = -45 + (i % 16) * 12.0;
+    const x = lane * (8.5 + (i % 4) * 2.0);
+    const sx = 0.75 + rng() * 0.5;
+    const sz = 0.8 + rng() * 0.8;
+    dummy.position.set(x, 2.2, z);
+    dummy.rotation.set(0, 0, 0);
+    dummy.scale.set(sx, 0.8 + rng() * 0.7, sz);
+    dummy.updateMatrix();
+    modules.setMatrixAt(i, dummy.matrix);
+    obstacles.push({ x, z, radius: 4.2 * Math.max(sx, sz), kind: 'station-module' });
+  }
+  modules.instanceMatrix.needsUpdate = true;
+  expansion.add(modules);
+
+  const regionCoords = [[-40, 22], [40, 22], [-28, 86], [28, 86]];
+  const regions = [];
+  cfg.regions.forEach((label, idx) => {
+    const [x, z] = regionCoords[idx];
+    addExpansionBeacon(expansion, x, z, cfg.accent, label, 0.85, obstacles);
+    regions.push({ label, x, z });
+  });
+  world.group.add(expansion);
+  world.expansion = { kind: 'space', regions, obstacles };
+}
+
+function addSkyMegaExpansion(world, cfg) {
+  const expansion = new THREE.Group();
+  expansion.name = 'MegaExpansion_sky';
+  const obstacles = [];
+  const stoneMat = new THREE.MeshStandardMaterial({ color: cfg.scatter, roughness: 0.82, metalness: 0.12 });
+  const turfMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, roughness: 0.68 });
+  const bridgeX = new THREE.Mesh(new THREE.BoxGeometry(180, 0.7, 5.0), stoneMat);
+  bridgeX.position.set(0, -0.4, 10);
+  expansion.add(bridgeX);
+  const bridgeZ = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.7, 165), stoneMat);
+  bridgeZ.position.set(0, -0.4, 12);
+  expansion.add(bridgeZ);
+
+  const islands = [
+    [-80, 10, 20], [80, 10, 20], [0, 88, 22], [0, -65, 19]
+  ];
+  const regions = [];
+  islands.forEach(([x, z, r], idx) => {
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 0.9, 2.2, 24), turfMat);
+    top.position.set(x, -0.6, z);
+    expansion.add(top);
+    const bottom = new THREE.Mesh(new THREE.ConeGeometry(r * 0.9, 18, 24), stoneMat);
+    bottom.position.set(x, -10.7, z);
+    bottom.rotation.x = Math.PI;
+    expansion.add(bottom);
+    addExpansionBeacon(expansion, x, z, cfg.accent, cfg.regions[idx], 1.0, obstacles);
+    regions.push({ label: cfg.regions[idx], x, z, radius: r });
+  });
+  world.group.add(expansion);
+  world.expansion = { kind: 'sky', islands: regions, regions, obstacles };
+}
+
+function applyWorldMegaExpansion(key, world) {
+  const cfg = WORLD_MEGA_EXPANSION[key];
+  if (!cfg || !world || !world.group) return;
+  if (cfg.kind === 'radial') addRadialWorldMegaExpansion(key, world, cfg);
+  else if (cfg.kind === 'city') addCityMegaExpansion(world, cfg);
+  else if (cfg.kind === 'space') addSpaceMegaExpansion(world, cfg);
+  else if (cfg.kind === 'sky') addSkyMegaExpansion(world, cfg);
+}
+
+
+const discoveredExpansionRegions = new Set();
+function updateExpansionRegionDiscovery() {
+  if (!camera || currentLocation === 'base') return;
+  const world = destinationWorlds[currentLocation];
+  const regions = world && world.expansion && world.expansion.regions;
+  if (!regions || !regions.length) return;
+  for (let i = 0; i < regions.length; i++) {
+    const region = regions[i];
+    const triggerRadius = Math.max(12, Math.min(22, region.radius || 16));
+    const dx = camera.position.x - region.x;
+    const dz = camera.position.z - region.z;
+    if ((dx * dx + dz * dz) > triggerRadius * triggerRadius) continue;
+    const discoveryKey = `${currentLocation}:${region.label}`;
+    if (discoveredExpansionRegions.has(discoveryKey)) return;
+    discoveredExpansionRegions.add(discoveryKey);
+    showToast(`REGION DISCOVERED // ${region.label}`, 'info', 3600);
+    if (typeof WorldEvents !== 'undefined') WorldEvents.emit('region:discovered', { worldKey: currentLocation, region: region.label });
+    return;
+  }
+}
+
+// -------------------------------------------------------------
+// EXPONENTIAL PARCEL POPULATION — WOW PASS 2
+// Every outer parcel becomes a deterministic micro-location rather than empty acreage.
+// Dense native populations use sector-binned InstancedMesh batches; canonical WORLD KIT GLBs
+// are loaded once and instanced from shared prototype geometry/materials.
+// -------------------------------------------------------------
+const PARCEL_EXPANSION_V2 = {
+  desert: { parcels: 32, nativePerParcel: 86, kitPerParcel: 9, detailDistance: 165, seed: 2101, palette: ['rib','solar','pylon','rock','silo','scrap'], kit: ['crate','canister','junction','console','hazardSign','pipe','railing2','strobe'], stories: ['Leviathan Dig','Storm Cache','Solar Farm','Caravan Wreck','Survey Camp','Buried Relay'] },
+  mountain: { parcels: 28, nativePerParcel: 82, kitPerParcel: 8, detailDistance: 155, seed: 2203, palette: ['spire','mast','rock','frame','panel','scrap'], kit: ['crate','canister','console','cageLight','railing2','pipe','sectorSign','junction'], stories: ['Ice Core Camp','Weather Array','Avalanche Shelter','Rope Station','Frozen Cache','Rescue Beacon'] },
+  city: { parcels: 30, nativePerParcel: 92, kitPerParcel: 10, detailDistance: 150, seed: 2309, palette: ['tower','vent','panel','mast','pod','scrap'], kit: ['console','bench','cageLight','strobe','junction','hazardSign','sectorSign','railing2','pipe','doorSlab'], stories: ['Night Market Roof','HVAC Farm','Signal Garden','Transit Yard','Utility Bazaar','Maintenance Stack'] },
+  stonehenge: { parcels: 28, nativePerParcel: 80, kitPerParcel: 7, detailDistance: 160, seed: 2411, palette: ['monolith','cairn','barrow','arch','rock','pylon'], kit: ['crate','canister','cageLight','console','hazardSign','junction','railing2'], stories: ['Outer Barrow','Ritual Track','Survey Trench','Ley Marker','Excavation Camp','Watch Circle'] },
+  island: { parcels: 28, nativePerParcel: 84, kitPerParcel: 8, detailDistance: 160, seed: 2503, palette: ['tree','rib','coral','mast','scrap','pod'], kit: ['crate','canister','cageLight','hazardSign','junction','pipe','railing2','bench'], stories: ['Castaway Camp','Reef Survey','Wreck Field','Mangrove Lab','Signal Beach','Storm Cache'] },
+  space: { parcels: 26, nativePerParcel: 94, kitPerParcel: 10, detailDistance: 145, seed: 2609, palette: ['pod','panel','mast','tank','dish','frame'], kit: ['canister','crate','console','railing2','railing4','pipe','cageLight','strobe','junction','stairs'], stories: ['Cargo Spur','Radiator Yard','Survey Dock','Fuel Node','Comms Farm','Service Bay'] },
+  volcano: { parcels: 30, nativePerParcel: 88, kitPerParcel: 8, detailDistance: 160, seed: 2707, palette: ['column','vent','rock','mast','pipeProc','scrap'], kit: ['crate','canister','console','hazardSign','pipe','railing2','junction','strobe'], stories: ['Fumarole Lab','Basalt Drill','Ash Shelter','Heat Probe','Slag Yard','Seismic Station'] },
+  biolum: { parcels: 32, nativePerParcel: 96, kitPerParcel: 7, detailDistance: 150, seed: 2801, palette: ['fungus','tree','pod','spire','coral','rock'], kit: ['crate','canister','console','cageLight','junction','hazardSign','pipe'], stories: ['Spore Nursery','Root Lab','Lantern Camp','Mycelial Survey','Glow Marsh','Sample Cache'] },
+  abyss: { parcels: 28, nativePerParcel: 88, kitPerParcel: 8, detailDistance: 150, seed: 2903, palette: ['ruin','column','vent','coral','pod','arch'], kit: ['crate','canister','console','cageLight','strobe','pipe','railing2','junction'], stories: ['Pressure Camp','Smoker Survey','Drowned Archive','Submersible Cache','Ruin Trench','Sonar Post'] },
+  mars: { parcels: 30, nativePerParcel: 92, kitPerParcel: 9, detailDistance: 170, seed: 3001, palette: ['rock','solar','mast','pod','dish','scrap'], kit: ['crate','canister','console','cageLight','sectorSign','pipe','railing2','junction','stairs'], stories: ['Hab Annex','Rover Cache','Solar Farm','Core Drill','Dust Shelter','Survey Array'] },
+  crystal: { parcels: 30, nativePerParcel: 96, kitPerParcel: 7, detailDistance: 150, seed: 3109, palette: ['crystal','spire','arch','pylon','rock','pod'], kit: ['crate','canister','console','cageLight','junction','hazardSign','pipe'], stories: ['Resonance Lab','Shard Quarry','Mirror Camp','Prism Survey','Geode Station','Harmonic Relay'] },
+  swamp: { parcels: 30, nativePerParcel: 94, kitPerParcel: 7, detailDistance: 145, seed: 3203, palette: ['tree','reed','stump','pod','mast','scrap'], kit: ['crate','canister','cageLight','junction','pipe','bench','hazardSign'], stories: ['Stilt Camp','Blackwater Lab','Firefly Blind','Root Survey','Boat Cache','Mire Relay'] },
+  cavern: { parcels: 28, nativePerParcel: 86, kitPerParcel: 7, detailDistance: 140, seed: 3301, palette: ['stalagmite','crystal','column','arch','rock','frame'], kit: ['crate','canister','cageLight','console','junction','pipe','railing2'], stories: ['Mining Camp','Echo Survey','Calcite Lab','Bridge Depot','River Cache','Deep Relay'] },
+  acid: { parcels: 28, nativePerParcel: 92, kitPerParcel: 10, detailDistance: 150, seed: 3407, palette: ['tank','pipeProc','vent','tower','panel','scrap'], kit: ['crate','canister','console','hazardSign','sectorSign','pipe','railing2','railing4','junction','stairs'], stories: ['Scrubber Farm','Valve Yard','Containment Post','Pump Station','Corrosion Lab','Pipe Depot'] },
+  taiga: { parcels: 32, nativePerParcel: 98, kitPerParcel: 7, detailDistance: 160, seed: 3503, palette: ['tree','stump','rock','mast','cairn','pod'], kit: ['crate','canister','cageLight','console','junction','pipe','bench'], stories: ['Firewatch Camp','Logging Cache','Snow Survey','Ranger Post','Frozen Relay','Old-Growth Lab'] },
+  sky: { parcels: 28, nativePerParcel: 90, kitPerParcel: 8, detailDistance: 140, seed: 3607, palette: ['spire','arch','mast','panel','pylon','pod'], kit: ['crate','canister','console','cageLight','railing2','pipe','junction','strobe'], stories: ['Aerie Camp','Wind Array','Cloud Dock','Astrolabe Yard','Glider Cache','Storm Relay'] }
+};
+
+const PARCEL_KIT_ASSETS = {
+  crate: { path: 'WORLD_KIT_EXPORT/props/WK_PROP_CRATE_A_01.glb', collidable: true },
+  canister: { path: 'WORLD_KIT_EXPORT/props/WK_PROP_CANISTER_A_01.glb', collidable: true },
+  extinguisher: { path: 'WORLD_KIT_EXPORT/props/WK_PROP_EXTINGUISHER_01.glb', collidable: false },
+  junction: { path: 'WORLD_KIT_EXPORT/props/WK_PROP_JUNCTION_A_01.glb', collidable: false },
+  console: { path: 'WORLD_KIT_EXPORT/furniture/WK_FURN_CONSOLE_A_01.glb', collidable: true },
+  bench: { path: 'WORLD_KIT_EXPORT/furniture/WK_FURN_BENCH_A_01.glb', collidable: true },
+  cageLight: { path: 'WORLD_KIT_EXPORT/lights/WK_LIGHT_CAGE_A_01.glb', collidable: false },
+  strobe: { path: 'WORLD_KIT_EXPORT/lights/WK_LIGHT_STROBE_A_01.glb', collidable: false },
+  troffer: { path: 'WORLD_KIT_EXPORT/lights/WK_LIGHT_TROFFER_A_01.glb', collidable: false },
+  hazardSign: { path: 'WORLD_KIT_EXPORT/signage/WK_SIGN_HAZARD_A_01.glb', collidable: false },
+  sectorSign: { path: 'WORLD_KIT_EXPORT/signage/WK_SIGN_SECTOR_A_01.glb', collidable: false },
+  railing2: { path: 'WORLD_KIT_EXPORT/structural/WK_STRUCT_RAILING_2M_01.glb', collidable: true },
+  railing4: { path: 'WORLD_KIT_EXPORT/structural/WK_STRUCT_RAILING_A_01.glb', collidable: true },
+  stairs: { path: 'WORLD_KIT_EXPORT/structural/WK_STRUCT_STAIRS_A_01.glb', collidable: true },
+  pipe: { path: 'WORLD_KIT_EXPORT/utilities/WK_UTIL_PIPE_RUN_A_01.glb', collidable: false },
+  column: { path: 'WORLD_KIT_EXPORT/structural/WK_STRUCT_COLUMN_A_01.glb', collidable: true },
+  doorSlab: { path: 'WORLD_KIT_EXPORT/doors_windows/WK_DOOR_SLAB_A_01.glb', collidable: true },
+  wallPanel: { path: 'WORLD_KIT_EXPORT/walls/WK_WALL_PANEL_B_01.glb', collidable: true }
+};
+
+const PARCEL_ARCHETYPE_SPECS = {
+  rib: { geometry: () => new THREE.TorusGeometry(2.8, 0.30, 6, 16, Math.PI), y: 0.25, radius: 3.1, role: 'bone', rotX: 0 },
+  solar: { geometry: () => new THREE.BoxGeometry(3.8, 0.18, 2.2), y: 0.9, radius: 2.3, role: 'accent', rotX: -0.28 },
+  pylon: { geometry: () => new THREE.CylinderGeometry(0.38, 0.62, 6.2, 8), y: 3.1, radius: 0.75, role: 'metal' },
+  rock: { geometry: () => new THREE.DodecahedronGeometry(1.7, 0), y: 1.3, radius: 1.8, role: 'native' },
+  silo: { geometry: () => new THREE.CylinderGeometry(1.55, 1.55, 4.8, 10), y: 2.4, radius: 1.65, role: 'metal' },
+  scrap: { geometry: () => new THREE.TetrahedronGeometry(1.55, 0), y: 0.9, radius: 1.4, role: 'dark' },
+  spire: { geometry: () => new THREE.ConeGeometry(1.7, 7.5, 7), y: 3.75, radius: 1.8, role: 'native' },
+  mast: { geometry: () => new THREE.CylinderGeometry(0.18, 0.30, 7.2, 8), y: 3.6, radius: 0.55, role: 'metal' },
+  frame: { geometry: () => new THREE.TorusGeometry(2.4, 0.20, 6, 14, Math.PI), y: 0.3, radius: 2.7, role: 'metal' },
+  panel: { geometry: () => new THREE.BoxGeometry(4.2, 0.30, 2.4), y: 1.1, radius: 2.5, role: 'accent', rotX: -0.18 },
+  tower: { geometry: () => new THREE.BoxGeometry(2.6, 9.0, 2.6), y: 4.5, radius: 1.9, role: 'metal' },
+  vent: { geometry: () => new THREE.CylinderGeometry(0.72, 1.05, 2.8, 8), y: 1.4, radius: 1.15, role: 'dark' },
+  pod: { geometry: () => new THREE.SphereGeometry(1.85, 10, 7), y: 1.65, radius: 1.9, role: 'metal' },
+  monolith: { geometry: () => new THREE.BoxGeometry(1.3, 6.8, 1.9), y: 3.4, radius: 1.3, role: 'native' },
+  cairn: { geometry: () => new THREE.DodecahedronGeometry(1.45, 0), y: 1.0, radius: 1.5, role: 'native' },
+  barrow: { geometry: () => new THREE.SphereGeometry(2.8, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.5), y: 0.0, radius: 2.8, role: 'native' },
+  arch: { geometry: () => new THREE.TorusGeometry(2.9, 0.34, 8, 18, Math.PI), y: 0.35, radius: 3.2, role: 'accent' },
+  tree: { geometry: () => new THREE.ConeGeometry(2.5, 8.4, 8), y: 4.2, radius: 2.5, role: 'native' },
+  coral: { geometry: () => new THREE.TetrahedronGeometry(2.0, 0), y: 1.1, radius: 1.8, role: 'accent' },
+  column: { geometry: () => new THREE.CylinderGeometry(1.0, 1.25, 7.0, 7), y: 3.5, radius: 1.3, role: 'native' },
+  fungus: { geometry: () => new THREE.ConeGeometry(2.6, 5.4, 10), y: 2.7, radius: 2.6, role: 'accent' },
+  ruin: { geometry: () => new THREE.BoxGeometry(3.2, 6.5, 1.1), y: 3.25, radius: 1.9, role: 'native' },
+  crystal: { geometry: () => new THREE.OctahedronGeometry(2.4, 0), y: 2.4, radius: 2.4, role: 'accent' },
+  reed: { geometry: () => new THREE.CylinderGeometry(0.10, 0.17, 3.0, 6), y: 1.5, radius: 0.32, role: 'native' },
+  stump: { geometry: () => new THREE.CylinderGeometry(0.85, 1.1, 2.2, 8), y: 1.1, radius: 1.1, role: 'native' },
+  stalagmite: { geometry: () => new THREE.ConeGeometry(1.8, 7.2, 7), y: 3.6, radius: 1.8, role: 'native' },
+  tank: { geometry: () => new THREE.CylinderGeometry(1.7, 1.7, 5.2, 10), y: 2.6, radius: 1.75, role: 'metal' },
+  pipeProc: { geometry: () => new THREE.CylinderGeometry(0.45, 0.45, 4.5, 8), y: 0.7, radius: 2.3, role: 'metal', rotZ: Math.PI / 2 },
+  dish: { geometry: () => new THREE.SphereGeometry(2.2, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.34), y: 1.2, radius: 2.2, role: 'accent', rotX: -0.8 }
+};
+
+const ParcelGeometryCache = new Map();
+const ParcelMaterialCache = new Map();
+const ParcelPopulationDirector = {
+  plans: {},
+  kitPlacements: {},
+  kitPrototypeCache: new Map(),
+  kitBuiltKeys: new Set(),
+  materializedWorlds: new Set(),
+  baseObstacles: [],
+  discovered: new Set(),
+  stats: {
+    projectedParcels: 0,
+    projectedNativeObjects: 0,
+    projectedKitObjects: 0,
+    parcels: 0,
+    nativeObjects: 0,
+    kitObjectsPlanned: 0,
+    kitObjectsLoaded: 0,
+    kitAssetsLoaded: 0,
+    kitAssetFailures: 0
+  },
+  lastRuntimeUpdateMs: 0,
+  initialized: false,
+  getStats() {
+    const projectedTotal = this.stats.projectedNativeObjects + this.stats.projectedKitObjects;
+    const builtTotal = this.stats.nativeObjects + this.stats.kitObjectsPlanned;
+    return Object.assign({}, this.stats, {
+      totalLogicalObjects: projectedTotal || builtTotal,
+      builtLogicalObjects: builtTotal,
+      materializedWorlds: this.materializedWorlds.size
+    });
+  }
+};
+window.getWorldSetPopulationStats = () => ParcelPopulationDirector.getStats();
+
+function getParcelArchetypeSpec(type) {
+  const spec = PARCEL_ARCHETYPE_SPECS[type] || PARCEL_ARCHETYPE_SPECS.rock;
+  if (!ParcelGeometryCache.has(type)) ParcelGeometryCache.set(type, spec.geometry());
+  return Object.assign({}, spec, { geometry: ParcelGeometryCache.get(type) });
+}
+
+function getParcelMaterial(worldKey, role) {
+  const cacheKey = `${worldKey}:${role}`;
+  if (ParcelMaterialCache.has(cacheKey)) return ParcelMaterialCache.get(cacheKey);
+  const mega = WORLD_MEGA_EXPANSION[worldKey] || { scatter: 0x46505a, accent: 0x1be7ff };
+  let material;
+  if (role === 'accent') {
+    material = new THREE.MeshStandardMaterial({ color: mega.accent, emissive: mega.accent, emissiveIntensity: 0.28, roughness: 0.34, metalness: 0.28 });
+  } else if (role === 'metal') {
+    material = new THREE.MeshStandardMaterial({ color: 0x46515e, roughness: 0.42, metalness: 0.78 });
+  } else if (role === 'dark') {
+    material = new THREE.MeshStandardMaterial({ color: 0x20252b, roughness: 0.78, metalness: 0.18 });
+  } else if (role === 'bone') {
+    material = new THREE.MeshStandardMaterial({ color: 0xd8c9aa, roughness: 0.82, metalness: 0.02 });
+  } else {
+    material = new THREE.MeshStandardMaterial({ color: mega.scatter, roughness: 0.84, metalness: 0.08 });
+  }
+  ParcelMaterialCache.set(cacheKey, material);
+  return material;
+}
+
+function makeParcelCenters(worldKey, cfg, world) {
+  const result = [];
+  const mega = WORLD_MEGA_EXPANSION[worldKey];
+  const rng = makeSeededRng(cfg.seed ^ 0x9e3779b9);
+  if (mega.kind === 'radial') {
+    const ringCount = 4;
+    const perRing = Math.ceil(cfg.parcels / ringCount);
+    for (let i = 0; i < cfg.parcels; i++) {
+      const ring = Math.floor(i / perRing);
+      const slot = i % perRing;
+      const slotsThisRing = Math.min(perRing, cfg.parcels - ring * perRing);
+      const t = ringCount <= 1 ? 0.5 : ring / (ringCount - 1);
+      const radius = (mega.inner + 26) + t * (mega.radius - mega.inner - 54) + (rng() - 0.5) * 10;
+      const angle = (slot / Math.max(1, slotsThisRing)) * Math.PI * 2 + ring * 0.31 + (rng() - 0.5) * 0.14;
+      result.push({ x: Math.cos(angle) * radius, z: mega.centerZ + Math.sin(angle) * radius, radius: 15 + rng() * 7, sector: Math.floor(((angle + Math.PI * 2) % (Math.PI * 2)) / (Math.PI * 0.5)) % 4 });
+    }
+  } else if (mega.kind === 'city') {
+    const bounds = world.expansion.bounds;
+    let guard = 0;
+    while (result.length < cfg.parcels && guard++ < 2000) {
+      const x = bounds.minX + 14 + rng() * (bounds.maxX - bounds.minX - 28);
+      const z = bounds.minZ + 14 + rng() * (bounds.maxZ - bounds.minZ - 28);
+      if (Math.abs(x) < 35 && z > -58 && z < 76) continue;
+      if (result.some(p => Math.hypot(p.x - x, p.z - z) < 24)) continue;
+      const sector = (x < 0 ? 0 : 1) + (z > 5 ? 2 : 0);
+      result.push({ x, z, radius: 15 + rng() * 5, sector });
+    }
+  } else if (mega.kind === 'space') {
+    const centers = [];
+    for (let z = -52; z <= 152; z += 20) centers.push([0, z]);
+    for (let x = -42; x <= 42; x += 14) centers.push([x, 22]);
+    for (let x = -54; x <= 54; x += 18) centers.push([x, 86]);
+    for (let i = 0; i < cfg.parcels; i++) {
+      const c = centers[i % centers.length];
+      result.push({ x: c[0], z: c[1], radius: 8.5 + rng() * 3.5, sector: i % 4 });
+    }
+  } else if (mega.kind === 'sky') {
+    const islands = world.expansion.islands || [];
+    islands.forEach((island, idx) => {
+      for (let j = 0; j < 5; j++) {
+        const angle = j * (Math.PI * 2 / 5) + idx * 0.37;
+        const rr = Math.max(5, (island.radius || 18) * 0.48);
+        result.push({ x: island.x + Math.cos(angle) * rr, z: island.z + Math.sin(angle) * rr, radius: 7.5, sector: idx % 4 });
+      }
+    });
+    const causeways = [[-55,10],[-28,10],[28,10],[55,10],[0,-42],[0,-18],[0,40],[0,66]];
+    causeways.forEach((c, idx) => result.push({ x: c[0], z: c[1], radius: 6.5, sector: idx % 4 }));
+    result.length = Math.min(cfg.parcels, result.length);
+  }
+  return result;
+}
+
+function parcelPlacementMatrix(placement, spec) {
+  const dummy = new THREE.Object3D();
+  dummy.position.set(placement.x, placement.y + spec.y * placement.sy, placement.z);
+  dummy.rotation.set((spec.rotX || 0) + placement.rotX, placement.rotY, (spec.rotZ || 0) + placement.rotZ);
+  dummy.scale.set(placement.sx, placement.sy, placement.sz);
+  dummy.updateMatrix();
+  return dummy.matrix.clone();
+}
+
+function createParcelInstancedBatch(worldKey, type, placements) {
+  if (!placements.length) return null;
+  const spec = getParcelArchetypeSpec(type);
+  const mesh = new THREE.InstancedMesh(spec.geometry, getParcelMaterial(worldKey, spec.role), placements.length);
+  placements.forEach((placement, idx) => mesh.setMatrixAt(idx, parcelPlacementMatrix(placement, spec)));
+  mesh.instanceMatrix.needsUpdate = true;
+  if (typeof THREE.StaticDrawUsage !== 'undefined' && mesh.instanceMatrix.setUsage) mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+  if (mesh.computeBoundingSphere) mesh.computeBoundingSphere();
+  mesh.castShadow = false;
+  mesh.receiveShadow = true;
+  mesh.matrixAutoUpdate = false;
+  mesh.updateMatrix();
+  return mesh;
+}
+
+function planParcelKitPlacement(worldKey, assetId, placement) {
+  if (!ParcelPopulationDirector.kitPlacements[worldKey]) ParcelPopulationDirector.kitPlacements[worldKey] = {};
+  const byAsset = ParcelPopulationDirector.kitPlacements[worldKey];
+  if (!byAsset[assetId]) byAsset[assetId] = [];
+  byAsset[assetId].push(placement);
+  ParcelPopulationDirector.stats.kitObjectsPlanned++;
+}
+
+function buildDestinationParcelPopulation(worldKey, world, cfg) {
+  const root = new THREE.Group();
+  root.name = `ParcelPopulationV2_${worldKey}`;
+  const parcels = makeParcelCenters(worldKey, cfg, world);
+  const sectors = [0,1,2,3].map(idx => ({ idx, root: new THREE.Group(), detail: new THREE.Group(), majorByType: {}, detailByType: {}, x: 0, z: 0, n: 0 }));
+  sectors.forEach(s => { s.root.name = `ParcelSector_${worldKey}_${s.idx}`; s.detail.name = `ParcelDetail_${worldKey}_${s.idx}`; s.root.add(s.detail); root.add(s.root); });
+  const obstacles = [];
+  const mega = WORLD_MEGA_EXPANSION[worldKey];
+
+  parcels.forEach((parcel, parcelIndex) => {
+    const sector = sectors[parcel.sector % 4];
+    sector.x += parcel.x; sector.z += parcel.z; sector.n++;
+    const rng = makeSeededRng(cfg.seed + parcelIndex * 1009 + 17);
+    const regionName = mega.regions[parcel.sector % mega.regions.length];
+    const story = cfg.stories[parcelIndex % cfg.stories.length];
+    parcel.id = `${worldKey.toUpperCase()}-P${String(parcelIndex + 1).padStart(2, '0')}`;
+    parcel.label = `${regionName} // ${story}`;
+    parcel.index = parcelIndex;
+    parcel.seed = cfg.seed + parcelIndex * 1009;
+
+    for (let i = 0; i < cfg.nativePerParcel; i++) {
+      const type = cfg.palette[(i + parcelIndex + Math.floor(rng() * cfg.palette.length)) % cfg.palette.length];
+      const spec = getParcelArchetypeSpec(type);
+      const isMajor = i < 10;
+      const angle = (i / cfg.nativePerParcel) * Math.PI * 2 * (2.2 + (parcelIndex % 3) * 0.35) + rng() * 0.75;
+      const minR = isMajor ? 4.5 : 3.0;
+      const maxR = Math.max(minR + 1, parcel.radius * (isMajor ? 0.74 : 0.94));
+      // Object zero is the parcel's oversized story landmark; the remaining population orbits it.
+      const dist = i === 0 ? 0 : minR + rng() * (maxR - minR);
+      const scaleBase = i === 0 ? 1.9 + rng() * 1.35 : (isMajor ? 1.0 + rng() * 1.25 : 0.28 + rng() * 0.95);
+      const x = parcel.x + Math.cos(angle) * dist;
+      const z = parcel.z + Math.sin(angle) * dist;
+      const placement = {
+        x, z, y: 0, sx: scaleBase * (0.72 + rng() * 0.58), sy: scaleBase * (0.72 + rng() * 0.75), sz: scaleBase * (0.72 + rng() * 0.58),
+        rotX: (rng() - 0.5) * 0.12, rotY: rng() * Math.PI * 2, rotZ: (rng() - 0.5) * 0.12
+      };
+      const bucket = isMajor ? sector.majorByType : sector.detailByType;
+      if (!bucket[type]) bucket[type] = [];
+      bucket[type].push(placement);
+      ParcelPopulationDirector.stats.nativeObjects++;
+      if (isMajor && i % 2 === 0 && spec.radius >= 0.7) obstacles.push({ x, z, radius: spec.radius * Math.max(placement.sx, placement.sz) * 0.78, kind: 'parcel-native', parcelId: parcel.id });
+    }
+
+    for (let k = 0; k < cfg.kitPerParcel; k++) {
+      const assetId = cfg.kit[(parcelIndex + k * 3) % cfg.kit.length];
+      const angle = (k / cfg.kitPerParcel) * Math.PI * 2 + rng() * 0.42;
+      const dist = parcel.radius * (0.42 + rng() * 0.42);
+      planParcelKitPlacement(worldKey, assetId, {
+        x: parcel.x + Math.cos(angle) * dist,
+        y: 0,
+        z: parcel.z + Math.sin(angle) * dist,
+        scale: 0.62 + rng() * 0.72,
+        rotY: rng() * Math.PI * 2,
+        parcelId: parcel.id
+      });
+    }
+  });
+
+  sectors.forEach(sector => {
+    if (sector.n) { sector.x /= sector.n; sector.z /= sector.n; }
+    Object.entries(sector.majorByType).forEach(([type, placements]) => {
+      const mesh = createParcelInstancedBatch(worldKey, type, placements);
+      if (mesh) sector.root.add(mesh);
+    });
+    Object.entries(sector.detailByType).forEach(([type, placements]) => {
+      const mesh = createParcelInstancedBatch(worldKey, type, placements);
+      if (mesh) sector.detail.add(mesh);
+    });
+  });
+
+  world.group.add(root);
+  world.parcelPopulation = { root, parcels, sectors, obstacles, detailDistance: cfg.detailDistance };
+  ParcelPopulationDirector.plans[worldKey] = world.parcelPopulation;
+  ParcelPopulationDirector.stats.parcels += parcels.length;
+  freezeStaticTransforms(root);
+}
+
+function buildBaseParcelPopulation() {
+  if (!baseEnhancementsGroup) return;
+  const cfg = { nativePerParcel: 24, kitPerParcel: 18, seed: 4109, palette: ['tank','pipeProc','pylon','panel','scrap','frame'], kit: ['crate','canister','extinguisher','junction','console','bench','cageLight','strobe','troffer','hazardSign','sectorSign','railing2','railing4','stairs','pipe','column','doorSlab','wallPanel'] };
+  const cells = [];
+  [36, 43, 50, 56].forEach(x => { cells.push([x, -3, 'Sector 03-B // Archive Rack']); cells.push([x, 11, 'Sector 03-B // Pressure Lab']); });
+  [-36, -43, -50, -56].forEach(x => { cells.push([x, -7, 'Sector 06-B // Submersible Service']); cells.push([x, 7, 'Sector 06-B // Coolant Stores']); });
+  const root = new THREE.Group();
+  root.name = 'ParcelPopulationV2_base';
+  const byType = {};
+  const obstacles = ParcelPopulationDirector.baseObstacles;
+  cells.forEach((cell, idx) => {
+    const [cx, cz, label] = cell;
+    const rng = makeSeededRng(cfg.seed + idx * 811);
+    const parcel = { id: `SITE44-CELL-${String(idx + 1).padStart(2, '0')}`, label, x: cx, z: cz, radius: 4.2, sector: idx < 8 ? 0 : 1 };
+    if (!ParcelPopulationDirector.plans.base) ParcelPopulationDirector.plans.base = { root, parcels: [], sectors: [], obstacles, detailDistance: 999 };
+    ParcelPopulationDirector.plans.base.parcels.push(parcel);
+    ParcelPopulationDirector.stats.parcels++;
+    for (let i = 0; i < cfg.nativePerParcel; i++) {
+      const type = cfg.palette[(i + idx) % cfg.palette.length];
+      const spec = getParcelArchetypeSpec(type);
+      const angle = (i / cfg.nativePerParcel) * Math.PI * 2 + rng() * 0.4;
+      const dist = 1.8 + rng() * 2.0;
+      const placement = { x: cx + Math.cos(angle) * dist, y: 0, z: cz + Math.sin(angle) * dist, sx: 0.34 + rng() * 0.48, sy: 0.34 + rng() * 0.55, sz: 0.34 + rng() * 0.48, rotX: 0, rotY: rng() * Math.PI * 2, rotZ: 0 };
+      if (!byType[type]) byType[type] = [];
+      byType[type].push(placement);
+      ParcelPopulationDirector.stats.nativeObjects++;
+      if (i < 5 && i % 2 === 0) obstacles.push({ x: placement.x, z: placement.z, radius: spec.radius * Math.max(placement.sx, placement.sz) * 0.7, kind: 'base-parcel-native', parcelId: parcel.id });
+    }
+    for (let k = 0; k < cfg.kitPerParcel; k++) {
+      const assetId = cfg.kit[(idx + k) % cfg.kit.length];
+      const angle = (k / cfg.kitPerParcel) * Math.PI * 2 + rng() * 0.35;
+      const dist = 2.4 + rng() * 1.4;
+      planParcelKitPlacement('base', assetId, { x: cx + Math.cos(angle) * dist, y: 0, z: cz + Math.sin(angle) * dist, scale: 0.55 + rng() * 0.45, rotY: rng() * Math.PI * 2, parcelId: parcel.id });
+    }
+  });
+  Object.entries(byType).forEach(([type, placements]) => {
+    const mesh = createParcelInstancedBatch('aquifer', type, placements);
+    if (mesh) root.add(mesh);
+  });
+  baseEnhancementsGroup.add(root);
+  freezeStaticTransforms(root);
+}
+
+function extractKitPrototype(gltf) {
+  const sceneRoot = gltf.scene;
+  sceneRoot.updateMatrixWorld(true);
+  const parts = [];
+  sceneRoot.traverse(node => {
+    if (!node.isMesh || !node.geometry || !node.material) return;
+    parts.push({ geometry: node.geometry, material: node.material, localMatrix: node.matrixWorld.clone() });
+  });
+  const box = new THREE.Box3().setFromObject(sceneRoot);
+  const sphere = new THREE.Sphere();
+  box.getBoundingSphere(sphere);
+  return { parts, radius: Math.max(0.25, sphere.radius || 0.75) };
+}
+
+function buildKitInstancesForWorld(worldKey, assetId, prototype) {
+  const placements = ParcelPopulationDirector.kitPlacements[worldKey] && ParcelPopulationDirector.kitPlacements[worldKey][assetId];
+  if (!placements || !placements.length || !prototype.parts.length) return;
+  const buildKey = `${worldKey}:${assetId}`;
+  if (ParcelPopulationDirector.kitBuiltKeys.has(buildKey)) return;
+  const targetGroup = worldKey === 'base' ? baseEnhancementsGroup : (destinationWorlds[worldKey] && destinationWorlds[worldKey].group);
+  if (!targetGroup) return;
+  const kitGroup = new THREE.Group();
+  kitGroup.name = `KitParcel_${worldKey}_${assetId}`;
+  const assetCfg = PARCEL_KIT_ASSETS[assetId];
+  const placementMatrix = new THREE.Matrix4();
+  const finalMatrix = new THREE.Matrix4();
+  const quat = new THREE.Quaternion();
+  const scaleVec = new THREE.Vector3();
+  const pos = new THREE.Vector3();
+
+  prototype.parts.forEach(part => {
+    const mesh = new THREE.InstancedMesh(part.geometry, part.material, placements.length);
+    placements.forEach((placement, idx) => {
+      pos.set(placement.x, placement.y, placement.z);
+      quat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), placement.rotY);
+      scaleVec.setScalar(placement.scale);
+      placementMatrix.compose(pos, quat, scaleVec);
+      finalMatrix.multiplyMatrices(placementMatrix, part.localMatrix);
+      mesh.setMatrixAt(idx, finalMatrix);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    if (typeof THREE.StaticDrawUsage !== 'undefined' && mesh.instanceMatrix.setUsage) mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+    if (mesh.computeBoundingSphere) mesh.computeBoundingSphere();
+    mesh.castShadow = false;
+    mesh.receiveShadow = true;
+    mesh.matrixAutoUpdate = false;
+    mesh.updateMatrix();
+    kitGroup.add(mesh);
+  });
+
+  if (assetCfg && assetCfg.collidable) {
+    const obstacleTarget = worldKey === 'base' ? ParcelPopulationDirector.baseObstacles : (destinationWorlds[worldKey] && destinationWorlds[worldKey].parcelPopulation && destinationWorlds[worldKey].parcelPopulation.obstacles);
+    if (obstacleTarget) placements.forEach((placement, idx) => { if (idx % 2 === 0) obstacleTarget.push({ x: placement.x, z: placement.z, radius: prototype.radius * placement.scale * 0.72, kind: `kit-${assetId}`, parcelId: placement.parcelId }); });
+  }
+
+  targetGroup.add(kitGroup);
+  freezeStaticTransforms(kitGroup);
+  ParcelPopulationDirector.kitBuiltKeys.add(buildKey);
+  ParcelPopulationDirector.stats.kitObjectsLoaded += placements.length;
+}
+
+function loadParcelKitAsset(assetId) {
+  const cfg = PARCEL_KIT_ASSETS[assetId];
+  return new Promise((resolve) => {
+    const loader = new THREE.GLTFLoader();
+    loader.load(cfg.path, gltf => resolve({ assetId, prototype: extractKitPrototype(gltf) }), undefined, error => {
+      console.warn(`[PARCEL POPULATION] Failed canonical kit asset ${assetId}`, error);
+      ParcelPopulationDirector.stats.kitAssetFailures++;
+      resolve({ assetId, prototype: null });
+    });
+  });
+}
+
+function hydrateKitInstancesForWorld(worldKey) {
+  const byAsset = ParcelPopulationDirector.kitPlacements[worldKey];
+  if (!byAsset) return;
+  Object.keys(byAsset).forEach(assetId => {
+    const prototype = ParcelPopulationDirector.kitPrototypeCache.get(assetId);
+    if (prototype) buildKitInstancesForWorld(worldKey, assetId, prototype);
+  });
+}
+
+async function loadParcelKitAssets() {
+  const assetIds = Object.keys(PARCEL_KIT_ASSETS);
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < assetIds.length) {
+      const assetId = assetIds[cursor++];
+      const result = await loadParcelKitAsset(assetId);
+      if (!result.prototype) continue;
+      ParcelPopulationDirector.kitPrototypeCache.set(assetId, result.prototype);
+      ParcelPopulationDirector.stats.kitAssetsLoaded++;
+      Object.keys(ParcelPopulationDirector.kitPlacements).forEach(worldKey => buildKitInstancesForWorld(worldKey, assetId, result.prototype));
+    }
+  };
+  await Promise.all([worker(), worker(), worker(), worker()]);
+  const loadedStats = ParcelPopulationDirector.getStats();
+  if (document.body) {
+    document.body.dataset.parcelPopulationKitLoaded = String(loadedStats.kitObjectsLoaded);
+    document.body.dataset.parcelPopulationKitFailures = String(loadedStats.kitAssetFailures);
+    document.body.dataset.parcelPopulationState = loadedStats.kitAssetFailures ? 'degraded' : 'ready';
+  }
+  console.info('[PARCEL POPULATION] Canonical kit prototypes ready', loadedStats);
+}
+
+function projectParcelPopulationTotals() {
+  let parcels = 16;
+  let nativeObjects = 16 * 24;
+  let kitObjects = 16 * 18;
+  Object.values(PARCEL_EXPANSION_V2).forEach(cfg => {
+    parcels += cfg.parcels;
+    nativeObjects += cfg.parcels * cfg.nativePerParcel;
+    kitObjects += cfg.parcels * cfg.kitPerParcel;
+  });
+  ParcelPopulationDirector.stats.projectedParcels = parcels;
+  ParcelPopulationDirector.stats.projectedNativeObjects = nativeObjects;
+  ParcelPopulationDirector.stats.projectedKitObjects = kitObjects;
+  return ParcelPopulationDirector.getStats();
+}
+
+function ensureParcelPopulationForWorld(worldKey) {
+  if (!worldKey || worldKey === 'aquifer' || worldKey === 'base') return ParcelPopulationDirector.plans.base || null;
+  if (ParcelPopulationDirector.plans[worldKey]) return ParcelPopulationDirector.plans[worldKey];
+  const cfg = PARCEL_EXPANSION_V2[worldKey];
+  const world = destinationWorlds[worldKey];
+  if (!cfg || !world) return null;
+  const started = performance.now();
+  buildDestinationParcelPopulation(worldKey, world, cfg);
+  hydrateKitInstancesForWorld(worldKey);
+  ParcelPopulationDirector.materializedWorlds.add(worldKey);
+  const elapsed = performance.now() - started;
+  if (document.body) {
+    document.body.dataset.parcelPopulationLastWorld = worldKey;
+    document.body.dataset.parcelPopulationLastBuildMs = elapsed.toFixed(1);
+    document.body.dataset.parcelPopulationMaterializedWorlds = String(ParcelPopulationDirector.materializedWorlds.size);
+  }
+  console.info(`[PARCEL POPULATION] materialized ${worldKey} in ${elapsed.toFixed(1)} ms`, ParcelPopulationDirector.getStats());
+  return ParcelPopulationDirector.plans[worldKey];
+}
+
+function initExponentialParcelPopulation() {
+  if (ParcelPopulationDirector.initialized) return;
+  ParcelPopulationDirector.initialized = true;
+  const projectedStats = projectParcelPopulationTotals();
+  buildBaseParcelPopulation();
+  if (document.body) {
+    document.body.dataset.parcelPopulationPlanned = String(projectedStats.totalLogicalObjects);
+    document.body.dataset.parcelPopulationParcels = String(projectedStats.projectedParcels);
+    document.body.dataset.parcelPopulationState = 'base-ready';
+  }
+  // Yield to the main showcase request; canonical prototypes hydrate asynchronously afterwards.
+  setTimeout(() => loadParcelKitAssets(), 0);
+  console.info('[PARCEL POPULATION] WOW pass 2 projected; destination materialization is lazy', projectedStats);
+}
+
+function isParcelPopulationObstacleBlocked(px, pz, loc, playerRadius) {
+  let obstacles;
+  if (loc === 'base') obstacles = ParcelPopulationDirector.baseObstacles;
+  else obstacles = destinationWorlds[loc] && destinationWorlds[loc].parcelPopulation && destinationWorlds[loc].parcelPopulation.obstacles;
+  if (!obstacles || !obstacles.length) return false;
+  for (let i = 0; i < obstacles.length; i++) {
+    const o = obstacles[i];
+    const dx = px - o.x;
+    const dz = pz - o.z;
+    const limit = o.radius + playerRadius;
+    if ((dx * dx + dz * dz) <= limit * limit) return true;
+  }
+  return false;
+}
+
+function updateParcelPopulationRuntime() {
+  if (!camera || !ParcelPopulationDirector.initialized) return;
+  const now = performance.now();
+  if (now - ParcelPopulationDirector.lastRuntimeUpdateMs < 240) return;
+  ParcelPopulationDirector.lastRuntimeUpdateMs = now;
+  const plan = currentLocation === 'base' ? ParcelPopulationDirector.plans.base : (destinationWorlds[currentLocation] && destinationWorlds[currentLocation].parcelPopulation);
+  if (!plan) return;
+
+  if (currentLocation !== 'base' && plan.sectors) {
+    const detailDistanceSq = plan.detailDistance * plan.detailDistance;
+    plan.sectors.forEach(sector => {
+      const dx = camera.position.x - sector.x;
+      const dz = camera.position.z - sector.z;
+      sector.detail.visible = (dx * dx + dz * dz) <= detailDistanceSq;
+    });
+  }
+
+  const parcels = plan.parcels || [];
+  for (let i = 0; i < parcels.length; i++) {
+    const parcel = parcels[i];
+    const triggerRadius = Math.max(7, Math.min(12, parcel.radius * 0.56));
+    const dx = camera.position.x - parcel.x;
+    const dz = camera.position.z - parcel.z;
+    if ((dx * dx + dz * dz) > triggerRadius * triggerRadius) continue;
+    const key = `${currentLocation}:${parcel.id}`;
+    if (ParcelPopulationDirector.discovered.has(key)) return;
+    ParcelPopulationDirector.discovered.add(key);
+    showToast(`PARCEL DISCOVERED // ${parcel.id} // ${parcel.label}`, 'info', 3800);
+    if (typeof WorldEvents !== 'undefined') WorldEvents.emit('parcel:discovered', { worldKey: currentLocation, parcelId: parcel.id, label: parcel.label });
+    return;
+  }
+}
 
 // Performance Optimization: Freeze static scene-graph matrix recalculations
 function freezeStaticTransforms(root) {
@@ -21194,6 +22219,8 @@ function initDestinationWorlds() {
   destinationWorlds.acid = buildAcidWorld();
   destinationWorlds.taiga = buildTaigaWorld();
   destinationWorlds.sky = buildSkyWorld();
+
+  Object.entries(destinationWorlds).forEach(([key, world]) => applyWorldMegaExpansion(key, world));
 
   Object.values(destinationWorlds).forEach(w => {
     freezeStaticTransforms(w.group);
@@ -21272,7 +22299,8 @@ function switchActiveEnvironment(targetKey) {
     updateWaypointBar(false);
     updateHUDTelemetry("SECTOR: 05 // THE GREAT PORTAL HALL", "SITE-44 SUB-AQUIFER (ORIGIN)");
   } else if (destinationWorlds[targetKey]) {
-    // Transit to foreign destination
+    // Transit to foreign destination; materialize the dense parcel layer only on first visit.
+    ensureParcelPopulationForWorld(targetKey);
     currentLocation = targetKey;
     activeWorldKey = targetKey;
     if (typeof postProcessing !== 'undefined' && postProcessing) postProcessing.setWorld(targetKey);
@@ -21383,7 +22411,7 @@ function initThreeScene() {
   
   // Camera
   const initDims = getViewportDimensions();
-  camera = new THREE.PerspectiveCamera(65, initDims.width / initDims.height, 0.1, 300);
+  camera = new THREE.PerspectiveCamera(65, initDims.width / initDims.height, 0.1, 800);
   camera.rotation.order = 'YXZ';
   camera.position.set(0, 1.7, 7.0);
   camera.lookAt(0, 1.7, 0);
@@ -21504,6 +22532,7 @@ function initThreeScene() {
   
   // Instantiate Base 20 Enhancements
   baseEnhancements = buildBaseEnhancements();
+  initExponentialParcelPopulation();
   freezeStaticTransforms(baseEnhancements.group);
   StateSnapshotEngine.applyPending();
   if (!SpatialHashGrid.activeScope) SpatialHashGrid.rebuildForScope(currentLocation === 'base' ? 'base' : currentLocation);
@@ -22288,6 +23317,21 @@ function isPointInCylinder(px, pz, cyl, r = PLAYER_COLLIDER_RADIUS) {
   return (dx * dx + dz * dz) < (totalR * totalR);
 }
 
+// Expansion obstacle proxies are generated from the same deterministic transforms as their rendered geometry.
+function isMegaExpansionObstacleBlocked(px, pz, loc, playerRadius) {
+  const world = destinationWorlds[loc];
+  const obstacles = world && world.expansion && world.expansion.obstacles;
+  if (!obstacles || !obstacles.length) return false;
+  for (let i = 0; i < obstacles.length; i++) {
+    const o = obstacles[i];
+    const dx = px - o.x;
+    const dz = pz - o.z;
+    const limit = o.radius + playerRadius;
+    if ((dx * dx + dz * dz) <= limit * limit) return true;
+  }
+  return false;
+}
+
 // Check whether candidate horizontal position (px, pz) is physically blocked in the active world
 function isPlayerPositionBlocked(px, pz, loc) {
   const r = PLAYER_COLLIDER_RADIUS;
@@ -22312,6 +23356,12 @@ function isPlayerPositionBlocked(px, pz, loc) {
     else if (px >= -24.5 + r && px < -7.5 && pz >= -8.0 + r && pz <= 8.0 - r) inEnclosure = true;
     // Sector 05-B Mezzanine
     else if (px >= -15.5 + r && px <= -8.0 + r && pz >= -33.5 + r && pz <= -15.0 - r) inEnclosure = true;
+    // Sector 03-B East Pressure Archive connector + hall
+    else if (px >= 24.5 - r && px <= 32.0 && pz >= 2.2 + r && pz <= 5.8 - r) inEnclosure = true;
+    else if (px >= 32.0 - r && px <= 60.0 - r && pz >= -6.0 + r && pz <= 14.0 - r) inEnclosure = true;
+    // Sector 06-B West Submersible Maintenance connector + hall
+    else if (px >= -32.0 && px <= -24.5 + r && pz >= -1.8 + r && pz <= 1.8 - r) inEnclosure = true;
+    else if (px >= -60.0 + r && px <= -32.0 + r && pz >= -10.0 + r && pz <= 10.0 - r) inEnclosure = true;
     if (!inEnclosure) return true;
 
     // 2. Solid Interior Obstacles:
@@ -22338,18 +23388,32 @@ function isPlayerPositionBlocked(px, pz, loc) {
     if (isPointInAABB(px, pz, { minX: 11.5, maxX: 17.5, minZ: -5.4, maxZ: -2.2 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: 11.5, maxX: 17.5, minZ: 2.2, maxZ: 5.4 }, r)) return true;
     // Sector 03 East Transformers
-    if (isPointInAABB(px, pz, { minX: 22.8, maxX: 24.5, minZ: -4.0, maxZ: 4.0 }, r)) return true;
+    if (isPointInAABB(px, pz, { minX: 22.7, maxX: 24.1, minZ: -8.0, maxZ: 0.0 }, r)) return true;
 
     // Sector 06 Coolant Pool (Safety railing blocks falling into deep pool)
     if (isPointInAABB(px, pz, { minX: -21.4, maxX: -10.6, minZ: -5.4, maxZ: 5.4 }, r)) return true;
 
+    // Mega-expansion hall structural columns
+    for (const x of [38.44, 46.0, 53.56]) {
+      if (isPointInCylinder(px, pz, { x, z: -3.0, radius: 0.55 }, r)) return true;
+      if (isPointInCylinder(px, pz, { x, z: 11.0, radius: 0.55 }, r)) return true;
+    }
+    for (const x of [-53.56, -46.0, -38.44]) {
+      if (isPointInCylinder(px, pz, { x, z: -7.0, radius: 0.55 }, r)) return true;
+      if (isPointInCylinder(px, pz, { x, z: 7.0, radius: 0.55 }, r)) return true;
+    }
+
+    if (isParcelPopulationObstacleBlocked(px, pz, 'base', r)) return true;
     return false;
   }
 
+  if (isMegaExpansionObstacleBlocked(px, pz, loc, r)) return true;
+  if (isParcelPopulationObstacleBlocked(px, pz, loc, r)) return true;
+
   if (loc === 'desert') {
-    // Expanded Basin Perimeter (R = 120m centered at (0, -12))
+    // Mega Basin Perimeter (R = 260m centered at (0, -12))
     const distToCenter = Math.hypot(px, pz - (-12.0));
-    if (distToCenter > 120.0 - r) return true;
+    if (distToCenter > 260.0 - r) return true;
 
     // 4 Carved Obelisks
     if (isPointInCylinder(px, pz, { x: -6, z: -6, radius: 0.75 }, r)) return true;
@@ -22381,14 +23445,14 @@ function isPlayerPositionBlocked(px, pz, loc) {
 
   if (loc === 'mountain') {
     // Summit Plateau & Expanded Zones:
-    // 1. Central Summit Plateau: R <= 26.5m from (0, -12)
+    // 1. Mega mountain envelope: R <= 220m from (0, -12), preserving the original summit core
     // 2. Chasm Bridge to East Heli-Deck: X in [14.8, 48.0], Z in [4.0, 26.0]
     // 3. Northwest Ice Cavern descent: X in [-38.0, -10.0], Z in [-36.0, -14.0]
     const inBridgeOrDeck = (px >= 14.8 && px <= 48.0 - r && pz >= 4.0 + r && pz <= 26.0 - r);
     const inIceCavern = (px >= -38.0 + r && px <= -10.0 && pz >= -36.0 + r && pz <= -14.0);
     if (!inBridgeOrDeck && !inIceCavern) {
       const distToSummit = Math.hypot(px, pz - (-12.0));
-      if (distToSummit > 26.5 - r) return true;
+      if (distToSummit > 220.0 - r) return true;
     }
 
     // Geodesic Expedition Dome Tent
@@ -22408,14 +23472,12 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'city') {
-    // Rooftop, Lower Skybridge & Penthouse Lounge:
-    // Central Rooftop: X in [-24.0, 24.0], Z in [-33.5, 23.5]
-    // Skybridge Lower Level: X in [-14.0, 14.0], Z in [23.5, 58.0]
-    // Penthouse Lounge: X in [-24.0, -2.0], Z in [-58.0, -33.5]
+    // Expanded city megablock, preserving the original rooftop / skybridge / penthouse core:
+    // Walkable mega rooftop: X in [-94.0, 94.0], Z in [-114.0, 124.0]
+    // Original skybridge and penthouse geometry remain embedded in the larger deck
+    // Outer tower field and region beacons occupy the expanded perimeter
     let inWalkable = false;
-    if (px >= -24.0 + r && px <= 24.0 - r && pz >= -33.5 + r && pz <= 23.5 - r) inWalkable = true;
-    else if (px >= -14.0 + r && px <= 14.0 - r && pz >= 23.5 - r && pz <= 58.0 - r) inWalkable = true;
-    else if (px >= -24.0 + r && px <= -2.0 - r && pz >= -58.0 + r && pz <= -33.5 + r) inWalkable = true;
+    if (px >= -94.0 + r && px <= 94.0 - r && pz >= -114.0 + r && pz <= 124.0 - r) inWalkable = true;
     if (!inWalkable) return true;
 
     // Industrial HVAC Chiller Left
@@ -22442,12 +23504,12 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'stonehenge') {
-    // Expanded Sacred Enclosure Boundary (R = 60m from (0, -12))
+    // Mega Sacred Enclosure Boundary (R = 220m from (0, -12))
     // Plus Cursus Avenue extending to Z = -58.0m (X in [-15.0, 15.0])
     const distToHenge = Math.hypot(px, pz - (-12.0));
     const inCursus = (px >= -15.0 + r && px <= 15.0 - r && pz >= -58.0 + r && pz <= -12.0);
     const inBarrow = (px >= 18.0 + r && px <= 44.0 - r && pz >= -12.0 + r && pz <= 14.0 - r);
-    if (distToHenge > 60.0 - r && !inCursus && !inBarrow) return true;
+    if (distToHenge > 220.0 - r && !inCursus && !inBarrow) return true;
 
     // Central Offering Altar
     if (isPointInAABB(px, pz, { minX: -1.8, maxX: 1.8, minZ: -4.8, maxZ: -3.2 }, r)) return true;
@@ -22479,13 +23541,13 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'island') {
-    // Expanded Outer Lagoon & Reef Boundary (R = 55m from (0, 5.0))
+    // Mega Outer Lagoon & Reef Boundary (R = 210m from (0, 5.0))
     // Plus Grotto: X in [-45.0, -16.0], Z in [-32.0, -6.0]
     // Plus Boardwalk: X in [12.0, 48.0], Z in [22.0, 48.0]
     const distToLagoon = Math.hypot(px, pz - 5.0);
     const inGrotto = (px >= -45.0 + r && px <= -16.0 - r && pz >= -32.0 + r && pz <= -6.0 - r);
     const inBoardwalk = (px >= 12.0 - r && px <= 48.0 + r && pz >= 22.0 - r && pz <= 48.0 + r);
-    if (distToLagoon > 55.0 - r && !inGrotto && !inBoardwalk) return true;
+    if (distToLagoon > 210.0 - r && !inGrotto && !inBoardwalk) return true;
 
     // Galleon Shipwreck Ribs
     if (isPointInAABB(px, pz, { minX: 18.0, maxX: 26.0, minZ: 14.0, maxZ: 22.0 }, r)) return true;
@@ -22500,14 +23562,14 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'space') {
-    // Catwalk Gantry, West Cupola & East Rover Cargo Bay:
-    // Main Catwalk: X in [-3.6, 3.6], Z in [-15.5, 26.5]
-    // West Cupola Module: X in [-24.0, -3.6], Z in [1.0, 16.0]
-    // East Rover Bay: X in [3.6, 24.0], Z in [14.0, 34.0]
+    // Mega orbital station: original gantry/cupola/rover bay plus long habitat spine and two cross-wings:
+    // Central spine: X in [-6.0, 6.0], Z in [-67.0, 163.0]
+    // Cross-wing A: X in [-48.0, 48.0], Z in [16.0, 28.0]
+    // Cross-wing B: X in [-60.0, 60.0], Z in [80.0, 92.0]
     let inStation = false;
-    if (px >= -3.6 + r && px <= 3.6 - r && pz >= -15.5 + r && pz <= 26.5 - r) inStation = true;
-    else if (px >= -24.0 + r && px <= -3.6 + r && pz >= 1.0 + r && pz <= 16.0 - r) inStation = true;
-    else if (px >= 3.6 - r && px <= 24.0 - r && pz >= 14.0 + r && pz <= 34.0 - r) inStation = true;
+    if (px >= -6.0 + r && px <= 6.0 - r && pz >= -67.0 + r && pz <= 163.0 - r) inStation = true;
+    else if (px >= -48.0 + r && px <= 48.0 - r && pz >= 16.0 + r && pz <= 28.0 - r) inStation = true;
+    else if (px >= -60.0 + r && px <= 60.0 - r && pz >= 80.0 + r && pz <= 92.0 - r) inStation = true;
     if (!inStation) return true;
 
     // Exploration Rover Body
@@ -22519,8 +23581,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'volcano') {
-    // Caldera Basin: R = 110m, Magma Pool Center (0, 20, r=14), Sensor Mast (-12, -5)
-    if (Math.hypot(px, pz - 20) > 110.0 - r) return true;
+    // Caldera mega basin: R = 240m; original magma pool and sensor mast remain in the core
+    if (Math.hypot(px, pz - 20) > 240.0 - r) return true;
     if (isPointInCylinder(px, pz, { x: 0, z: 20, radius: 12.0 }, r)) return true; // Lava lake
     if (isPointInCylinder(px, pz, { x: -12.0, z: -5.0, radius: 1.5 }, r)) return true; // Mast
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true; // Return Plinth
@@ -22528,8 +23590,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'biolum') {
-    // Bioluminescent Grove: R = 110m, Elder Tree (0, 18, r=4.5), Spore Pods (14, -6, r=2.5)
-    if (Math.hypot(px, pz - 18) > 110.0 - r) return true;
+    // Bioluminescent mega grove: R = 230m; original Elder Tree and Spore Pods remain in the core
+    if (Math.hypot(px, pz - 18) > 230.0 - r) return true;
     if (isPointInCylinder(px, pz, { x: 0, z: 18, radius: 4.5 }, r)) return true;
     if (isPointInCylinder(px, pz, { x: 14.0, z: -6.0, radius: 2.5 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22537,8 +23599,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'abyss') {
-    // Sunken Citadel: R = 110m, Monolith (0, 15, r=3.8), Smoker Vent (-15, 8, r=2.2)
-    if (Math.hypot(px, pz - 15) > 110.0 - r) return true;
+    // Sunken Citadel mega field: R = 230m; original monolith and smoker vent remain in the core
+    if (Math.hypot(px, pz - 15) > 230.0 - r) return true;
     if (isPointInAABB(px, pz, { minX: -4.0, maxX: 4.0, minZ: 12.0, maxZ: 18.0 }, r)) return true;
     if (isPointInCylinder(px, pz, { x: -15.0, z: 8.0, radius: 2.2 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22546,8 +23608,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'mars') {
-    // Valles Marineris: R = 110m, Hab Dome (14, 12, r=7.5), Rover (-12, -8, r=3.2)
-    if (Math.hypot(px, pz - 12) > 110.0 - r) return true;
+    // Valles Marineris mega traverse: R = 250m; original hab dome and rover remain in the core
+    if (Math.hypot(px, pz - 12) > 250.0 - r) return true;
     if (isPointInCylinder(px, pz, { x: 14.0, z: 12.0, radius: 7.5 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -14.5, maxX: -9.5, minZ: -10.0, maxZ: -6.0 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22555,8 +23617,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'crystal') {
-    // Prismatic Shards: R = 110m, Central Geode (0, 16, r=5.5), Resonance Array (12, 0, r=2.5)
-    if (Math.hypot(px, pz - 16) > 110.0 - r) return true;
+    // Prismatic mega field: R = 230m; original geode and resonance array remain in the core
+    if (Math.hypot(px, pz - 16) > 230.0 - r) return true;
     if (isPointInCylinder(px, pz, { x: 0, z: 16.0, radius: 5.5 }, r)) return true;
     if (isPointInCylinder(px, pz, { x: 12.0, z: 0.0, radius: 2.5 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22564,8 +23626,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'swamp') {
-    // Cypress Bayou: R = 110m, Stilt Hut (10, 12), Bog Altar (-10, 14, r=2.5)
-    if (Math.hypot(px, pz - 12) > 110.0 - r) return true;
+    // Cypress Bayou mega-expansion: R = 220m
+    if (Math.hypot(px, pz - 12) > 220.0 - r) return true;
     if (isPointInAABB(px, pz, { minX: 7.5, maxX: 12.5, minZ: 9.5, maxZ: 14.5 }, r)) return true;
     if (isPointInCylinder(px, pz, { x: -10.0, z: 14.0, radius: 2.5 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22573,8 +23635,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'cavern') {
-    // Amethyst Vault: R = 90m, Giant Stalactite (0, 12, r=4.5), Vein Wall (-14, -10)
-    if (Math.hypot(px, pz - 12) > 90.0 - r) return true;
+    // Amethyst mega vault: R = 200m; original giant stalactite and vein wall remain in the core
+    if (Math.hypot(px, pz - 12) > 200.0 - r) return true;
     if (isPointInCylinder(px, pz, { x: 0, z: 12.0, radius: 4.5 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -16.0, maxX: -12.0, minZ: -12.0, maxZ: -8.0 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22582,8 +23644,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'acid') {
-    // Chemical Sump: R = 110m, Manifold (8, 10), Vat (-12, 14, r=5.2)
-    if (Math.hypot(px, pz - 10) > 110.0 - r) return true;
+    // Chemical Sump mega field: R = 230m; original manifold and vat remain in the core
+    if (Math.hypot(px, pz - 10) > 230.0 - r) return true;
     if (isPointInAABB(px, pz, { minX: 5.5, maxX: 10.5, minZ: 8.0, maxZ: 12.0 }, r)) return true;
     if (isPointInCylinder(px, pz, { x: -12.0, z: 14.0, radius: 5.2 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22591,8 +23653,8 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'taiga') {
-    // Boreal Taiga: R = 110m, Log Cabin (12, 10), Boulder (-12, -12, r=3.5)
-    if (Math.hypot(px, pz - 10) > 110.0 - r) return true;
+    // Boreal Taiga mega wilderness: R = 230m; original cabin and boulder remain in the core
+    if (Math.hypot(px, pz - 10) > 230.0 - r) return true;
     if (isPointInAABB(px, pz, { minX: 9.5, maxX: 14.5, minZ: 7.5, maxZ: 12.5 }, r)) return true;
     if (isPointInCylinder(px, pz, { x: -12.0, z: -12.0, radius: 3.5 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -22600,8 +23662,12 @@ function isPlayerPositionBlocked(px, pz, loc) {
   }
 
   if (loc === 'sky') {
-    // Aether Reach: Central Island R = 45m, Solstone Platform (0, 10, r=4.0), Glider (10, -6)
-    if (Math.hypot(px, pz - 10) > 55.0 - r) return true;
+    // Aether Reach mega-expansion: central island + two causeways + four satellite islands
+    const inCentralSky = Math.hypot(px, pz - 10) <= 55.0 - r;
+    const onEastWestCauseway = px >= -90.0 + r && px <= 90.0 - r && pz >= 7.5 + r && pz <= 12.5 - r;
+    const onNorthSouthCauseway = px >= -2.5 + r && px <= 2.5 - r && pz >= -70.5 + r && pz <= 94.0 - r;
+    const onSkyIsland = Math.hypot(px + 80.0, pz - 10.0) <= 20.0 - r || Math.hypot(px - 80.0, pz - 10.0) <= 20.0 - r || Math.hypot(px, pz - 88.0) <= 22.0 - r || Math.hypot(px, pz + 65.0) <= 19.0 - r;
+    if (!inCentralSky && !onEastWestCauseway && !onNorthSouthCauseway && !onSkyIsland) return true;
     if (isPointInCylinder(px, pz, { x: 0, z: 10.0, radius: 4.0 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: 8.0, maxX: 12.0, minZ: -8.0, maxZ: -4.0 }, r)) return true;
     if (isPointInAABB(px, pz, { minX: -3.5, maxX: 3.5, minZ: -14.5, maxZ: -12.8 }, r)) return true;
@@ -23084,10 +24150,13 @@ function animate() {
     }
     if (typeof updateCompassHUD === 'function') updateCompassHUD(playerYaw);
     if (typeof updateRadarHUD === 'function' && camera) updateRadarHUD(camera.position, playerYaw);
+    updateExpansionRegionDiscovery();
     if (typeof updateCoordsBreadcrumb === 'function' && camera) updateCoordsBreadcrumb(camera.position, activeWorldKey);
     if (typeof TelemetryLogger !== 'undefined' && typeof renderer !== 'undefined') TelemetryLogger.update(renderer);
     if (typeof renderTelemetryGraph === 'function') renderTelemetryGraph();
   }
+
+  updateParcelPopulationRuntime();
     
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.render(time, delta);
