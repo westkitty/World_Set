@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 7,
-  "last_updated": "2026-09-17T22:04:26Z",
+  "state_revision": 8,
+  "last_updated": "2026-09-17T22:38:14Z",
   "current_baseline": {
-    "identity": "WOW pass 2 exponential parcel population atop the uncommitted mega expansion: 46,586 projected logical objects across 484 parcels/cells, 18 canonical GLB prototype types, lazy per-world materialization, sector detail culling, collision and discovery integration; static/integration suites verified; direct visual traversal remains unverified",
+    "identity": "published exponential WOW pass 2 expansion on main at feature commit dc9a4af5ba350d251883544f30677ae5d2fa5053: 46,586 projected logical objects across 484 parcels/cells, 18 canonical GLB prototype types, lazy per-world materialization, sector detail culling, collision and discovery integration; static/integration suites verified; direct visual traversal remains unverified",
     "state": "partially-verified",
-    "last_verified": "2026-09-17T22:04:26Z"
+    "last_verified": "2026-09-17T22:38:14Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
@@ -22,14 +22,14 @@
 World_Set is the Site-44 Sub-Aquifer World Kit and its browser exploration runtime. The current task continues the forensic repair, uplift, and native desktop wrapper integration already represented by commits `63c8f70`, `483f232`, and `9007912`, without replacing the canonical world-kit identity.
 
 ## 2. Current Baseline
-- Branch: `main`; upstream `origin/main` remains at `a2217ee`; current mega-expansion changes are intentionally uncommitted in the working tree.
+- Branch: `main`; exponential WOW pass 2 feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` is published to `origin/main`; the working tree was clean immediately after push verification.
 - Baseline static suites: `tools/test_regression.py` PASS, `tools/test_runtime_repairs.py` PASS, `tools/test_uplift_integration.py` PASS, `tools/test_uplift_ledger.py` PASS, and `tools/validate_kit.py` PASS.
 - Browser boot observed in installed Chrome: primary WebGL canvas present, renderer initialized, loader dismissed, origin world active.
 - Native application wrapper: `/Applications/World Set.app` installed, ad-hoc signed, and pinned to user Dock at slot 38. Tooling and assets tracked (`tools/world_set_launcher.c`, `tools/generate_dock_icon.py`, `renders/AppIcon.icns`, `renders/app_icon_1024.png`).
 - Validation tooling is path-portable: `tools/validate_kit.py` and `tools/test_regression.py` derive the repository root from their script location.
 - `tools/enhance_worlds.py` is intentionally retired and non-runtime; kit authority remains `WORLD_DNA`, manifests, and Blender export tools.
 - Player playtest on 2026-09-17: load/settings/resize **OBSERVED**; movement/codex **UNKNOWN this pass**.
-- Mega expansion working tree: Site-44 gains physically connected Sector 03-B / 06-B annexes; all 16 destination worlds gain larger explorable outer regions, named landmarks, matched collision proxies, and expanded collision envelopes; city/space/sky use bespoke topology rather than the radial template. Destination fog ranges are retuned for the larger spaces, and approaching any of the four named regions per destination emits the existing toast/event discovery path.
+- Published mega expansion: Site-44 gains physically connected Sector 03-B / 06-B annexes; all 16 destination worlds gain larger explorable outer regions, named landmarks, matched collision proxies, and expanded collision envelopes; city/space/sky use bespoke topology rather than the radial template. Destination fog ranges are retuned for the larger spaces, and approaching any of the four named regions per destination emits the existing toast/event discovery path.
 - Expansion performance strategy uses deterministic `THREE.InstancedMesh` scatter and preserves the existing single-file/offline architecture; the main camera far plane is raised from 300m to 800m to cover the new 400-520m world diameters.
 - WOW pass 2 population contract: 468 destination parcels plus 16 Site-44 annex cells; 42,120 new destination-native procedural objects, 3,794 destination canonical-kit placements, and 672 Site-44 parcel objects for **46,586 projected logical objects**. Every destination parcel plans at least 80 objects and one oversized central story landmark.
 - Population delivery is lazy: only the 16 Site-44 cells materialize during boot; each destination parcel layer materializes on first portal entry and remains cached. Canonical WORLD KIT prototypes are preloaded asynchronously from 18 existing GLBs and instanced from shared geometry/materials; no Three.js upgrade or new dependency was introduced.
@@ -64,11 +64,11 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 <!-- /operational-state:entry -->
 ## 5. Verified Working Behavior
 <!-- operational-state:entry
-{"id":"VER-001","title":"Primary browser runtime boots","state":"partially-verified","capability":"The primary exploration view historically initializes a Three.js renderer and visible canvas and clears the loader; the current mega-expansion working tree requires fresh direct canvas observation because camera/render-loop code changed.","scope":"Chrome local HTTP runtime","verification_method":"Current wrapper launch + HTTP 200 + Chrome renderer process observed; prior direct canvas proof from 2026-09-15 retained as historical evidence","evidence":"2026-09-17 current index served on port 8000 with HTTP 200; served SHA-256 323e61323f85fc7b592440ae6b84f305789d23a7f5a592d4ba7f4e9db91fa1c7 exactly matched local index.html; Chrome renderer process launched; direct canvas inspection unavailable because DevTools execution contexts remained about:blank and screencapture was unavailable","artifact_revision":"working tree atop a2217ee","last_verified":"2026-09-17T21:31:59Z","dependencies":["installed Chrome","local HTTP server"],"freshness":"current baseline partial","recheck_trigger":"fresh direct browser canvas smoke on current working tree"}
+{"id":"VER-001","title":"Primary browser runtime boots","state":"partially-verified","capability":"The primary exploration view historically initializes a Three.js renderer and visible canvas and clears the loader; the published mega-expansion state requires fresh direct canvas observation because camera/render-loop code changed.","scope":"Chrome local HTTP runtime","verification_method":"Current wrapper launch + HTTP 200 + Chrome renderer process observed; prior direct canvas proof from 2026-09-15 retained as historical evidence","evidence":"2026-09-17 current index served on port 8000 with HTTP 200; served SHA-256 323e61323f85fc7b592440ae6b84f305789d23a7f5a592d4ba7f4e9db91fa1c7 exactly matched local index.html; Chrome renderer process launched; direct canvas inspection unavailable because DevTools execution contexts remained about:blank and screencapture was unavailable","artifact_revision":"feature commit dc9a4af5ba350d251883544f30677ae5d2fa5053","last_verified":"2026-09-17T21:31:59Z","dependencies":["installed Chrome","local HTTP server"],"freshness":"current baseline partial","recheck_trigger":"fresh direct browser canvas smoke on current published main"}
 -->
 ### VER-001 — Primary browser runtime boots
 - **State:** `partially-verified`
-- **Capability:** Prior direct Chrome proof remains historical; the current mega-expansion working tree launches through the wrapper and serves successfully, but still needs fresh direct canvas observation.
+- **Capability:** Prior direct Chrome proof remains historical; the published mega-expansion state launches through the wrapper and serves successfully, but still needs fresh direct canvas observation.
 <!-- /operational-state:entry -->
 
 <!-- operational-state:entry
@@ -101,7 +101,7 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - A fresh SwiftShader/headless probe during WOW pass 2 again produced repeated macOS `CVDisplayLinkCreateWithCGDisplay` failures and stalled before trustworthy application-state inspection. An initial eager implementation was rejected after server chronology exposed severe boot blocking; the delivered lazy design removes eager destination parcel construction, but current-headless startup/render timing remains untrusted until tested in a normal visible browser session.
 
 ## 9. Pending Work
-- Prior forensic/packaging phases remain complete at `a2217ee`. Mega expansion + WOW pass 2 exponential parcel population are implemented and suite-verified in the working tree. Before promotion/publication, perform one trustworthy visible-browser traversal of Site-44 and representative radial/city/space/sky destinations, record first-entry parcel materialization cost, confirm canonical-kit hydration, and visually inspect density/readability/collision.
+- Repository publication is complete for WOW pass 2 at feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053`. Remaining evidence work is a trustworthy visible-browser traversal of Site-44 and representative radial/city/space/sky destinations, including first-entry materialization timing, canonical-kit hydration, density/readability, and collision. This remains an explicit verification gap rather than a publication blocker.
 
 ## 10. Active Decisions, Defaults, and Prohibitions
 - Preserve the current single-file/offline browser architecture; add no dependency unless evidence makes it necessary.
@@ -116,14 +116,14 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 | --- | --- | --- | --- | --- |
 | INV-001 | Canonical kit remains intact | verified | clean-archive `validate_kit.py` PASS | recheck on asset/world-kit changes |
 | INV-002 | App wrapper & dock integration | verified | wrapper unchanged; `/Applications/World Set.app` launch + port 8000 HTTP 200 on 2026-09-17 | recheck on packaging delivery |
-| VER-001 | Main browser runtime boots | partially-verified | current wrapper launch + HTTP 200 + Chrome renderer process; prior direct canvas proof is historical | fresh direct browser canvas smoke on current working tree |
+| VER-001 | Main browser runtime boots | partially-verified | current wrapper launch + HTTP 200 + Chrome renderer process; prior direct canvas proof is historical | fresh direct browser canvas smoke on current published main |
 | VER-002 | Scanner/codex reachable | verified | installed Chrome runtime | flagship integration smoke |
 | VER-003 | Desktop wrapper & dock launcher | verified | `/Applications/World Set.app` active | recheck on launcher edits |
 | VER-004 | All-world mega expansion | partially-verified | 5/5 project suites PASS; expansion-specific regression gates PASS; app serves current index on :8000 | direct visual traversal of base annex + representative radial/city/space/sky outer zones |
 | INV-010 | Exponential parcel population remains dense and lazy | verified | INV-10 regression: 46,586 projected logical objects; 468 destination parcels + 16 base cells; ≥80 objects/destination parcel; 18 canonical GLB types; boot eager-build guard PASS | recheck any population/boot/materialization change |
 | VER-005 | WOW pass 2 parcels visually populate all worlds | partially-verified | source/integration/regression PASS; all five suites PASS; direct normal-browser visual traversal unavailable | visible-browser traversal + first-entry timing + representative collision/readability checks |
 ## 12. Current Change Scope and Impact Radius
-- Current mega-expansion + WOW pass 2 files changed: `index.html`, `tools/test_regression.py`, and this operational state. No authored GLB/Blend assets, vendored libraries, packaging tools, or dependencies changed. Existing canonical GLBs are referenced/reused at runtime; their source files remain untouched.
+- Published feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` changed `index.html`, `tools/test_regression.py`, and this operational state. No authored GLB/Blend assets, vendored libraries, packaging tools, or dependencies changed. Existing canonical GLBs are referenced/reused at runtime; their source files remain untouched.
 - Impact radius: runtime bootstrap, render loop, scanner/codex integration, input routing, persistence, performance scheduling, browser lifecycle handling, documentation truth, and desktop application wrapper.
 - Protected outside radius: authored asset files, Blender master, and generated production GLBs.
 
@@ -135,3 +135,4 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Revision 5 — 2026-09-17: made `validate_kit.py` and `test_regression.py` repository-root portable, explicitly retired the dead `enhance_worlds.py` stub, preserved player-playtest uncertainty for movement/Codex, and verified all five static suites plus validation/regression from an isolated `/tmp` copy.
 - Revision 6 — 2026-09-17: drastically expanded Site-44 and all 16 destination worlds; added deterministic instanced outer-region geometry, four discoverable named regions per destination, collision proxies tied to rendered scatter/towers/modules/beacons, expanded collision envelopes, special city/space/sky traversal topology, reachable Sector 03-B/06-B base annexes, long-range fog tuning, an 800m far plane, and INV-09 regression coverage. Five project suites pass; wrapper launch/HTTP delivery observed; direct visual traversal remains explicitly unverified.
 - Revision 7 — 2026-09-17: ran the requested exponential WOW pass over every world. Added 468 destination parcels + 16 Site-44 cells with 46,586 projected logical objects, central parcel landmarks, biome-specific procedural populations, 18 canonical WORLD KIT GLB prototype types instanced from shared geometry/materials, parcel collisions/discovery, and sector distance culling. Rejected an eager first implementation after boot chronology exposed blocking, then converted destination population to lazy first-entry materialization with cached prototypes and added INV-10 quantitative/lazy regression gates. All five project suites PASS; direct visual traversal remains explicitly unverified because the macOS headless/WebGL harness is unreliable.
+- Revision 8 — 2026-09-17: published WOW pass 2 to `origin/main` at feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` after all five project suites and `git diff --check` passed. Verified local HEAD and remote `refs/heads/main` matched exactly after push. Publication state is closed; direct visible-browser traversal remains partially verified because the available macOS headless/WebGL harness is unreliable.
