@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 4,
-  "last_updated": "2026-09-15T19:18:00Z",
+  "state_revision": 5,
+  "last_updated": "2026-09-17T20:58:00Z",
   "current_baseline": {
-    "identity": "native macOS app wrapper and dock icon integration; commit 9007912; upstream origin/main synchronized",
+    "identity": "path-portable validation tooling and retired dead enhancement stub atop 34e3833; full static suite and isolated-copy portability checks verified",
     "state": "verified",
-    "last_verified": "2026-09-15T19:18:00Z"
+    "last_verified": "2026-09-17T20:58:00Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
@@ -26,6 +26,9 @@ World_Set is the Site-44 Sub-Aquifer World Kit and its browser exploration runti
 - Baseline static suites: `tools/test_regression.py` PASS, `tools/test_runtime_repairs.py` PASS, `tools/test_uplift_integration.py` PASS, `tools/test_uplift_ledger.py` PASS, and `tools/validate_kit.py` PASS.
 - Browser boot observed in installed Chrome: primary WebGL canvas present, renderer initialized, loader dismissed, origin world active.
 - Native application wrapper: `/Applications/World Set.app` installed, ad-hoc signed, and pinned to user Dock at slot 38. Tooling and assets tracked (`tools/world_set_launcher.c`, `tools/generate_dock_icon.py`, `renders/AppIcon.icns`, `renders/app_icon_1024.png`).
+- Validation tooling is path-portable: `tools/validate_kit.py` and `tools/test_regression.py` derive the repository root from their script location.
+- `tools/enhance_worlds.py` is intentionally retired and non-runtime; kit authority remains `WORLD_DNA`, manifests, and Blender export tools.
+- Player playtest on 2026-09-17: load/settings/resize **OBSERVED**; movement/codex **UNKNOWN this pass**.
 ## 3. Artifact Contract
 The browser artifact must remain offline-capable, preserve existing exploration behavior, use the existing Three.js/runtime architecture, and keep current world-kit assets and canonical specifications authoritative. The forensic uplift count must be supported by integrated behavior rather than symbol existence.
 
@@ -106,3 +109,4 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Revision 2 — 2026-09-15: promoted repaired runtime/integration paths after Chrome, 16-world, persistence, mobile, full-suite, and clean-archive proof; implementation commit `466d52a8357109cb4f239490d99190a4de99399c`.
 - Revision 3 — 2026-09-15: closed medium-width header overflow/overlap, live audio-mixer routing, and FOV persistence; revalidated 1280/1024/390 layouts, audio user gesture, world sweep, scanner→Codex, and session/settings reload.
 - Revision 4 — 2026-09-15: integrated native macOS standalone application bundle (`/Applications/World Set.app`) and high-res Stargate Dock icon at slot 38; synchronized commit `9007912` with upstream `origin/main`; verified 100% PASS across all 5 test suites.
+- Revision 5 — 2026-09-17: made `validate_kit.py` and `test_regression.py` repository-root portable, explicitly retired the dead `enhance_worlds.py` stub, preserved player-playtest uncertainty for movement/Codex, and verified all five static suites plus validation/regression from an isolated `/tmp` copy.

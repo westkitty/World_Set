@@ -3,6 +3,8 @@ import sys
 import json
 import subprocess
 
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 print("=======================================================")
 print(">>> RUNNING AUTOMATED WORLD KIT VALIDATION AUDIT <<<")
 print("=======================================================\n")
@@ -11,15 +13,15 @@ errors = []
 warnings = []
 
 # 1. Master Blend
-blend_path = "/Users/andrew/World_Set/WORLD_KIT_MASTER.blend"
+blend_path = os.path.join(ROOT, "WORLD_KIT_MASTER.blend")
 if os.path.exists(blend_path) and os.path.getsize(blend_path) > 100000:
     print(f"[PASS] Master .blend file exists: {os.path.getsize(blend_path) // 1024} KB")
 else:
     errors.append("Master .blend file missing or suspiciously small.")
 
 # 2. Manifests
-json_manifest = "/Users/andrew/World_Set/ASSET_MANIFEST.json"
-md_manifest = "/Users/andrew/World_Set/ASSET_MANIFEST.md"
+json_manifest = os.path.join(ROOT, "ASSET_MANIFEST.json")
+md_manifest = os.path.join(ROOT, "ASSET_MANIFEST.md")
 asset_count = 0
 if os.path.exists(json_manifest) and os.path.exists(md_manifest):
     with open(json_manifest, "r") as f:
@@ -30,7 +32,7 @@ else:
     errors.append("Manifest files missing.")
 
 # 3. GLB Exports
-export_dir = "/Users/andrew/World_Set/WORLD_KIT_EXPORT"
+export_dir = os.path.join(ROOT, "WORLD_KIT_EXPORT")
 glb_files = []
 for root, _, files in os.walk(export_dir):
     for f in files:
@@ -47,8 +49,8 @@ if asset_count > 0:
     missing_glbs = []
     missing_thumbs = []
     for asset in data["assets"]:
-        glb_path = os.path.join("/Users/andrew/World_Set", asset.get("rel_path", ""))
-        thumb_path = os.path.join("/Users/andrew/World_Set/renders/catalog/thumbnails", f"{asset['name']}.png")
+        glb_path = os.path.join(ROOT, asset.get("rel_path", ""))
+        thumb_path = os.path.join(ROOT, "renders", "catalog", "thumbnails", f"{asset['name']}.png")
         if not os.path.exists(glb_path):
             missing_glbs.append(asset["name"])
         if not os.path.exists(thumb_path):
@@ -62,7 +64,7 @@ if asset_count > 0:
             errors.append(f"Missing thumbnail images for assets: {missing_thumbs}")
 
 # 4. Showcase Renders
-renders_showcase = "/Users/andrew/World_Set/renders/showcase"
+renders_showcase = os.path.join(ROOT, "renders", "showcase")
 required_stills = [
     "01_establishing_wide.png",
     "02_architectural_scale.png",
@@ -88,9 +90,9 @@ else:
     errors.append("Walkthrough video missing or invalid.")
 
 # 6. Thumbnails & Catalog
-catalog_grid = "/Users/andrew/World_Set/renders/catalog/catalog_grid.png"
-catalog_html = "/Users/andrew/World_Set/renders/catalog/index.html"
-thumbs_dir = "/Users/andrew/World_Set/renders/catalog/thumbnails"
+catalog_grid = os.path.join(ROOT, "renders", "catalog", "catalog_grid.png")
+catalog_html = os.path.join(ROOT, "renders", "catalog", "index.html")
+thumbs_dir = os.path.join(ROOT, "renders", "catalog", "thumbnails")
 thumb_count = len([f for f in os.listdir(thumbs_dir) if f.endswith(".png")])
 
 if asset_count > 0 and thumb_count == asset_count and os.path.exists(catalog_grid) and os.path.exists(catalog_html):
@@ -99,19 +101,19 @@ else:
     errors.append(f"Catalog incomplete: found {thumb_count} thumbnails (expected {asset_count}).")
 
 # 7. Documentation
-if os.path.exists("/Users/andrew/World_Set/WORLD_DNA.md") and os.path.exists("/Users/andrew/World_Set/MODULAR_GRAMMAR.md"):
+if os.path.exists(os.path.join(ROOT, "WORLD_DNA.md")) and os.path.exists(os.path.join(ROOT, "MODULAR_GRAMMAR.md")):
     print("[PASS] WORLD_DNA.md and MODULAR_GRAMMAR.md documentation verified.")
 else:
     errors.append("Core documentation missing.")
 
 # 8. Interactive Web Deliverables
-web_index = "/Users/andrew/World_Set/index.html"
-web_glb = "/Users/andrew/World_Set/web/showcase.glb"
+web_index = os.path.join(ROOT, "index.html")
+web_glb = os.path.join(ROOT, "web", "showcase.glb")
 required_libs = [
-    "/Users/andrew/World_Set/web/libs/three.min.js",
-    "/Users/andrew/World_Set/web/libs/GLTFLoader.js",
-    "/Users/andrew/World_Set/web/libs/PointerLockControls.js",
-    "/Users/andrew/World_Set/web/libs/OrbitControls.js",
+    os.path.join(ROOT, "web", "libs", "three.min.js"),
+    os.path.join(ROOT, "web", "libs", "GLTFLoader.js"),
+    os.path.join(ROOT, "web", "libs", "PointerLockControls.js"),
+    os.path.join(ROOT, "web", "libs", "OrbitControls.js"),
 ]
 if os.path.exists(web_index) and os.path.getsize(web_index) > 50000 and os.path.exists(web_glb) and os.path.getsize(web_glb) > 1000000:
     all_libs_exist = all(os.path.exists(lib) and os.path.getsize(lib) > 1000 for lib in required_libs)
