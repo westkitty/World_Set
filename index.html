@@ -4890,6 +4890,94 @@ const WORLDS = {
   }
 };
 
+// =============================================================
+// WS-GAME-01: WORLD GAMEPLAY PROFILE SCHEMA
+// Data-only foundation for later gameplay packets; no runtime consumers yet.
+// =============================================================
+const WORLD_GAMEPLAY_PROFILE_SCHEMA_VERSION = 1;
+
+function makeWorldGameplayProfile(config = {}) {
+  return {
+    schemaVersion: WORLD_GAMEPLAY_PROFILE_SCHEMA_VERSION,
+    traversal: Object.assign({
+      walkSpeed: 4.0,
+      sprintSpeed: 8.0,
+      acceleration: 28.0,
+      deceleration: 34.0,
+      surfaceFriction: 1.0,
+      sprintCost: 1.0,
+      windResponse: 0.0,
+      jumpScale: 1.0
+    }, config.traversal || {}),
+    visibility: Object.assign({
+      baseRange: 180,
+      conditionSensitivity: 0.5
+    }, config.visibility || {}),
+    instruments: Object.assign({
+      radarRange: 60,
+      radarNoise: 0.05,
+      compassReliability: 1.0,
+      scannerChannels: ['structural']
+    }, config.instruments || {}),
+    conditions: Array.isArray(config.conditions) ? config.conditions.slice() : ['stable'],
+    events: Array.isArray(config.events) ? config.events.slice() : [],
+    audio: Object.assign({
+      environment: 'neutral',
+      spatialReactivity: 0.5
+    }, config.audio || {})
+  };
+}
+
+const WORLD_GAMEPLAY_PROFILES = {
+  aquifer: makeWorldGameplayProfile({ instruments: { radarNoise: 0.03, scannerChannels: ['structural', 'thermal', 'acoustic'] }, conditions: ['stable', 'maintenance-cycle'], events: ['machinery-cycle', 'power-flicker'], audio: { environment: 'industrial', spatialReactivity: 0.65 } }),
+  desert: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.88, sprintCost: 1.12, windResponse: 0.45 }, visibility: { baseRange: 240, conditionSensitivity: 0.95 }, instruments: { radarRange: 85, radarNoise: 0.12, compassReliability: 0.98, scannerChannels: ['thermal', 'em', 'atmospheric'] }, conditions: ['clear', 'dust-rising', 'dust-front', 'heavy-dust', 'clearing'], events: ['dust-devil', 'electrical-sandstorm'], audio: { environment: 'aeolian', spatialReactivity: 0.8 } }),
+  mountain: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.82, sprintCost: 1.18, windResponse: 0.72 }, visibility: { baseRange: 220, conditionSensitivity: 0.95 }, instruments: { radarRange: 70, radarNoise: 0.1, compassReliability: 0.96, scannerChannels: ['atmospheric', 'seismic', 'thermal'] }, conditions: ['clear', 'gusting', 'whiteout', 'clearing'], events: ['avalanche-plume', 'ice-shear'], audio: { environment: 'alpine', spatialReactivity: 0.82 } }),
+  city: makeWorldGameplayProfile({ visibility: { baseRange: 170, conditionSensitivity: 0.7 }, instruments: { radarRange: 55, radarNoise: 0.28, compassReliability: 0.94, scannerChannels: ['em', 'structural', 'thermal'] }, conditions: ['powered', 'rain', 'brownout', 'blackout'], events: ['transit-cycle', 'grid-flicker'], audio: { environment: 'urban-industrial', spatialReactivity: 0.88 } }),
+  stonehenge: makeWorldGameplayProfile({ visibility: { baseRange: 190, conditionSensitivity: 0.75 }, instruments: { radarRange: 60, radarNoise: 0.09, compassReliability: 0.72, scannerChannels: ['em', 'acoustic', 'atmospheric'] }, conditions: ['clear', 'mist', 'geomagnetic-surge'], events: ['auroral-surge', 'acoustic-resonance'], audio: { environment: 'open-megalithic', spatialReactivity: 0.72 } }),
+  island: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.86, sprintCost: 1.08, windResponse: 0.42 }, visibility: { baseRange: 230, conditionSensitivity: 0.82 }, instruments: { radarRange: 68, radarNoise: 0.11, compassReliability: 0.99, scannerChannels: ['atmospheric', 'biological', 'structural'] }, conditions: ['fair', 'squall-building', 'squall', 'clearing'], events: ['tide-shift', 'reef-bloom'], audio: { environment: 'littoral', spatialReactivity: 0.9 } }),
+  space: makeWorldGameplayProfile({ traversal: { sprintCost: 0.92, jumpScale: 1.35 }, visibility: { baseRange: 360, conditionSensitivity: 0.45 }, instruments: { radarRange: 140, radarNoise: 0.02, compassReliability: 0.95, scannerChannels: ['em', 'structural', 'thermal'] }, conditions: ['sunlit', 'terminator', 'eclipse'], events: ['orbital-eclipse', 'station-cycle'], audio: { environment: 'orbital-structure', spatialReactivity: 0.7 } }),
+  volcano: makeWorldGameplayProfile({ traversal: { sprintCost: 1.2, windResponse: 0.28 }, visibility: { baseRange: 150, conditionSensitivity: 0.88 }, instruments: { radarRange: 62, radarNoise: 0.16, compassReliability: 0.95, scannerChannels: ['thermal', 'seismic', 'atmospheric'] }, conditions: ['active', 'ashfall', 'tremor-cycle'], events: ['fumarole-burst', 'ash-column'], audio: { environment: 'volcanic', spatialReactivity: 0.92 } }),
+  biolum: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.9, sprintCost: 1.08, windResponse: 0.12 }, visibility: { baseRange: 120, conditionSensitivity: 0.65 }, instruments: { radarRange: 52, radarNoise: 0.1, compassReliability: 0.97, scannerChannels: ['biological', 'chemical', 'acoustic'] }, conditions: ['calm', 'sporefall', 'bloom'], events: ['mycelial-pulse', 'synchronized-bloom'], audio: { environment: 'biological', spatialReactivity: 0.96 } }),
+  abyss: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.78, sprintCost: 1.16, windResponse: 0.58 }, visibility: { baseRange: 80, conditionSensitivity: 0.9 }, instruments: { radarRange: 75, radarNoise: 0.14, compassReliability: 0.92, scannerChannels: ['acoustic', 'thermal', 'biological'] }, conditions: ['still-current', 'cross-current', 'plume-interference'], events: ['deep-migration', 'vent-surge'], audio: { environment: 'submerged', spatialReactivity: 0.98 } }),
+  mars: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.9, sprintCost: 1.04, windResponse: 0.5, jumpScale: 1.18 }, visibility: { baseRange: 280, conditionSensitivity: 1.0 }, instruments: { radarRange: 95, radarNoise: 0.08, compassReliability: 0.99, scannerChannels: ['atmospheric', 'em', 'seismic'] }, conditions: ['clear', 'haze', 'dust-rising', 'dust-front', 'heavy-dust', 'clearing'], events: ['dust-devil', 'regional-dust-wall'], audio: { environment: 'martian-aeolian', spatialReactivity: 0.86 } }),
+  crystal: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.72 }, visibility: { baseRange: 175, conditionSensitivity: 0.62 }, instruments: { radarRange: 64, radarNoise: 0.22, compassReliability: 0.74, scannerChannels: ['acoustic', 'em', 'structural'] }, conditions: ['quiet', 'resonant', 'em-surge'], events: ['resonance-wave', 'brittle-collapse'], audio: { environment: 'crystalline', spatialReactivity: 1.0 } }),
+  swamp: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.68, sprintCost: 1.28, windResponse: 0.1 }, visibility: { baseRange: 105, conditionSensitivity: 0.85 }, instruments: { radarRange: 48, radarNoise: 0.26, compassReliability: 0.96, scannerChannels: ['chemical', 'biological', 'atmospheric'] }, conditions: ['humid', 'fog-pooling', 'rain'], events: ['gas-bloom', 'firefly-swarm'], audio: { environment: 'wetland', spatialReactivity: 0.95 } }),
+  cavern: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.9, sprintCost: 1.08 }, visibility: { baseRange: 70, conditionSensitivity: 0.55 }, instruments: { radarRange: 42, radarNoise: 0.18, compassReliability: 0.7, scannerChannels: ['acoustic', 'seismic', 'structural'] }, conditions: ['quiet', 'water-high', 'seismic-active'], events: ['rockfall', 'distant-collapse'], audio: { environment: 'subterranean', spatialReactivity: 1.0 } }),
+  acid: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.74, sprintCost: 1.22, windResponse: 0.36 }, visibility: { baseRange: 125, conditionSensitivity: 0.92 }, instruments: { radarRange: 58, radarNoise: 0.17, compassReliability: 0.95, scannerChannels: ['chemical', 'atmospheric', 'thermal'] }, conditions: ['stable', 'plume-drift', 'scrubber-cycle'], events: ['vent-release', 'scrubber-cascade'], audio: { environment: 'industrial-toxic', spatialReactivity: 0.88 } }),
+  taiga: makeWorldGameplayProfile({ traversal: { surfaceFriction: 0.84, sprintCost: 1.1, windResponse: 0.22 }, visibility: { baseRange: 145, conditionSensitivity: 0.78 }, instruments: { radarRange: 52, radarNoise: 0.2, compassReliability: 0.99, scannerChannels: ['biological', 'atmospheric', 'acoustic'] }, conditions: ['clear', 'snowfall', 'wind'], events: ['migration-crossing', 'treefall'], audio: { environment: 'boreal', spatialReactivity: 0.96 } }),
+  sky: makeWorldGameplayProfile({ traversal: { sprintCost: 0.98, windResponse: 0.9, jumpScale: 1.28 }, visibility: { baseRange: 300, conditionSensitivity: 0.95 }, instruments: { radarRange: 90, radarNoise: 0.09, compassReliability: 0.99, scannerChannels: ['atmospheric', 'em', 'structural'] }, conditions: ['clear', 'crosswind', 'cloud-bank', 'stormward'], events: ['updraft-surge', 'supercell-formation'], audio: { environment: 'high-atmosphere', spatialReactivity: 0.9 } })
+};
+
+function validateWorldGameplayProfiles() {
+  const worldKeys = Object.keys(WORLDS).sort();
+  const profileKeys = Object.keys(WORLD_GAMEPLAY_PROFILES).sort();
+  const errors = [];
+  if (worldKeys.length !== profileKeys.length || worldKeys.some((key, index) => key !== profileKeys[index])) errors.push('profile keys must exactly match WORLDS');
+
+  worldKeys.forEach(key => {
+    const profile = WORLD_GAMEPLAY_PROFILES[key];
+    if (!profile) return;
+    if (profile.schemaVersion !== WORLD_GAMEPLAY_PROFILE_SCHEMA_VERSION) errors.push(key + ': schema version mismatch');
+    ['traversal', 'visibility', 'instruments', 'audio'].forEach(section => {
+      if (!profile[section] || typeof profile[section] !== 'object') errors.push(key + ': missing ' + section);
+    });
+    if (!Array.isArray(profile.conditions) || profile.conditions.length === 0) errors.push(key + ': conditions must be non-empty');
+    if (!Array.isArray(profile.events)) errors.push(key + ': events must be an array');
+    if (!Array.isArray(profile.instruments && profile.instruments.scannerChannels) || profile.instruments.scannerChannels.length === 0) errors.push(key + ': scannerChannels must be non-empty');
+    if (!Number.isFinite(profile.traversal.walkSpeed) || profile.traversal.walkSpeed <= 0) errors.push(key + ': invalid walkSpeed');
+    if (!Number.isFinite(profile.traversal.sprintSpeed) || profile.traversal.sprintSpeed < profile.traversal.walkSpeed) errors.push(key + ': invalid sprintSpeed');
+    if (!Number.isFinite(profile.instruments.compassReliability) || profile.instruments.compassReliability < 0 || profile.instruments.compassReliability > 1) errors.push(key + ': invalid compassReliability');
+  });
+
+  if (errors.length) throw new Error('WORLD_GAMEPLAY_PROFILES invalid: ' + errors.join('; '));
+  return true;
+}
+
+validateWorldGameplayProfiles();
+Object.entries(WORLD_GAMEPLAY_PROFILES).forEach(([key, profile]) => {
+  WORLDS[key].gameplay = profile;
+});
+
 let activeWorldKey = 'aquifer';
 let t4_flareLaunched = false;
 let t4_flarePosY = 0.9;
@@ -24157,6 +24245,7 @@ function animate() {
   }
 
   updateParcelPopulationRuntime();
+  if (typeof WorldConditionDirector !== 'undefined') WorldConditionDirector.update(delta);
     
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.render(time, delta);
@@ -24337,6 +24426,145 @@ const WorldEvents = {
     });
   }
 };
+
+// =============================================================
+// WS-GAME-02: WORLD CONDITION DIRECTOR
+// Deterministic world-condition state machine. Effects are consumed by later packets.
+// =============================================================
+const WorldConditionDirector = {
+  active: null,
+  _hashSeed(text) {
+    let hash = 2166136261;
+    const input = String(text || '');
+    for (let i = 0; i < input.length; i++) {
+      hash ^= input.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  },
+  _next(seed) {
+    let x = seed >>> 0;
+    x += 0x6D2B79F5;
+    x = Math.imul(x ^ (x >>> 15), x | 1);
+    x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+    return { seed: x >>> 0, value: ((x ^ (x >>> 14)) >>> 0) / 4294967296 };
+  },
+  enterWorld(worldKey, seedOverride = null) {
+    const profile = WORLD_GAMEPLAY_PROFILES[worldKey];
+    if (!profile) return null;
+    const seed = Number.isFinite(seedOverride) ? (seedOverride >>> 0) : this._hashSeed('world-condition:' + worldKey);
+    const roll = this._next(seed);
+    const conditions = profile.conditions;
+    const index = Math.min(conditions.length - 1, Math.floor(roll.value * conditions.length));
+    const conditionId = conditions[index];
+    const durationRoll = this._next(roll.seed);
+    this.active = {
+      worldKey,
+      conditionId,
+      previousConditionId: null,
+      intensity: 0,
+      phase: 'entering',
+      elapsed: 0,
+      duration: 90 + durationRoll.value * 60,
+      seed: durationRoll.seed
+    };
+    WorldEvents.emit('condition:started', this.getSnapshot());
+    return this.active;
+  },
+  setCondition(conditionId, options = {}) {
+    if (!this.active) return false;
+    const profile = WORLD_GAMEPLAY_PROFILES[this.active.worldKey];
+    if (!profile || !profile.conditions.includes(conditionId)) return false;
+    if (conditionId === this.active.conditionId && !options.force) return true;
+    const previous = this.active.conditionId;
+    this.active.previousConditionId = previous;
+    this.active.conditionId = conditionId;
+    this.active.phase = 'entering';
+    this.active.intensity = 0;
+    this.active.elapsed = 0;
+    if (Number.isFinite(options.duration) && options.duration > 0) this.active.duration = options.duration;
+    if (Number.isFinite(options.seed)) this.active.seed = options.seed >>> 0;
+    WorldEvents.emit('condition:changed', Object.assign({ previousConditionId: previous }, this.getSnapshot()));
+    return true;
+  },
+  update(delta) {
+    if (!this.active || !Number.isFinite(delta) || delta <= 0) return;
+    const state = this.active;
+    state.elapsed += delta;
+    const enterDuration = 4.0;
+    const exitDuration = 5.0;
+    if (state.elapsed < enterDuration) {
+      state.phase = 'entering';
+      state.intensity = Math.min(1, state.elapsed / enterDuration);
+      return;
+    }
+    if (state.elapsed >= state.duration - exitDuration) {
+      state.phase = 'exiting';
+      state.intensity = Math.max(0, (state.duration - state.elapsed) / exitDuration);
+    } else {
+      state.phase = 'active';
+      state.intensity = 1;
+    }
+    if (state.elapsed < state.duration) return;
+
+    const profile = WORLD_GAMEPLAY_PROFILES[state.worldKey];
+    if (!profile || profile.conditions.length < 2) {
+      state.elapsed = 0;
+      state.phase = 'active';
+      state.intensity = 1;
+      return;
+    }
+    const ended = this.getSnapshot();
+    WorldEvents.emit('condition:ended', ended);
+    const roll = this._next(state.seed);
+    let nextIndex = Math.floor(roll.value * profile.conditions.length);
+    const currentIndex = profile.conditions.indexOf(state.conditionId);
+    if (nextIndex === currentIndex) nextIndex = (nextIndex + 1) % profile.conditions.length;
+    const durationRoll = this._next(roll.seed);
+    state.seed = durationRoll.seed;
+    state.previousConditionId = state.conditionId;
+    state.conditionId = profile.conditions[nextIndex];
+    state.elapsed = 0;
+    state.duration = 90 + durationRoll.value * 60;
+    state.phase = 'entering';
+    state.intensity = 0;
+    WorldEvents.emit('condition:started', this.getSnapshot());
+  },
+  getSnapshot() {
+    return this.active ? {
+      worldKey: this.active.worldKey,
+      conditionId: this.active.conditionId,
+      previousConditionId: this.active.previousConditionId,
+      intensity: this.active.intensity,
+      phase: this.active.phase,
+      elapsed: this.active.elapsed,
+      duration: this.active.duration,
+      seed: this.active.seed
+    } : null;
+  },
+  restore(snapshot) {
+    if (!snapshot || !WORLD_GAMEPLAY_PROFILES[snapshot.worldKey]) return false;
+    const profile = WORLD_GAMEPLAY_PROFILES[snapshot.worldKey];
+    if (!profile.conditions.includes(snapshot.conditionId)) return false;
+    this.active = {
+      worldKey: snapshot.worldKey,
+      conditionId: snapshot.conditionId,
+      previousConditionId: snapshot.previousConditionId || null,
+      intensity: Number.isFinite(snapshot.intensity) ? Math.max(0, Math.min(1, snapshot.intensity)) : 0,
+      phase: ['entering', 'active', 'exiting'].includes(snapshot.phase) ? snapshot.phase : 'entering',
+      elapsed: Number.isFinite(snapshot.elapsed) ? Math.max(0, snapshot.elapsed) : 0,
+      duration: Number.isFinite(snapshot.duration) && snapshot.duration > 0 ? snapshot.duration : 120,
+      seed: Number.isFinite(snapshot.seed) ? snapshot.seed >>> 0 : this._hashSeed('world-condition:' + snapshot.worldKey)
+    };
+    return true;
+  }
+};
+
+WorldEvents.on('world:entered', payload => {
+  const worldKey = payload && payload.worldKey === 'aquifer' ? 'aquifer' : (payload && payload.worldKey);
+  if (worldKey && WORLD_GAMEPLAY_PROFILES[worldKey]) WorldConditionDirector.enterWorld(worldKey);
+});
+WorldConditionDirector.enterWorld('aquifer');
 
 // =============================================================
 // BACK-03: ZERO-ALLOCATION STATIC OBJECT POOL

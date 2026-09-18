@@ -264,6 +264,27 @@ check("All configured kit GLBs exist", all(os.path.exists(os.path.join(ROOT, p))
 check("Base annex parcels populated", "function buildBaseParcelPopulation()" in index_html and "SITE44-CELL-" in index_html, "Site-44 annex parcel population missing")
 check("All 18 canonical kit IDs used by Site-44 base cells", "kitPerParcel: 18" in index_html and all(k in index_html for k in ["extinguisher", "troffer", "railing4", "stairs", "doorSlab", "wallPanel"]), "Base population does not exercise full configured canonical kit set")
 
+# INV-11: WS-GAME-01 World Gameplay Profiles
+gameplay_worlds = ['aquifer', 'desert', 'mountain', 'city', 'stonehenge', 'island', 'space', 'volcano', 'biolum', 'abyss', 'mars', 'crystal', 'swamp', 'cavern', 'acid', 'taiga', 'sky']
+check("Gameplay profile schema version exists", "const WORLD_GAMEPLAY_PROFILE_SCHEMA_VERSION = 1;" in index_html, "Gameplay profile schema version missing")
+check("Gameplay profile factory exists", "function makeWorldGameplayProfile(" in index_html, "Gameplay profile factory missing")
+check("Gameplay profile registry exists", "const WORLD_GAMEPLAY_PROFILES = {" in index_html, "Gameplay profile registry missing")
+check("All 17 worlds have gameplay profiles", all(f"  {w}: makeWorldGameplayProfile(" in index_html for w in gameplay_worlds), "One or more world gameplay profiles missing")
+check("Gameplay profiles self-validate", "function validateWorldGameplayProfiles()" in index_html and "validateWorldGameplayProfiles();" in index_html, "Gameplay profile validation missing")
+check("Gameplay profiles attach to WORLDS", "WORLDS[key].gameplay = profile;" in index_html, "Gameplay profiles are not attached to WORLDS")
+check("Gameplay profiles define traversal contract", all(k in index_html for k in ["walkSpeed:", "sprintSpeed:", "acceleration:", "deceleration:", "surfaceFriction:", "sprintCost:", "windResponse:", "jumpScale:"]), "Traversal profile contract incomplete")
+check("Gameplay profiles define instrument contract", all(k in index_html for k in ["radarRange:", "radarNoise:", "compassReliability:", "scannerChannels:"]), "Instrument profile contract incomplete")
+check("Gameplay profiles define conditions events and audio", all(k in index_html for k in ["conditions:", "events:", "environment:", "spatialReactivity:"]), "Condition/event/audio profile contract incomplete")
+
+# INV-12: WS-GAME-02 World Condition Director
+check("Condition Director exists", "const WorldConditionDirector = {" in index_html, "WorldConditionDirector missing")
+check("Condition Director has deterministic seed path", "_hashSeed(text)" in index_html and "_next(seed)" in index_html, "Condition Director deterministic RNG missing")
+check("Condition Director enters worlds from world events", "WorldEvents.on('world:entered'" in index_html and "WorldConditionDirector.enterWorld(worldKey)" in index_html, "Condition Director world-entry integration missing")
+check("Condition Director starts on Site-44", "WorldConditionDirector.enterWorld('aquifer');" in index_html, "Initial Site-44 condition missing")
+check("Condition Director updates from render loop", "WorldConditionDirector.update(delta);" in index_html, "Condition Director render-loop caller missing")
+check("Condition Director emits lifecycle events", all(evt in index_html for evt in ["condition:started", "condition:changed", "condition:ended"]), "Condition lifecycle events incomplete")
+check("Condition Director exposes snapshot/restore", "getSnapshot()" in index_html and "restore(snapshot)" in index_html, "Condition snapshot/restore surface missing")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")
