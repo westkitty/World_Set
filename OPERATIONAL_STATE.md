@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 11,
-  "last_updated": "2026-09-18T00:31:53Z",
+  "state_revision": 12,
+  "last_updated": "2026-09-18T00:33:36Z",
   "current_baseline": {
-    "identity": "local WS-GAME-03 traversal foundation on top of published WS-GAME-01/02: centralized surface response, profile-driven acceleration/speed/stamina cost, and condition-driven environmental forces are integrated through the existing collision resolver; all five project suites plus git diff --check pass; direct visual movement feel remains unverified",
+    "identity": "published WS-GAME-03 traversal foundation at 38051d6811597b0c2b5967ce8e59a38e8252480f on origin/main: centralized surface response, profile-driven acceleration/speed/stamina cost, and condition-driven environmental forces are integrated through the existing collision resolver; all five project suites plus git diff --check passed before publication; direct visual movement feel remains unverified",
     "state": "partially-verified",
-    "last_verified": "2026-09-18T00:31:53Z"
+    "last_verified": "2026-09-18T00:33:36Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
@@ -102,8 +102,8 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 
 ## 9. Pending Work
 - WS-GAME-01 and WS-GAME-02 are published at feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49`.
-- WS-GAME-03 is implemented locally and ready for publication: centralized `SurfaceResponseRegistry`, `TraversalModel`, and `EnvironmentalForceField` now consume world gameplay profiles. Movement acceleration/speed and stamina cost vary by profile/surface, and environmental force uses condition state while remaining collision-safe.
-- Direct visual movement feel remains unverified in the current automation environment, so WS-GAME-03 is source/integration verified rather than promoted to visible-runtime verified.
+- WS-GAME-03 is published at `38051d6811597b0c2b5967ce8e59a38e8252480f`: centralized `SurfaceResponseRegistry`, `TraversalModel`, and `EnvironmentalForceField` consume world gameplay profiles. Movement acceleration/speed and stamina cost vary by profile/surface, and environmental force uses condition state while remaining collision-safe.
+- Direct visual movement feel remains unverified in the current automation environment, so WS-GAME-03 remains source/integration verified rather than promoted to visible-runtime verified.
 - WS-GAME-01/02 feature publication is complete on `origin/main` at `2f3b4c0641b1377f7c5df13d0a11578ea381fd49`; this state revision closes the publication record.
 - The existing trustworthy visible-browser traversal gap remains: Site-44 and representative radial/city/space/sky outer zones still need direct visual/runtime proof.
 
@@ -132,7 +132,7 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 | INV-012 | World condition state is centralized and deterministic | partially-verified | INV-12 source/integration gates PASS; render-loop/world-entry callers exist; traversal force now consumes condition state | direct browser observation when visible/physical effects can be observed |
 | INV-013 | Traversal/surface/environment composition is centralized and collision-safe | partially-verified | INV-13 regression gates PASS; movement uses `TraversalModel`, footsteps use centralized surface selection, stamina composes profile+surface cost, environmental force routes through `resolvePlayerMovement` | direct browser movement-feel proof on representative worlds |
 ## 12. Current Change Scope and Impact Radius
-- Current local WS-GAME-03 work changes `index.html`, `tools/test_regression.py`, and this operational state. It adds shared surface/traversal/environment-force consumers without changing dependencies, world geometry, parcel counts, authored assets, packaging, or collision authority.
+- Published WS-GAME-03 feature commit `38051d6811597b0c2b5967ce8e59a38e8252480f` changed `index.html`, `tools/test_regression.py`, and this operational state. It adds shared surface/traversal/environment-force consumers without changing dependencies, world geometry, parcel counts, authored assets, packaging, or collision authority.
 - Published WS-GAME-01/02 feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. The feature adds profile/schema data plus centralized condition-state machinery; no dependencies, authored assets, packaging files, world geometry, parcel counts, or collision rules are changed.
 - Published feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` changed `index.html`, `tools/test_regression.py`, and this operational state. No authored GLB/Blend assets, vendored libraries, packaging tools, or dependencies changed. Existing canonical GLBs are referenced/reused at runtime; their source files remain untouched.
 - Impact radius: runtime bootstrap, render loop, scanner/codex integration, input routing, persistence, performance scheduling, browser lifecycle handling, documentation truth, and desktop application wrapper.
@@ -150,3 +150,4 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Revision 9 — 2026-09-17: began the gameplay-system implementation program. WS-GAME-01 adds a validated per-world gameplay profile contract across all 17 worlds covering traversal, visibility, instruments, conditions, events, and environmental audio metadata. WS-GAME-02 adds one deterministic `WorldConditionDirector`, lifecycle events, Site-44 initialization, world-entry routing, render-loop updates, and snapshot/restore surfaces. Profile values intentionally do not alter gameplay yet. INV-11/12 regression gates added; all five existing project suites and `git diff --check` pass. Changes remain local and uncommitted.
 - Revision 10 — 2026-09-17: published WS-GAME-01/02 to `origin/main` at feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` after all five project suites and `git diff --check` passed. Verified the pushed remote branch matched the local feature SHA exactly. Gameplay profile values remain declarative and condition effects remain intentionally unconsumed; direct visual/runtime proof remains pending.
 - Revision 11 — 2026-09-18: implemented WS-GAME-03 locally. Added centralized surface selection and response, profile-driven movement acceleration/speed, surface/profile stamina costs, and condition-driven environmental force routed through the existing collision resolver. INV-13 regression gates added; all five project suites and `git diff --check` pass. Direct visible movement-feel validation remains pending.
+- Revision 12 — 2026-09-18: published WS-GAME-03 to `origin/main` at `38051d6811597b0c2b5967ce8e59a38e8252480f`. Verified local HEAD and remote `refs/heads/main` matched exactly after push. Direct visible movement-feel validation remains pending.
