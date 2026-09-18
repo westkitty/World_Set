@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 12,
-  "last_updated": "2026-09-18T00:33:36Z",
+  "state_revision": 14,
+  "last_updated": "2026-09-18T01:46:38Z",
   "current_baseline": {
-    "identity": "published WS-GAME-03 traversal foundation at 38051d6811597b0c2b5967ce8e59a38e8252480f on origin/main: centralized surface response, profile-driven acceleration/speed/stamina cost, and condition-driven environmental forces are integrated through the existing collision resolver; all five project suites plus git diff --check passed before publication; direct visual movement feel remains unverified",
+    "identity": "published WS-GAME-04/05 at 3c09e840097378cc6ccf970630d8d78f5dfd498f: scanner/radar/compass consume world profiles and live condition state; scans persist as bounded deduplicated observations in Codex FIELD RECORD; persisted observations are normalized through storage format v2 before use; all five project suites plus git diff --check pass; direct visual instrument/journal validation remains unverified",
     "state": "partially-verified",
-    "last_verified": "2026-09-18T00:33:36Z"
+    "last_verified": "2026-09-18T01:46:38Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
@@ -104,7 +104,9 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - WS-GAME-01 and WS-GAME-02 are published at feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49`.
 - WS-GAME-03 is published at `38051d6811597b0c2b5967ce8e59a38e8252480f`: centralized `SurfaceResponseRegistry`, `TraversalModel`, and `EnvironmentalForceField` consume world gameplay profiles. Movement acceleration/speed and stamina cost vary by profile/surface, and environmental force uses condition state while remaining collision-safe.
 - Direct visual movement feel remains unverified in the current automation environment, so WS-GAME-03 remains source/integration verified rather than promoted to visible-runtime verified.
-- WS-GAME-01/02 feature publication is complete on `origin/main` at `2f3b4c0641b1377f7c5df13d0a11578ea381fd49`; this state revision closes the publication record.
+- WS-GAME-04 is published at `3c09e840097378cc6ccf970630d8d78f5dfd498f`: `FieldInstrumentModel` makes scanner/radar/compass consume world instrument profiles plus live condition state while preserving scanner POI to Codex behavior.
+- WS-GAME-05 is published at `3c09e840097378cc6ccf970630d8d78f5dfd498f`: `ExpeditionRecord` persists bounded semantic scanner observations through `LocalStorageEngine`, deduplicates repeat observations, exposes them in a separate Codex FIELD RECORD mode, and normalizes persisted records before rendering.
+- WS-GAME-04/05 feature publication is complete on `origin/main` at `3c09e840097378cc6ccf970630d8d78f5dfd498f`.
 - The existing trustworthy visible-browser traversal gap remains: Site-44 and representative radial/city/space/sky outer zones still need direct visual/runtime proof.
 
 ## 10. Active Decisions, Defaults, and Prohibitions
@@ -114,7 +116,8 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Do not manufacture new improvements merely to repeat already implemented value; count only distinct inspectable behavior.
 - Preserve the WOW pass 2 lazy-population architecture: never rebuild all destination parcel populations at boot merely to make counts easier to claim. Full projected density is a contract; materialization is demand-driven by first world entry.
 - New gameplay systems must remain profile-driven and compositional: shared directors consume per-world data; do not create sixteen parallel world-specific control loops.
-- Traversal profile values now have runtime consumers through WS-GAME-03. Visibility and instrument profile values remain declarative only until later packets connect them.
+- Traversal profile values have runtime consumers through WS-GAME-03. Instrument profile values have runtime consumers through WS-GAME-04. Visibility profile values remain declarative until the condition/visibility packet connects them.
+- Expedition record storage remains bounded and backward-tolerant: storage payload version 2 normalizes persisted IDs, world keys, strings, channels, timestamps, counts, and finite coordinate triplets before Codex rendering.
 - Continue using the vendored `THREE.InstancedMesh` path for repeated geometry. `BatchedMesh` is absent from the project's vendored Three.js build; do not upgrade Three.js solely to obtain it without a separate migration decision.
 
 ## 11. Validation and Evidence Matrix
@@ -131,7 +134,10 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 | INV-011 | All worlds expose validated gameplay profiles | verified | INV-11 regression gates PASS for all 17 `WORLDS` keys; JS syntax PASS | recheck on gameplay profile/schema changes |
 | INV-012 | World condition state is centralized and deterministic | partially-verified | INV-12 source/integration gates PASS; render-loop/world-entry callers exist; traversal force now consumes condition state | direct browser observation when visible/physical effects can be observed |
 | INV-013 | Traversal/surface/environment composition is centralized and collision-safe | partially-verified | INV-13 regression gates PASS; movement uses `TraversalModel`, footsteps use centralized surface selection, stamina composes profile+surface cost, environmental force routes through `resolvePlayerMovement` | direct browser movement-feel proof on representative worlds |
+| INV-014 | Scanner/radar/compass consume shared world/condition state | partially-verified | INV-14 PASS; scanner environmental readings, profile radar range/noise, and reliability-aware compass all have production callers; scanner POI/Codex path remains | direct browser instrument readability/behavior proof |
+| INV-015 | Expedition observations persist semantically and appear in Codex field journal | partially-verified | INV-15 PASS; bounded LocalStorage record, semantic dedupe, persisted-data normalization v2, scanner recording, Reference/Field Codex modes | direct browser scan to field-record to reload proof |
 ## 12. Current Change Scope and Impact Radius
+- Published WS-GAME-04/05 feature commit `3c09e840097378cc6ccf970630d8d78f5dfd498f` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. It adds shared instrument interpretation, persistent normalized semantic field observations, and Codex Reference/Field modes without changing dependencies, world geometry, assets, parcel counts, packaging, or collision.
 - Published WS-GAME-03 feature commit `38051d6811597b0c2b5967ce8e59a38e8252480f` changed `index.html`, `tools/test_regression.py`, and this operational state. It adds shared surface/traversal/environment-force consumers without changing dependencies, world geometry, parcel counts, authored assets, packaging, or collision authority.
 - Published WS-GAME-01/02 feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. The feature adds profile/schema data plus centralized condition-state machinery; no dependencies, authored assets, packaging files, world geometry, parcel counts, or collision rules are changed.
 - Published feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` changed `index.html`, `tools/test_regression.py`, and this operational state. No authored GLB/Blend assets, vendored libraries, packaging tools, or dependencies changed. Existing canonical GLBs are referenced/reused at runtime; their source files remain untouched.
@@ -151,3 +157,5 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Revision 10 — 2026-09-17: published WS-GAME-01/02 to `origin/main` at feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` after all five project suites and `git diff --check` passed. Verified the pushed remote branch matched the local feature SHA exactly. Gameplay profile values remain declarative and condition effects remain intentionally unconsumed; direct visual/runtime proof remains pending.
 - Revision 11 — 2026-09-18: implemented WS-GAME-03 locally. Added centralized surface selection and response, profile-driven movement acceleration/speed, surface/profile stamina costs, and condition-driven environmental force routed through the existing collision resolver. INV-13 regression gates added; all five project suites and `git diff --check` pass. Direct visible movement-feel validation remains pending.
 - Revision 12 — 2026-09-18: published WS-GAME-03 to `origin/main` at `38051d6811597b0c2b5967ce8e59a38e8252480f`. Verified local HEAD and remote `refs/heads/main` matched exactly after push. Direct visible movement-feel validation remains pending.
+- Revision 13 — 2026-09-18: implemented WS-GAME-04/05 locally. Added shared scanner/radar/compass interpretation of world profiles and live conditions, preserved scanner POI→Codex behavior, added bounded/deduplicated `ExpeditionRecord` persistence through `LocalStorageEngine`, and added Codex Reference/Field Record modes. INV-14/15 added; all five project suites and `git diff --check` pass. Direct visible instrument/journal validation remains pending.
+- Revision 14 - 2026-09-18: hardened persisted FIELD RECORD loading with storage payload version 2 normalization and published WS-GAME-04/05 to `origin/main` at `3c09e840097378cc6ccf970630d8d78f5dfd498f`. All five project suites and `git diff --check` pass after hardening; local feature SHA and remote `refs/heads/main` matched after push. Direct visible scan/instrument/journal reload proof remains pending.
