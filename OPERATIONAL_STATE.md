@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 14,
-  "last_updated": "2026-09-18T01:46:38Z",
+  "state_revision": 15,
+  "last_updated": "2026-09-18T01:55:26Z",
   "current_baseline": {
-    "identity": "published WS-GAME-04/05 at 3c09e840097378cc6ccf970630d8d78f5dfd498f: scanner/radar/compass consume world profiles and live condition state; scans persist as bounded deduplicated observations in Codex FIELD RECORD; persisted observations are normalized through storage format v2 before use; all five project suites plus git diff --check pass; direct visual instrument/journal validation remains unverified",
+    "identity": "published WS-GAME-06 at 679735b48d94d848eed1a1e272d432448e2a6036: visibility baseRange and conditionSensitivity now drive a centralized bounded/eased fog response anchored to each world authored fog baseline; environmental scans report effective visibility range; all five project suites plus git diff --check pass; direct visual fog/readability validation remains unverified",
     "state": "partially-verified",
-    "last_verified": "2026-09-18T01:46:38Z"
+    "last_verified": "2026-09-18T01:55:26Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
@@ -107,6 +107,8 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - WS-GAME-04 is published at `3c09e840097378cc6ccf970630d8d78f5dfd498f`: `FieldInstrumentModel` makes scanner/radar/compass consume world instrument profiles plus live condition state while preserving scanner POI to Codex behavior.
 - WS-GAME-05 is published at `3c09e840097378cc6ccf970630d8d78f5dfd498f`: `ExpeditionRecord` persists bounded semantic scanner observations through `LocalStorageEngine`, deduplicates repeat observations, exposes them in a separate Codex FIELD RECORD mode, and normalizes persisted records before rendering.
 - WS-GAME-04/05 feature publication is complete on `origin/main` at `3c09e840097378cc6ccf970630d8d78f5dfd498f`.
+- WS-GAME-06 is published at `679735b48d94d848eed1a1e272d432448e2a6036`: `VisibilityModel` consumes world `baseRange` and `conditionSensitivity`, applies condition occlusion as a bounded eased multiplier over each world authored fog baseline, and exposes effective visibility range to the environmental scanner.
+- Direct visible fog/readability behavior remains unverified in the current automation environment, so WS-GAME-06 remains source/integration verified rather than promoted to visible-runtime verified.
 - The existing trustworthy visible-browser traversal gap remains: Site-44 and representative radial/city/space/sky outer zones still need direct visual/runtime proof.
 
 ## 10. Active Decisions, Defaults, and Prohibitions
@@ -116,7 +118,7 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Do not manufacture new improvements merely to repeat already implemented value; count only distinct inspectable behavior.
 - Preserve the WOW pass 2 lazy-population architecture: never rebuild all destination parcel populations at boot merely to make counts easier to claim. Full projected density is a contract; materialization is demand-driven by first world entry.
 - New gameplay systems must remain profile-driven and compositional: shared directors consume per-world data; do not create sixteen parallel world-specific control loops.
-- Traversal profile values have runtime consumers through WS-GAME-03. Instrument profile values have runtime consumers through WS-GAME-04. Visibility profile values remain declarative until the condition/visibility packet connects them.
+- Traversal profile values have runtime consumers through WS-GAME-03. Instrument profile values have runtime consumers through WS-GAME-04. Visibility profile values have runtime consumers through WS-GAME-06.
 - Expedition record storage remains bounded and backward-tolerant: storage payload version 2 normalizes persisted IDs, world keys, strings, channels, timestamps, counts, and finite coordinate triplets before Codex rendering.
 - Continue using the vendored `THREE.InstancedMesh` path for repeated geometry. `BatchedMesh` is absent from the project's vendored Three.js build; do not upgrade Three.js solely to obtain it without a separate migration decision.
 
@@ -136,7 +138,9 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 | INV-013 | Traversal/surface/environment composition is centralized and collision-safe | partially-verified | INV-13 regression gates PASS; movement uses `TraversalModel`, footsteps use centralized surface selection, stamina composes profile+surface cost, environmental force routes through `resolvePlayerMovement` | direct browser movement-feel proof on representative worlds |
 | INV-014 | Scanner/radar/compass consume shared world/condition state | partially-verified | INV-14 PASS; scanner environmental readings, profile radar range/noise, and reliability-aware compass all have production callers; scanner POI/Codex path remains | direct browser instrument readability/behavior proof |
 | INV-015 | Expedition observations persist semantically and appear in Codex field journal | partially-verified | INV-15 PASS; bounded LocalStorage record, semantic dedupe, persisted-data normalization v2, scanner recording, Reference/Field Codex modes | direct browser scan to field-record to reload proof |
+| INV-016 | Visibility profiles and live conditions drive bounded fog/readability response | partially-verified | INV-16 PASS; `VisibilityModel` consumes `baseRange` and `conditionSensitivity`, preserves authored fog baselines, eases density changes, updates after `WorldConditionDirector`, and reports effective scanner visibility | direct browser condition-transition and readability proof |
 ## 12. Current Change Scope and Impact Radius
+- Published WS-GAME-06 feature commit `679735b48d94d848eed1a1e272d432448e2a6036` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. It adds centralized condition-driven visibility and scanner visibility reporting without changing dependencies, world geometry, assets, parcel counts, packaging, collision, or authored fog colors/baselines.
 - Published WS-GAME-04/05 feature commit `3c09e840097378cc6ccf970630d8d78f5dfd498f` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. It adds shared instrument interpretation, persistent normalized semantic field observations, and Codex Reference/Field modes without changing dependencies, world geometry, assets, parcel counts, packaging, or collision.
 - Published WS-GAME-03 feature commit `38051d6811597b0c2b5967ce8e59a38e8252480f` changed `index.html`, `tools/test_regression.py`, and this operational state. It adds shared surface/traversal/environment-force consumers without changing dependencies, world geometry, parcel counts, authored assets, packaging, or collision authority.
 - Published WS-GAME-01/02 feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. The feature adds profile/schema data plus centralized condition-state machinery; no dependencies, authored assets, packaging files, world geometry, parcel counts, or collision rules are changed.
@@ -159,3 +163,4 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Revision 12 — 2026-09-18: published WS-GAME-03 to `origin/main` at `38051d6811597b0c2b5967ce8e59a38e8252480f`. Verified local HEAD and remote `refs/heads/main` matched exactly after push. Direct visible movement-feel validation remains pending.
 - Revision 13 — 2026-09-18: implemented WS-GAME-04/05 locally. Added shared scanner/radar/compass interpretation of world profiles and live conditions, preserved scanner POI→Codex behavior, added bounded/deduplicated `ExpeditionRecord` persistence through `LocalStorageEngine`, and added Codex Reference/Field Record modes. INV-14/15 added; all five project suites and `git diff --check` pass. Direct visible instrument/journal validation remains pending.
 - Revision 14 - 2026-09-18: hardened persisted FIELD RECORD loading with storage payload version 2 normalization and published WS-GAME-04/05 to `origin/main` at `3c09e840097378cc6ccf970630d8d78f5dfd498f`. All five project suites and `git diff --check` pass after hardening; local feature SHA and remote `refs/heads/main` matched after push. Direct visible scan/instrument/journal reload proof remains pending.
+- Revision 15 — 2026-09-18: published WS-GAME-06 to `origin/main` at `679735b48d94d848eed1a1e272d432448e2a6036` after all five project suites and `git diff --check` passed. Added centralized condition-driven visibility that preserves authored fog baselines, consumes `baseRange` and `conditionSensitivity`, eases fog-density changes, and exposes effective visibility in scanner output. Local feature SHA and remote `refs/heads/main` matched after push; direct visual fog/readability proof remains pending.
