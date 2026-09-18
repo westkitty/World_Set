@@ -6,12 +6,12 @@
   "project_name": "World_Set",
   "project_root": "/Users/andrew/World_Set",
   "artifact_path": "index.html",
-  "state_revision": 8,
-  "last_updated": "2026-09-17T22:38:14Z",
+  "state_revision": 10,
+  "last_updated": "2026-09-18T00:23:34Z",
   "current_baseline": {
-    "identity": "published exponential WOW pass 2 expansion on main at feature commit dc9a4af5ba350d251883544f30677ae5d2fa5053: 46,586 projected logical objects across 484 parcels/cells, 18 canonical GLB prototype types, lazy per-world materialization, sector detail culling, collision and discovery integration; static/integration suites verified; direct visual traversal remains unverified",
+    "identity": "published WS-GAME-01/02 gameplay-foundation feature at 2f3b4c0641b1377f7c5df13d0a11578ea381fd49: all 17 worlds have validated gameplay profiles and a deterministic WorldConditionDirector wired to world-entry events and the render loop; all five project suites plus git diff --check passed before publication; gameplay effects remain intentionally unconsumed and direct visual runtime remains unverified",
     "state": "partially-verified",
-    "last_verified": "2026-09-17T22:38:14Z"
+    "last_verified": "2026-09-18T00:23:34Z"
   },
   "scope_boundaries": ["World_Set repository", "single-file offline Three.js exploration runtime", "existing 34-asset production kit", "native macOS application wrapper and Dock icon"],
   "linked_parent_state": null
@@ -22,7 +22,7 @@
 World_Set is the Site-44 Sub-Aquifer World Kit and its browser exploration runtime. The current task continues the forensic repair, uplift, and native desktop wrapper integration already represented by commits `63c8f70`, `483f232`, and `9007912`, without replacing the canonical world-kit identity.
 
 ## 2. Current Baseline
-- Branch: `main`; exponential WOW pass 2 feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` is published to `origin/main`; the working tree was clean immediately after push verification.
+- Branch: `main`; WS-GAME-01/02 feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` is published to `origin/main`; the prior exponential WOW pass 2 feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` remains in history.
 - Baseline static suites: `tools/test_regression.py` PASS, `tools/test_runtime_repairs.py` PASS, `tools/test_uplift_integration.py` PASS, `tools/test_uplift_ledger.py` PASS, and `tools/validate_kit.py` PASS.
 - Browser boot observed in installed Chrome: primary WebGL canvas present, renderer initialized, loader dismissed, origin world active.
 - Native application wrapper: `/Applications/World Set.app` installed, ad-hoc signed, and pinned to user Dock at slot 38. Tooling and assets tracked (`tools/world_set_launcher.c`, `tools/generate_dock_icon.py`, `renders/AppIcon.icns`, `renders/app_icon_1024.png`).
@@ -101,7 +101,10 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - A fresh SwiftShader/headless probe during WOW pass 2 again produced repeated macOS `CVDisplayLinkCreateWithCGDisplay` failures and stalled before trustworthy application-state inspection. An initial eager implementation was rejected after server chronology exposed severe boot blocking; the delivered lazy design removes eager destination parcel construction, but current-headless startup/render timing remains untrusted until tested in a normal visible browser session.
 
 ## 9. Pending Work
-- Repository publication is complete for WOW pass 2 at feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053`. Remaining evidence work is a trustworthy visible-browser traversal of Site-44 and representative radial/city/space/sky destinations, including first-entry materialization timing, canonical-kit hydration, density/readability, and collision. This remains an explicit verification gap rather than a publication blocker.
+- WS-GAME-01 and WS-GAME-02 are published at feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49`: validated gameplay profiles for all 17 worlds plus a deterministic `WorldConditionDirector` with condition lifecycle events, Site-44 initialization, world-entry routing, render-loop updates, and snapshot/restore surfaces. Their profile values do not yet alter fog, movement, instruments, or audio.
+- Next implementation packet: WS-GAME-03 traversal, surface response, and environmental-force foundation, preserving current movement feel until its explicit integration gate.
+- WS-GAME-01/02 feature publication is complete on `origin/main` at `2f3b4c0641b1377f7c5df13d0a11578ea381fd49`; this state revision closes the publication record.
+- The existing trustworthy visible-browser traversal gap remains: Site-44 and representative radial/city/space/sky outer zones still need direct visual/runtime proof.
 
 ## 10. Active Decisions, Defaults, and Prohibitions
 - Preserve the current single-file/offline browser architecture; add no dependency unless evidence makes it necessary.
@@ -109,6 +112,8 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Native application wrapper tooling and assets are committed; local build directories are protected via `.gitignore`.
 - Do not manufacture new improvements merely to repeat already implemented value; count only distinct inspectable behavior.
 - Preserve the WOW pass 2 lazy-population architecture: never rebuild all destination parcel populations at boot merely to make counts easier to claim. Full projected density is a contract; materialization is demand-driven by first world entry.
+- New gameplay systems must remain profile-driven and compositional: shared directors consume per-world data; do not create sixteen parallel world-specific control loops.
+- WS-GAME-01 profile values are currently declarative only. Future packets must not claim a traversal/visibility/instrument effect until an actual runtime consumer exists and is validated.
 - Continue using the vendored `THREE.InstancedMesh` path for repeated geometry. `BatchedMesh` is absent from the project's vendored Three.js build; do not upgrade Three.js solely to obtain it without a separate migration decision.
 
 ## 11. Validation and Evidence Matrix
@@ -122,7 +127,10 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 | VER-004 | All-world mega expansion | partially-verified | 5/5 project suites PASS; expansion-specific regression gates PASS; app serves current index on :8000 | direct visual traversal of base annex + representative radial/city/space/sky outer zones |
 | INV-010 | Exponential parcel population remains dense and lazy | verified | INV-10 regression: 46,586 projected logical objects; 468 destination parcels + 16 base cells; ≥80 objects/destination parcel; 18 canonical GLB types; boot eager-build guard PASS | recheck any population/boot/materialization change |
 | VER-005 | WOW pass 2 parcels visually populate all worlds | partially-verified | source/integration/regression PASS; all five suites PASS; direct normal-browser visual traversal unavailable | visible-browser traversal + first-entry timing + representative collision/readability checks |
+| INV-011 | All worlds expose validated gameplay profiles | verified | INV-11 regression gates PASS for all 17 `WORLDS` keys; JS syntax PASS | recheck on gameplay profile/schema changes |
+| INV-012 | World condition state is centralized and deterministic | partially-verified | INV-12 source/integration gates PASS; render-loop/world-entry callers exist; no visual effects consume state yet | recheck on condition consumers; direct browser observation when effects are connected |
 ## 12. Current Change Scope and Impact Radius
+- Published WS-GAME-01/02 feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` changed `index.html` and `tools/test_regression.py`; this operational-state closure records publication. The feature adds profile/schema data plus centralized condition-state machinery; no dependencies, authored assets, packaging files, world geometry, parcel counts, or collision rules are changed.
 - Published feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` changed `index.html`, `tools/test_regression.py`, and this operational state. No authored GLB/Blend assets, vendored libraries, packaging tools, or dependencies changed. Existing canonical GLBs are referenced/reused at runtime; their source files remain untouched.
 - Impact radius: runtime bootstrap, render loop, scanner/codex integration, input routing, persistence, performance scheduling, browser lifecycle handling, documentation truth, and desktop application wrapper.
 - Protected outside radius: authored asset files, Blender master, and generated production GLBs.
@@ -136,3 +144,5 @@ The browser artifact must remain offline-capable, preserve existing exploration 
 - Revision 6 — 2026-09-17: drastically expanded Site-44 and all 16 destination worlds; added deterministic instanced outer-region geometry, four discoverable named regions per destination, collision proxies tied to rendered scatter/towers/modules/beacons, expanded collision envelopes, special city/space/sky traversal topology, reachable Sector 03-B/06-B base annexes, long-range fog tuning, an 800m far plane, and INV-09 regression coverage. Five project suites pass; wrapper launch/HTTP delivery observed; direct visual traversal remains explicitly unverified.
 - Revision 7 — 2026-09-17: ran the requested exponential WOW pass over every world. Added 468 destination parcels + 16 Site-44 cells with 46,586 projected logical objects, central parcel landmarks, biome-specific procedural populations, 18 canonical WORLD KIT GLB prototype types instanced from shared geometry/materials, parcel collisions/discovery, and sector distance culling. Rejected an eager first implementation after boot chronology exposed blocking, then converted destination population to lazy first-entry materialization with cached prototypes and added INV-10 quantitative/lazy regression gates. All five project suites PASS; direct visual traversal remains explicitly unverified because the macOS headless/WebGL harness is unreliable.
 - Revision 8 — 2026-09-17: published WOW pass 2 to `origin/main` at feature commit `dc9a4af5ba350d251883544f30677ae5d2fa5053` after all five project suites and `git diff --check` passed. Verified local HEAD and remote `refs/heads/main` matched exactly after push. Publication state is closed; direct visible-browser traversal remains partially verified because the available macOS headless/WebGL harness is unreliable.
+- Revision 9 — 2026-09-17: began the gameplay-system implementation program. WS-GAME-01 adds a validated per-world gameplay profile contract across all 17 worlds covering traversal, visibility, instruments, conditions, events, and environmental audio metadata. WS-GAME-02 adds one deterministic `WorldConditionDirector`, lifecycle events, Site-44 initialization, world-entry routing, render-loop updates, and snapshot/restore surfaces. Profile values intentionally do not alter gameplay yet. INV-11/12 regression gates added; all five existing project suites and `git diff --check` pass. Changes remain local and uncommitted.
+- Revision 10 — 2026-09-17: published WS-GAME-01/02 to `origin/main` at feature commit `2f3b4c0641b1377f7c5df13d0a11578ea381fd49` after all five project suites and `git diff --check` passed. Verified the pushed remote branch matched the local feature SHA exactly. Gameplay profile values remain declarative and condition effects remain intentionally unconsumed; direct visual/runtime proof remains pending.
