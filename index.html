@@ -20705,10 +20705,17 @@ function buildMarsWorld() {
     bgColor: 0x7c2d12,
     update: (time, delta) => {
       dishMesh.rotation.y += delta * 0.4;
+      const conditionState = typeof WorldConditionDirector !== 'undefined' ? WorldConditionDirector.getSnapshot() : null;
+      const dustStrength = conditionState && conditionState.worldKey === 'mars' && typeof EnvironmentalForceField !== 'undefined'
+        ? EnvironmentalForceField._conditionStrength(conditionState.conditionId) * Math.max(0.15, conditionState.intensity || 0)
+        : 0;
+      const dustSpeedX = 5.2 + dustStrength * 7.5;
+      const dustSpeedZ = 1.1 + dustStrength * 3.0;
+      dustMat.opacity = Math.min(0.92, 0.38 + dustStrength * 0.5);
       const dp = dustGeo.attributes.position.array;
       for (let i = 0; i < dustCount * 3; i += 3) {
-        dp[i] += delta * 6.5;
-        dp[i + 2] += delta * 1.5;
+        dp[i] += delta * dustSpeedX;
+        dp[i + 2] += delta * dustSpeedZ;
         if (dp[i] > 70) dp[i] = -70;
         if (dp[i + 2] > 70) dp[i + 2] = -70;
       }
@@ -24218,6 +24225,8 @@ function animate() {
   updateParcelPopulationRuntime();
   if (typeof WorldConditionDirector !== 'undefined') WorldConditionDirector.update(delta);
   if (typeof VisibilityModel !== 'undefined') VisibilityModel.update(delta);
+  if (typeof AmbientEventDirector !== 'undefined') AmbientEventDirector.update(delta);
+  if (typeof EnvironmentalAudioDirector !== 'undefined') EnvironmentalAudioDirector.update();
     
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.render(time, delta);
@@ -25421,6 +25430,294 @@ const VisibilityModel = {
 };
 
 // =============================================================
+// WS-GAME-07: AMBIENT EVENT DIRECTOR + MARS FIELD SLICE
+// Shared world events stay systemic: no quest markers, no bespoke mission state.
+// =============================================================
+const AmbientEventDirector = {
+  worldKey: 'aquifer',
+  elapsed: 0,
+  nextEventAt: Infinity,
+  activeEvents: [],
+  _eventSerial: 0,
+  _supportsEvent(worldKey, eventId) {
+    const profile = WORLD_GAMEPLAY_PROFILES[worldKey];
+    return !!(profile && Array.isArray(profile.events) && profile.events.includes(eventId));
+  },
+  resetForWorld(worldKey = getGameplayWorldKey(currentLocation)) {
+    this.clear();
+    this.worldKey = worldKey;
+    this.elapsed = 0;
+    if (worldKey === 'mars' && this._supportsEvent(worldKey, 'dust-devil')) {
+      const seed = WorldConditionDirector._hashSeed('ambient:mars:first');
+      const roll = WorldConditionDirector._next(seed);
+      this.nextEventAt = 10 + roll.value * 8;
+    } else {
+      this.nextEventAt = Infinity;
+    }
+  },
+  clear() {
+    this.activeEvents.forEach(event => this._disposeEvent(event, false));
+    this.activeEvents = [];
+  },
+  _disposeEvent(event, emit = true) {
+    if (!event) return;
+    if (event.group && event.group.parent) event.group.parent.remove(event.group);
+    if (event.geometry && event.geometry.dispose) event.geometry.dispose();
+    if (event.material && event.material.dispose) event.material.dispose();
+    if (event.coreGeometry && event.coreGeometry.dispose) event.coreGeometry.dispose();
+    if (event.coreMaterial && event.coreMaterial.dispose) event.coreMaterial.dispose();
+    if (emit) WorldEvents.emit('ambient:event-ended', this._snapshotEvent(event));
+  },
+  _snapshotEvent(event) {
+    return {
+      id: event.id,
+      type: event.type,
+      worldKey: event.worldKey,
+      title: event.title,
+      classification: event.classification,
+      position: { x: event.position.x, y: event.position.y, z: event.position.z },
+      elapsed: event.elapsed,
+      lifetime: event.lifetime
+    };
+  },
+  _createMarsDustDevil() {
+    const marsWorld = destinationWorlds.mars;
+    if (!marsWorld || !marsWorld.group) return null;
+    const group = new THREE.Group();
+    group.name = 'MarsDustDevilEvent';
+
+    const count = 240;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const layer = i % 60;
+      const y = layer * 0.17;
+      const radius = 0.35 + (layer / 60) * 2.7 + (i % 4) * 0.08;
+      const angle = i * 0.61;
+      positions[i * 3] = Math.cos(angle) * radius;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = Math.sin(angle) * radius;
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const material = new THREE.PointsMaterial({
+      color: 0xfb923c,
+      size: 0.42,
+      transparent: true,
+      opacity: 0.72,
+      depthWrite: false
+    });
+    const points = new THREE.Points(geometry, material);
+    group.add(points);
+
+    const coreGeometry = new THREE.CylinderGeometry(0.7, 3.2, 10.5, 12, 1, true);
+    const coreMaterial = new THREE.MeshBasicMaterial({
+      color: 0xc2410c,
+      transparent: true,
+      opacity: 0.08,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const core = new THREE.Mesh(coreGeometry, coreMaterial);
+    core.position.y = 5.2;
+    group.add(core);
+
+    const serial = ++this._eventSerial;
+    const event = {
+      id: 'mars-dust-devil-' + serial,
+      type: 'dust-devil',
+      worldKey: 'mars',
+      title: 'MARTIAN DUST DEVIL',
+      classification: 'TRANSIENT ATMOSPHERIC PHENOMENON',
+      channels: ['atmospheric', 'em', 'seismic'],
+      group,
+      geometry,
+      material,
+      coreGeometry,
+      coreMaterial,
+      position: { x: -28, y: 0, z: 28 },
+      velocity: { x: 0.72, z: 0.22 },
+      elapsed: 0,
+      lifetime: 38
+    };
+    group.position.set(event.position.x, 0, event.position.z);
+    marsWorld.group.add(group);
+    this.activeEvents.push(event);
+    WorldEvents.emit('ambient:event-started', this._snapshotEvent(event));
+    return event;
+  },
+  _scheduleNextMarsEvent() {
+    const seed = WorldConditionDirector._hashSeed('ambient:mars:' + Math.floor(this.elapsed));
+    const roll = WorldConditionDirector._next(seed);
+    this.nextEventAt = this.elapsed + 75 + roll.value * 50;
+  },
+  update(delta) {
+    const worldKey = getGameplayWorldKey(currentLocation);
+    if (worldKey !== this.worldKey) this.resetForWorld(worldKey);
+    const safeDelta = Number.isFinite(delta) ? Math.max(0, Math.min(0.1, delta)) : 0;
+    this.elapsed += safeDelta;
+
+    if (worldKey === 'mars' && this._supportsEvent(worldKey, 'dust-devil') && this.activeEvents.length === 0 && this.elapsed >= this.nextEventAt) {
+      if (this._createMarsDustDevil()) this.nextEventAt = Infinity;
+    }
+
+    const condition = typeof WorldConditionDirector !== 'undefined' ? WorldConditionDirector.getSnapshot() : null;
+    const conditionStrength = condition && condition.worldKey === worldKey
+      ? EnvironmentalForceField._conditionStrength(condition.conditionId) * Math.max(0.25, condition.intensity || 0)
+      : 0;
+
+    const survivors = [];
+    this.activeEvents.forEach(event => {
+      event.elapsed += safeDelta;
+      event.position.x += event.velocity.x * safeDelta;
+      event.position.z += event.velocity.z * safeDelta;
+      if (event.group) {
+        event.group.position.set(event.position.x, event.position.y, event.position.z);
+        event.group.rotation.y += safeDelta * (1.7 + conditionStrength * 1.3);
+        const pulse = 0.94 + Math.sin(event.elapsed * 2.4) * 0.06;
+        event.group.scale.setScalar(pulse * (1 + conditionStrength * 0.18));
+      }
+      if (event.material) event.material.opacity = Math.min(0.9, 0.58 + conditionStrength * 0.28);
+      if (event.coreMaterial) event.coreMaterial.opacity = Math.min(0.16, 0.05 + conditionStrength * 0.08);
+
+      if (event.elapsed >= event.lifetime || Math.abs(event.position.x) > 115 || Math.abs(event.position.z) > 115) {
+        this._disposeEvent(event, true);
+      } else {
+        survivors.push(event);
+      }
+    });
+    const ended = this.activeEvents.length > 0 && survivors.length === 0;
+    this.activeEvents = survivors;
+    if (worldKey === 'mars' && ended) this._scheduleNextMarsEvent();
+  },
+  getSignals(worldKey, position, maxRange = Infinity) {
+    if (!position) return [];
+    return this.activeEvents
+      .filter(event => event.worldKey === worldKey)
+      .map(event => {
+        const dx = event.position.x - position.x;
+        const dz = event.position.z - position.z;
+        const distance = Math.hypot(dx, dz);
+        const bearing = (Math.atan2(dx, -dz) * 180 / Math.PI + 360) % 360;
+        return {
+          id: event.id,
+          type: event.type,
+          title: event.title,
+          classification: event.classification,
+          channels: event.channels.slice(),
+          position: { x: event.position.x, y: event.position.y, z: event.position.z },
+          distance,
+          bearing,
+          signal: distance < 35 ? 'STRONG' : distance < 70 ? 'MODERATE' : 'WEAK'
+        };
+      })
+      .filter(signal => signal.distance <= maxRange)
+      .sort((a, b) => a.distance - b.distance);
+  },
+  getNearestSignal(worldKey, position, maxRange = Infinity) {
+    const signals = this.getSignals(worldKey, position, maxRange);
+    return signals.length ? signals[0] : null;
+  }
+};
+
+WorldEvents.on('world:entered', payload => {
+  const worldKey = payload && payload.worldKey ? payload.worldKey : getGameplayWorldKey(currentLocation);
+  AmbientEventDirector.resetForWorld(worldKey);
+});
+AmbientEventDirector.resetForWorld('aquifer');
+
+// One bounded noise layer follows condition intensity and nearby transient phenomena.
+// Profile audio.environment selects the spectral identity; spatialReactivity scales live response.
+const ENVIRONMENT_AUDIO_IDENTITIES = Object.freeze({
+  neutral: { centerHz: 520, q: 0.70, playbackRate: 1.00, gainScale: 0.75, conditionShiftHz: 240 },
+  industrial: { centerHz: 260, q: 0.90, playbackRate: 0.72, gainScale: 0.82, conditionShiftHz: 210 },
+  aeolian: { centerHz: 920, q: 0.45, playbackRate: 1.08, gainScale: 0.90, conditionShiftHz: 420 },
+  alpine: { centerHz: 1260, q: 0.58, playbackRate: 1.12, gainScale: 0.86, conditionShiftHz: 520 },
+  'urban-industrial': { centerHz: 430, q: 1.05, playbackRate: 0.84, gainScale: 0.92, conditionShiftHz: 260 },
+  'open-megalithic': { centerHz: 700, q: 0.92, playbackRate: 0.76, gainScale: 0.72, conditionShiftHz: 180 },
+  littoral: { centerHz: 620, q: 0.42, playbackRate: 0.92, gainScale: 0.88, conditionShiftHz: 300 },
+  'orbital-structure': { centerHz: 340, q: 1.30, playbackRate: 0.66, gainScale: 0.68, conditionShiftHz: 160 },
+  volcanic: { centerHz: 190, q: 0.72, playbackRate: 0.56, gainScale: 1.00, conditionShiftHz: 230 },
+  biological: { centerHz: 760, q: 1.18, playbackRate: 0.82, gainScale: 0.88, conditionShiftHz: 340 },
+  submerged: { centerHz: 180, q: 0.46, playbackRate: 0.60, gainScale: 0.90, conditionShiftHz: 120 },
+  'martian-aeolian': { centerHz: 980, q: 0.52, playbackRate: 1.10, gainScale: 0.96, conditionShiftHz: 500 },
+  crystalline: { centerHz: 1720, q: 1.55, playbackRate: 1.24, gainScale: 0.74, conditionShiftHz: 380 },
+  wetland: { centerHz: 520, q: 0.50, playbackRate: 0.74, gainScale: 0.86, conditionShiftHz: 220 },
+  subterranean: { centerHz: 230, q: 1.12, playbackRate: 0.62, gainScale: 0.78, conditionShiftHz: 150 },
+  'industrial-toxic': { centerHz: 360, q: 1.18, playbackRate: 0.82, gainScale: 0.94, conditionShiftHz: 280 },
+  boreal: { centerHz: 1040, q: 0.54, playbackRate: 0.94, gainScale: 0.78, conditionShiftHz: 360 },
+  'high-atmosphere': { centerHz: 1420, q: 0.48, playbackRate: 1.16, gainScale: 0.84, conditionShiftHz: 560 }
+});
+
+const EnvironmentalAudioDirector = {
+  source: null,
+  gain: null,
+  filter: null,
+  buffer: null,
+  _getEnvironmentIdentity(environmentId) {
+    return ENVIRONMENT_AUDIO_IDENTITIES[environmentId] || ENVIRONMENT_AUDIO_IDENTITIES.neutral;
+  },
+  _ensure() {
+    if (!audioCtx || audioCtx.state !== 'running') return false;
+    if (!AudioMixerBus.masterGain) AudioMixerBus.init(audioCtx);
+    if (this.source && this.gain && this.filter) return true;
+    const seconds = 1.5;
+    const frameCount = Math.max(1, Math.floor(audioCtx.sampleRate * seconds));
+    this.buffer = audioCtx.createBuffer(1, frameCount, audioCtx.sampleRate);
+    const data = this.buffer.getChannelData(0);
+    let seed = WorldConditionDirector._hashSeed('world-set-environmental-noise');
+    for (let i = 0; i < frameCount; i++) {
+      const roll = WorldConditionDirector._next(seed);
+      seed = roll.seed;
+      data[i] = roll.value * 2 - 1;
+    }
+    this.source = audioCtx.createBufferSource();
+    this.source.buffer = this.buffer;
+    this.source.loop = true;
+    this.filter = audioCtx.createBiquadFilter();
+    this.filter.type = 'bandpass';
+    this.filter.frequency.value = 520;
+    this.filter.Q.value = 0.7;
+    this.gain = audioCtx.createGain();
+    this.gain.gain.value = 0.0001;
+    this.source.connect(this.filter);
+    this.filter.connect(this.gain);
+    this.gain.connect(AudioMixerBus.ambienceGain || audioCtx.destination);
+    this.source.start();
+    return true;
+  },
+  update() {
+    if (!this._ensure()) return;
+    const worldKey = getGameplayWorldKey(currentLocation);
+    const profile = WORLD_GAMEPLAY_PROFILES[worldKey] || WORLD_GAMEPLAY_PROFILES.aquifer;
+    const condition = WorldConditionDirector.getSnapshot();
+    const conditionStrength = condition && condition.worldKey === worldKey
+      ? EnvironmentalForceField._conditionStrength(condition.conditionId) * Math.max(0, condition.intensity || 0)
+      : 0;
+    const reactivity = profile.audio && Number.isFinite(profile.audio.spatialReactivity)
+      ? Math.max(0, Math.min(1, profile.audio.spatialReactivity))
+      : 0.5;
+    const environmentId = profile.audio && typeof profile.audio.environment === 'string'
+      ? profile.audio.environment
+      : 'neutral';
+    const identity = this._getEnvironmentIdentity(environmentId);
+    const nearby = typeof camera !== 'undefined' && camera
+      ? AmbientEventDirector.getNearestSignal(worldKey, camera.position, 80)
+      : null;
+    const proximity = nearby ? Math.max(0, 1 - nearby.distance / 80) : 0;
+    const liveDrive = conditionStrength * reactivity;
+    const baseBed = 0.0035 * reactivity;
+    const targetGain = Math.min(0.065, (baseBed + liveDrive * 0.025 + proximity * 0.04) * identity.gainScale);
+    const targetFreq = Math.max(120, Math.min(2200, identity.centerHz + liveDrive * identity.conditionShiftHz + proximity * 220));
+    const targetRate = Math.max(0.45, Math.min(1.5, identity.playbackRate + liveDrive * 0.08 + proximity * 0.05));
+    const now = audioCtx.currentTime;
+    this.gain.gain.setTargetAtTime(Math.max(0.0001, targetGain), now, 0.18);
+    this.filter.frequency.setTargetAtTime(targetFreq, now, 0.25);
+    this.filter.Q.setTargetAtTime(identity.q, now, 0.25);
+    this.source.playbackRate.setTargetAtTime(targetRate, now, 0.25);
+  }
+};
+
+// =============================================================
 // GAMEPLAY MECHANICS (GAME-01 TO GAME-20)
 // =============================================================
 
@@ -25720,6 +26017,9 @@ const FieldInstrumentModel = {
     const noise = this.getConditionNoise(worldKey);
     const signal = noise >= 0.55 ? 'DEGRADED' : noise >= 0.28 ? 'VARIABLE' : 'STABLE';
     const visibility = typeof VisibilityModel !== 'undefined' ? VisibilityModel.sample(worldKey, condition) : null;
+    const phenomenon = typeof AmbientEventDirector !== 'undefined' && typeof camera !== 'undefined' && camera
+      ? AmbientEventDirector.getNearestSignal(worldKey, camera.position, Math.max(100, (profile.instruments.radarRange || 60) * 1.35))
+      : null;
     const channelText = channels.slice(0, 3).map(ch => String(ch).toUpperCase()).join('/');
     const parts = [
       'ENV ' + String(conditionId).toUpperCase(),
@@ -25729,6 +26029,10 @@ const FieldInstrumentModel = {
     if (visibility) parts.push('VIS ' + Math.round(visibility.effectiveRange) + 'M');
     if (bearing !== null) parts.push('FLOW ' + String(Math.round(bearing)).padStart(3, '0') + '°');
     if (intensity > 0.05) parts.push('INT ' + Math.round(intensity * 100) + '%');
+    if (phenomenon) {
+      parts.push('PHENOM ' + phenomenon.type.toUpperCase());
+      parts.push(String(Math.round(phenomenon.distance)) + 'M/' + String(Math.round(phenomenon.bearing)).padStart(3, '0') + '°');
+    }
     return {
       worldKey,
       conditionId,
@@ -25738,6 +26042,7 @@ const FieldInstrumentModel = {
       bearing,
       intensity,
       visibilityRange: visibility ? visibility.effectiveRange : null,
+      phenomenon,
       text: parts.join(' // ')
     };
   }
@@ -25880,6 +26185,23 @@ function updateRadarHUD(camPos, yaw) {
     ctx.beginPath();
     ctx.arc(blipX, blipY, 3.5, 0, Math.PI * 2);
     ctx.fill();
+  }
+
+  // Transient environmental phenomena are instrument returns, not mission markers.
+  if (typeof AmbientEventDirector !== 'undefined') {
+    const eventSignals = AmbientEventDirector.getSignals(getGameplayWorldKey(currentLocation), camPos, rangeMeters);
+    eventSignals.forEach(eventSignal => {
+      const ex = eventSignal.position.x - camPos.x;
+      const ez = eventSignal.position.z - camPos.z;
+      const eventX = cx + ex * scale;
+      const eventY = cy + ez * scale;
+      ctx.strokeStyle = 'rgba(251,146,60,0.9)';
+      ctx.fillStyle = 'rgba(251,146,60,0.85)';
+      ctx.beginPath();
+      ctx.arc(eventX, eventY, 4.0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillRect(eventX - 1, eventY - 1, 2, 2);
+    });
   }
 }
 
@@ -26268,6 +26590,22 @@ function scanForNearbyPOIs() {
     summary: environmentalScan.text,
     position: [p.x, p.y, p.z]
   });
+  if (environmentalScan.phenomenon) {
+    const phenomenon = environmentalScan.phenomenon;
+    WorldEvents.emit('scanner:phenomenon', phenomenon);
+    ExpeditionRecord.recordObservation({
+      type: 'phenomenon-scan',
+      worldKey: environmentalScan.worldKey,
+      conditionId: environmentalScan.conditionId,
+      subjectKey: phenomenon.type,
+      title: phenomenon.title,
+      classification: phenomenon.classification,
+      channels: phenomenon.channels,
+      signal: phenomenon.signal,
+      summary: phenomenon.title + ' // RANGE ' + Math.round(phenomenon.distance) + 'M // BEARING ' + String(Math.round(phenomenon.bearing)).padStart(3, '0') + '°',
+      position: [phenomenon.position.x, phenomenon.position.y, phenomenon.position.z]
+    });
+  }
   let closestPOI = null;
   let minDist = 50.0;
   candidates.forEach(candidate => {

@@ -326,6 +326,30 @@ check("Visibility eases fog density", "1-Math.exp(-this.transitionRate*safeDelta
 check("Visibility updates after condition state", "WorldConditionDirector.update(delta);\n  if (typeof VisibilityModel !== 'undefined') VisibilityModel.update(delta);" in index_html, "VisibilityModel is not driven by live condition updates")
 check("Environmental scanner reports visibility range", "VisibilityModel.sample(worldKey, condition)" in index_html and "VIS ' + Math.round(visibility.effectiveRange) + 'M'" in index_html and "visibilityRange:" in index_html, "Scanner visibility readout missing")
 
+# INV-17: WS-GAME-07 Ambient Events and Mars Field Slice
+check("Ambient event director exists", "const AmbientEventDirector = {" in index_html and "_createMarsDustDevil()" in index_html, "AmbientEventDirector or Mars dust devil missing")
+check("Ambient event lifecycle is centralized", all(evt in index_html for evt in ["ambient:event-started", "ambient:event-ended"]) and "AmbientEventDirector.update(delta);" in index_html, "Ambient event lifecycle/update path missing")
+check("Ambient events are gated by world profile", "_supportsEvent(worldKey, eventId)" in index_html and "profile.events.includes(eventId)" in index_html and "this._supportsEvent(worldKey, 'dust-devil')" in index_html, "Ambient event schedule bypasses profile events")
+check("Mars dust devil is spatial and bounded", "MarsDustDevilEvent" in index_html and "position: { x: -28, y: 0, z: 28 }" in index_html and "lifetime: 38" in index_html, "Mars dust devil spatial/lifetime contract missing")
+check("Mars dust devil responds to live conditions", "conditionStrength * 1.3" in index_html and "conditionStrength * 0.28" in index_html, "Mars event does not consume live condition strength")
+check("Environmental audio director exists", "const EnvironmentalAudioDirector = {" in index_html and "AudioMixerBus.ambienceGain" in index_html, "EnvironmentalAudioDirector missing or bypasses ambience bus")
+check("Environmental audio is bounded by condition and proximity", "Math.min(0.065" in index_html and "proximity * 0.04" in index_html, "Environmental audio gain is not bounded")
+check("Environmental audio consumes world audio identity", "ENVIRONMENT_AUDIO_IDENTITIES" in index_html and "profile.audio.environment" in index_html and "_getEnvironmentIdentity(environmentId)" in index_html and "this.source.playbackRate.setTargetAtTime" in index_html, "World audio environment remains declarative")
+audio_environments = set(re.findall(r"audio:\s*\{\s*environment:\s*'([^']+)'", index_html))
+audio_identity_match = re.search(r"const ENVIRONMENT_AUDIO_IDENTITIES = Object\.freeze\(\{(.*?)\n\}\);", index_html, re.S)
+audio_identity_keys = set()
+if audio_identity_match:
+    for quoted, bare in re.findall(r"^\s*(?:'([^']+)'|([A-Za-z0-9_-]+)):\s*\{", audio_identity_match.group(1), re.M):
+        audio_identity_keys.add(quoted or bare)
+check("All world audio environments have spectral identities", bool(audio_environments) and audio_environments.issubset(audio_identity_keys), f"Missing audio identities: {sorted(audio_environments - audio_identity_keys)}")
+check("Environmental audio keeps a bounded calm-world bed", "const baseBed = 0.0035 * reactivity" in index_html and "baseBed + liveDrive * 0.025" in index_html and "Math.min(0.065" in index_html, "Calm-world audio identity is effectively silent or unbounded")
+check("Radar exposes transient environmental returns", "AmbientEventDirector.getSignals(getGameplayWorldKey(currentLocation), camPos, rangeMeters)" in index_html, "Ambient phenomena missing from radar")
+check("Scanner exposes transient phenomena", "environmentalScan.phenomenon" in index_html and "phenomenon," in index_html, "Scanner phenomenon payload missing")
+check("Field scan resolves nearest phenomenon", "AmbientEventDirector.getNearestSignal(worldKey, camera.position" in index_html and "PHENOM " in index_html, "Field scanner phenomenon integration missing")
+check("Phenomenon scans persist in expedition record", "type: 'phenomenon-scan'" in index_html and "scanner:phenomenon" in index_html, "Phenomenon observation persistence missing")
+check("Mars ambient dust consumes live condition state", "const dustStrength = conditionState && conditionState.worldKey === 'mars'" in index_html and "dustMat.opacity = Math.min(0.92" in index_html, "Mars background dust remains condition-blind")
+check("Ambient systems update after condition/visibility", "VisibilityModel.update(delta);\n  if (typeof AmbientEventDirector !== 'undefined') AmbientEventDirector.update(delta);\n  if (typeof EnvironmentalAudioDirector !== 'undefined') EnvironmentalAudioDirector.update();" in index_html, "Ambient update order is not wired after condition/visibility")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")
