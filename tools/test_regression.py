@@ -317,6 +317,15 @@ check("Codex field list consumes expedition record", "ExpeditionRecord.list()" i
 check("Codex can render field observations", "String(key).startsWith('field:')" in index_html and "ExpeditionRecord.get(" in index_html and "OBSERVED:" in index_html, "Codex field detail rendering missing")
 check("Existing lore Codex path remains", "Object.keys(LORE_DATABASE).forEach" in index_html and "const lore = LORE_DATABASE[key];" in index_html, "Reference Codex path regressed")
 
+# INV-16: WS-GAME-06 Condition-driven Visibility
+check("Visibility model exists", "const VisibilityModel = {" in index_html and "VISIBILITY_CONDITION_OCCLUSION" in index_html, "VisibilityModel missing")
+check("Visibility consumes world profile", "profile.visibility" in index_html and "visibility.baseRange" in index_html and "visibility.conditionSensitivity" in index_html, "Visibility profile values remain unconsumed")
+check("Visibility preserves authored fog baseline", "getBaselineFog(worldKey" in index_html and "world.fogDensity||0.008" in index_html and "*0.7" in index_html, "Authored destination fog baseline not preserved")
+check("Visibility response is bounded", "Math.max(0.3,1-(occlusion*sensitivity*intensity*0.78))" in index_html, "Visibility condition response is not bounded")
+check("Visibility eases fog density", "1-Math.exp(-this.transitionRate*safeDelta)" in index_html and "scene.fog.density=this.currentDensity" in index_html, "Fog density does not ease through VisibilityModel")
+check("Visibility updates after condition state", "WorldConditionDirector.update(delta);\n  if (typeof VisibilityModel !== 'undefined') VisibilityModel.update(delta);" in index_html, "VisibilityModel is not driven by live condition updates")
+check("Environmental scanner reports visibility range", "VisibilityModel.sample(worldKey, condition)" in index_html and "VIS ' + Math.round(visibility.effectiveRange) + 'M'" in index_html and "visibilityRange:" in index_html, "Scanner visibility readout missing")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")

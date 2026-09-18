@@ -24217,6 +24217,7 @@ function animate() {
 
   updateParcelPopulationRuntime();
   if (typeof WorldConditionDirector !== 'undefined') WorldConditionDirector.update(delta);
+  if (typeof VisibilityModel !== 'undefined') VisibilityModel.update(delta);
     
   if (typeof postProcessing !== 'undefined' && postProcessing && postProcessing.enabled) {
     postProcessing.render(time, delta);
@@ -25356,6 +25357,69 @@ const EnvironmentalForceField = {
   }
 };
 
+
+// =============================================================
+// WS-GAME-06: CONDITION-DRIVEN VISIBILITY MODEL
+// Authored fog remains the baseline; conditions apply bounded, eased density changes.
+// =============================================================
+const VISIBILITY_CONDITION_OCCLUSION = Object.freeze({
+  stable:0, 'maintenance-cycle':0.05, clear:0, 'dust-rising':0.28, 'dust-front':0.55, 'heavy-dust':0.88, clearing:0.12,
+  gusting:0.18, whiteout:0.92, powered:0, rain:0.32, brownout:0.12, blackout:0.28, mist:0.5, 'geomagnetic-surge':0.08,
+  fair:0, 'squall-building':0.35, squall:0.78, sunlit:0, terminator:0.1, eclipse:0.18, active:0.12, ashfall:0.72,
+  'tremor-cycle':0.18, calm:0, sporefall:0.4, bloom:0.18, 'still-current':0.08, 'cross-current':0.2,
+  'plume-interference':0.62, haze:0.18, quiet:0, resonant:0.08, 'em-surge':0.12, humid:0.1, 'fog-pooling':0.72,
+  'water-high':0.15, 'seismic-active':0.25, 'plume-drift':0.55, 'scrubber-cycle':0.12, snowfall:0.42, wind:0.2,
+  crosswind:0.15, 'cloud-bank':0.68, stormward:0.82
+});
+
+const VisibilityModel = {
+  currentDensity:null,
+  lastWorldKey:null,
+  transitionRate:1.45,
+  _conditionOcclusion(conditionId) {
+    const id=String(conditionId||'stable');
+    return Object.prototype.hasOwnProperty.call(VISIBILITY_CONDITION_OCCLUSION,id) ? VISIBILITY_CONDITION_OCCLUSION[id] : 0;
+  },
+  getBaselineFog(worldKey=getGameplayWorldKey(currentLocation)) {
+    if (worldKey==='aquifer' || currentLocation==='base') return {color:0x0a0d12,density:0.015};
+    const world=destinationWorlds[worldKey];
+    if (!world) return {color:0x0a0d12,density:0.006};
+    return {color:world.fogColor,density:Math.max(0.00001,(world.fogDensity||0.008)*0.7)};
+  },
+  sample(worldKey=getGameplayWorldKey(currentLocation), conditionState=null, baselineDensity=null) {
+    const profile=WORLD_GAMEPLAY_PROFILES[worldKey]||WORLD_GAMEPLAY_PROFILES.aquifer;
+    const visibility=profile.visibility||{baseRange:180,conditionSensitivity:0.5};
+    const baseRange=Number.isFinite(visibility.baseRange)?Math.max(20,visibility.baseRange):180;
+    const sensitivity=Number.isFinite(visibility.conditionSensitivity)?Math.max(0,Math.min(1,visibility.conditionSensitivity)):0.5;
+    const matches=conditionState&&conditionState.worldKey===worldKey;
+    const conditionId=matches?conditionState.conditionId:(profile.conditions[0]||'stable');
+    const intensity=matches&&Number.isFinite(conditionState.intensity)?Math.max(0,Math.min(1,conditionState.intensity)):0;
+    const occlusion=this._conditionOcclusion(conditionId);
+    const rangeFraction=Math.max(0.3,1-(occlusion*sensitivity*intensity*0.78));
+    const effectiveRange=baseRange*rangeFraction;
+    const authoredBaseline=Number.isFinite(baselineDensity)?Math.max(0.00001,baselineDensity):this.getBaselineFog(worldKey).density;
+    return {worldKey,conditionId,baseRange,effectiveRange,rangeFraction,occlusion,intensity,baselineDensity:authoredBaseline,
+      targetDensity:authoredBaseline*(baseRange/Math.max(effectiveRange,baseRange*0.3))};
+  },
+  update(delta) {
+    if (typeof scene==='undefined'||!scene||!scene.fog||typeof scene.fog.density!=='number') return null;
+    const worldKey=getGameplayWorldKey(currentLocation);
+    const baseline=this.getBaselineFog(worldKey);
+    if (this.lastWorldKey!==worldKey||!Number.isFinite(this.currentDensity)) {
+      this.lastWorldKey=worldKey;
+      this.currentDensity=baseline.density;
+    }
+    const condition=typeof WorldConditionDirector!=='undefined'?WorldConditionDirector.getSnapshot():null;
+    const reading=this.sample(worldKey,condition,baseline.density);
+    const safeDelta=Number.isFinite(delta)?Math.max(0,Math.min(0.1,delta)):0;
+    const alpha=1-Math.exp(-this.transitionRate*safeDelta);
+    this.currentDensity+=(reading.targetDensity-this.currentDensity)*alpha;
+    scene.fog.density=this.currentDensity;
+    reading.currentDensity=this.currentDensity;
+    return reading;
+  }
+};
+
 // =============================================================
 // GAMEPLAY MECHANICS (GAME-01 TO GAME-20)
 // =============================================================
@@ -25655,12 +25719,14 @@ const FieldInstrumentModel = {
     }
     const noise = this.getConditionNoise(worldKey);
     const signal = noise >= 0.55 ? 'DEGRADED' : noise >= 0.28 ? 'VARIABLE' : 'STABLE';
+    const visibility = typeof VisibilityModel !== 'undefined' ? VisibilityModel.sample(worldKey, condition) : null;
     const channelText = channels.slice(0, 3).map(ch => String(ch).toUpperCase()).join('/');
     const parts = [
       'ENV ' + String(conditionId).toUpperCase(),
       'CHANNELS ' + channelText,
       'SIGNAL ' + signal
     ];
+    if (visibility) parts.push('VIS ' + Math.round(visibility.effectiveRange) + 'M');
     if (bearing !== null) parts.push('FLOW ' + String(Math.round(bearing)).padStart(3, '0') + '°');
     if (intensity > 0.05) parts.push('INT ' + Math.round(intensity * 100) + '%');
     return {
@@ -25671,6 +25737,7 @@ const FieldInstrumentModel = {
       noise,
       bearing,
       intensity,
+      visibilityRange: visibility ? visibility.effectiveRange : null,
       text: parts.join(' // ')
     };
   }
