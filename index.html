@@ -2256,6 +2256,10 @@
     </div>
     <div class="codex-body">
       <div class="codex-sidebar">
+        <div id="codex-mode-tabs" style="display:flex;gap:6px;margin-bottom:8px;">
+          <button id="codex-tab-reference" class="terminal-btn-dial" style="padding:4px 8px;font-size:0.68rem;" onclick="setCodexMode('reference')">REFERENCE</button>
+          <button id="codex-tab-field" class="terminal-btn-dial" style="padding:4px 8px;font-size:0.68rem;" onclick="setCodexMode('field')">FIELD RECORD</button>
+        </div>
         <input type="text" id="codexSearchInput" placeholder="Filter codex database..." oninput="filterCodexEntries()">
         <div id="codexEntriesList"></div>
       </div>
@@ -25112,6 +25116,133 @@ const StateSnapshotEngine = {
 };
 
 // =============================================================
+// WS-GAME-05: PERSISTENT EXPEDITION RECORD
+// Semantic observations only: bounded, deduplicated, and stored through LocalStorageEngine.
+// =============================================================
+const ExpeditionRecord = {
+  storageKey: 'expedition_record_v1',
+  maxObservations: 160,
+  observations: [],
+  _loaded: false,
+  load() {
+    if (this._loaded) return this.observations;
+    const saved = LocalStorageEngine.get(this.storageKey);
+    this.observations = saved && Array.isArray(saved.observations)
+      ? saved.observations
+          .map(item => this._normalizeObservation(item))
+          .filter(Boolean)
+          .slice(-this.maxObservations)
+      : [];
+    this._loaded = true;
+    return this.observations;
+  },
+  _normalizeObservation(item) {
+    if (!item || typeof item !== 'object') return null;
+    const id = typeof item.id === 'string' && item.id.trim() ? item.id.trim() : null;
+    const worldKey = typeof item.worldKey === 'string' && WORLD_GAMEPLAY_PROFILES[item.worldKey]
+      ? item.worldKey
+      : null;
+    if (!id || !worldKey) return null;
+    const position = Array.isArray(item.position) && item.position.length >= 3 &&
+      item.position.slice(0, 3).every(Number.isFinite)
+      ? item.position.slice(0, 3)
+      : null;
+    const normalized = {
+      id,
+      type: typeof item.type === 'string' && item.type ? item.type : 'observation',
+      worldKey,
+      conditionId: typeof item.conditionId === 'string' && item.conditionId ? item.conditionId : 'stable',
+      subjectKey: typeof item.subjectKey === 'string' && item.subjectKey ? item.subjectKey : null,
+      title: typeof item.title === 'string' && item.title ? item.title : 'FIELD OBSERVATION',
+      classification: typeof item.classification === 'string' && item.classification ? item.classification : 'FIELD DATA',
+      channels: Array.isArray(item.channels) ? item.channels.filter(ch => typeof ch === 'string').slice(0, 4) : [],
+      signal: typeof item.signal === 'string' && item.signal ? item.signal : 'UNKNOWN',
+      summary: typeof item.summary === 'string' ? item.summary : '',
+      position,
+      firstSeen: Number.isFinite(item.firstSeen) ? item.firstSeen : Date.now(),
+      lastSeen: Number.isFinite(item.lastSeen) ? item.lastSeen : (Number.isFinite(item.firstSeen) ? item.firstSeen : Date.now()),
+      count: Number.isFinite(item.count) ? Math.max(1, Math.floor(item.count)) : 1
+    };
+    normalized.semanticKey = typeof item.semanticKey === 'string' && item.semanticKey
+      ? item.semanticKey
+      : this._semanticKey(normalized);
+    return normalized;
+  },
+  save() {
+    LocalStorageEngine.set(this.storageKey, {
+      version: 2,
+      observations: this.observations.slice(-this.maxObservations),
+      savedAt: Date.now()
+    });
+  },
+  _positionKey(position) {
+    if (!Array.isArray(position) || position.length < 3) return 'unknown';
+    return Math.round(position[0] / 10) + ':' + Math.round(position[2] / 10);
+  },
+  _semanticKey(observation) {
+    return [
+      observation.type || 'observation',
+      observation.worldKey || 'unknown',
+      observation.conditionId || 'stable',
+      observation.subjectKey || 'environment',
+      this._positionKey(observation.position)
+    ].join('|');
+  },
+  recordObservation(observation) {
+    if (!observation || !observation.worldKey) return null;
+    this.load();
+    const now = Date.now();
+    const semanticKey = this._semanticKey(observation);
+    const existing = this.observations.find(item => item.semanticKey === semanticKey);
+    if (existing) {
+      existing.lastSeen = now;
+      existing.count = (existing.count || 1) + 1;
+      existing.summary = observation.summary || existing.summary;
+      existing.signal = observation.signal || existing.signal;
+      this.save();
+      WorldEvents.emit('expedition:observation-updated', existing);
+      return existing;
+    }
+    const id = 'obs-' + now.toString(36) + '-' + WorldConditionDirector._hashSeed(semanticKey).toString(36).slice(0, 6);
+    const entry = {
+      id,
+      semanticKey,
+      type: observation.type || 'observation',
+      worldKey: observation.worldKey,
+      conditionId: observation.conditionId || 'stable',
+      subjectKey: observation.subjectKey || null,
+      title: observation.title || 'FIELD OBSERVATION',
+      classification: observation.classification || 'FIELD DATA',
+      channels: Array.isArray(observation.channels) ? observation.channels.slice(0, 4) : [],
+      signal: observation.signal || 'UNKNOWN',
+      summary: observation.summary || '',
+      position: Array.isArray(observation.position) ? observation.position.slice(0, 3) : null,
+      firstSeen: now,
+      lastSeen: now,
+      count: 1
+    };
+    this.observations.push(entry);
+    if (this.observations.length > this.maxObservations) {
+      this.observations.splice(0, this.observations.length - this.maxObservations);
+    }
+    this.save();
+    WorldEvents.emit('expedition:observation-recorded', entry);
+    return entry;
+  },
+  list(worldKey = null) {
+    this.load();
+    const source = worldKey ? this.observations.filter(item => item.worldKey === worldKey) : this.observations;
+    return source.slice().sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+  },
+  get(id) {
+    this.load();
+    return this.observations.find(item => item.id === id) || null;
+  }
+};
+
+ExpeditionRecord.load();
+
+// =============================================================
 // WS-GAME-03: TRAVERSAL, SURFACE RESPONSE, AND ENVIRONMENTAL FORCE
 // Shared movement substrate; existing collision remains authoritative.
 // =============================================================
@@ -25469,6 +25600,83 @@ function playDiscoveryJingle() {
 }
 
 // =============================================================
+// WS-GAME-04: FIELD INSTRUMENT MODEL
+// Shared scanner/radar/compass interpretation of world profiles + live conditions.
+// =============================================================
+const FieldInstrumentModel = {
+  getWorldKey() {
+    return getGameplayWorldKey(currentLocation);
+  },
+  getProfile(worldKey = this.getWorldKey()) {
+    return WORLD_GAMEPLAY_PROFILES[worldKey] || WORLD_GAMEPLAY_PROFILES.aquifer;
+  },
+  getCondition() {
+    return typeof WorldConditionDirector !== 'undefined' ? WorldConditionDirector.getSnapshot() : null;
+  },
+  getConditionNoise(worldKey = this.getWorldKey()) {
+    const profile = this.getProfile(worldKey);
+    const condition = this.getCondition();
+    const baseNoise = profile.instruments.radarNoise || 0;
+    if (!condition || condition.worldKey !== worldKey) return baseNoise;
+    const conditionStrength = typeof EnvironmentalForceField !== 'undefined'
+      ? EnvironmentalForceField._conditionStrength(condition.conditionId)
+      : 0;
+    return Math.min(0.95, baseNoise + conditionStrength * (condition.intensity || 0) * 0.35);
+  },
+  getCompassReading(yaw, worldKey = this.getWorldKey(), nowMs = performance.now()) {
+    const profile = this.getProfile(worldKey);
+    const condition = this.getCondition();
+    const reliability = Math.max(0, Math.min(1, profile.instruments.compassReliability ?? 1));
+    const baseDeg = (((-yaw * 180 / Math.PI) % 360) + 360) % 360;
+    const conditionStrength = condition && condition.worldKey === worldKey && typeof EnvironmentalForceField !== 'undefined'
+      ? EnvironmentalForceField._conditionStrength(condition.conditionId)
+      : 0;
+    const maxDeviation = (1 - reliability) * 55 + conditionStrength * (condition ? condition.intensity : 0) * 12;
+    const seed = typeof WorldConditionDirector !== 'undefined'
+      ? WorldConditionDirector._hashSeed('compass:' + worldKey + ':' + (condition ? condition.conditionId : 'stable'))
+      : 0;
+    const phase = (seed % 6283) / 1000;
+    const deviation = Math.sin(nowMs * 0.00045 + phase) * maxDeviation;
+    const displayedDeg = (baseDeg + deviation + 360) % 360;
+    return { baseDeg, displayedDeg, deviation, reliability };
+  },
+  getEnvironmentalScan(worldKey = this.getWorldKey()) {
+    const profile = this.getProfile(worldKey);
+    const condition = this.getCondition();
+    const channels = profile.instruments.scannerChannels || ['structural'];
+    const conditionId = condition && condition.worldKey === worldKey ? condition.conditionId : (profile.conditions[0] || 'stable');
+    const intensity = condition && condition.worldKey === worldKey ? condition.intensity : 0;
+    const force = typeof EnvironmentalForceField !== 'undefined'
+      ? EnvironmentalForceField.sample(worldKey, condition)
+      : { x: 0, z: 0, magnitude: 0 };
+    let bearing = null;
+    if (force && force.magnitude > 0.001) {
+      bearing = (Math.atan2(force.x, -force.z) * 180 / Math.PI + 360) % 360;
+    }
+    const noise = this.getConditionNoise(worldKey);
+    const signal = noise >= 0.55 ? 'DEGRADED' : noise >= 0.28 ? 'VARIABLE' : 'STABLE';
+    const channelText = channels.slice(0, 3).map(ch => String(ch).toUpperCase()).join('/');
+    const parts = [
+      'ENV ' + String(conditionId).toUpperCase(),
+      'CHANNELS ' + channelText,
+      'SIGNAL ' + signal
+    ];
+    if (bearing !== null) parts.push('FLOW ' + String(Math.round(bearing)).padStart(3, '0') + '°');
+    if (intensity > 0.05) parts.push('INT ' + Math.round(intensity * 100) + '%');
+    return {
+      worldKey,
+      conditionId,
+      channels,
+      signal,
+      noise,
+      bearing,
+      intensity,
+      text: parts.join(' // ')
+    };
+  }
+};
+
+// =============================================================
 // UI/UX SYSTEMS & HUD UPGRADES (UIUX-01 TO UIUX-20)
 // =============================================================
 
@@ -25482,10 +25690,8 @@ function updateCompassHUD(yaw) {
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  // Normalize yaw in degrees (0 - 360)
-  let deg = (-yaw * (180 / Math.PI)) % 360;
-  if (deg < 0) deg += 360;
-  const roundedDeg = Math.round(deg);
+  const compassReading = FieldInstrumentModel.getCompassReading(yaw);
+  const roundedDeg = Math.round(compassReading.displayedDeg) % 360;
 
   // Cardinal direction label
   let card = 'N';
@@ -25498,7 +25704,8 @@ function updateCompassHUD(yaw) {
   else if (roundedDeg >= 248 && roundedDeg < 293) card = 'W';
   else card = 'NW';
 
-  degEl.innerText = `${String(roundedDeg).padStart(3, '0')}° ${card}`;
+  const uncertainty = Math.max(0, Math.round(Math.abs(compassReading.deviation)));
+  degEl.innerText = `${String(roundedDeg).padStart(3, '0')}° ${card}${uncertainty >= 2 ? ` ±${uncertainty}°` : ''}`;
 
   // Draw compass ticks
   const pxPerDeg = 2.4;
@@ -25544,7 +25751,9 @@ function updateRadarHUD(camPos, yaw) {
   const h = canvas.height;
   const cx = w / 2;
   const cy = h / 2;
-  const rangeMeters = 60.0;
+  const instrumentProfile = FieldInstrumentModel.getProfile();
+  const rangeMeters = instrumentProfile.instruments.radarRange || 60.0;
+  const radarNoise = FieldInstrumentModel.getConditionNoise();
   const scale = (w / 2) / rangeMeters;
 
   ctx.clearRect(0, 0, w, h);
@@ -25552,7 +25761,8 @@ function updateRadarHUD(camPos, yaw) {
   // Concentric radar rings
   ctx.strokeStyle = 'rgba(27, 231, 255, 0.2)';
   ctx.lineWidth = 1;
-  [15, 30, 45, 60].forEach(r => {
+  [0.25, 0.5, 0.75, 1.0].forEach(fraction => {
+    const r = rangeMeters * fraction;
     ctx.beginPath();
     ctx.arc(cx, cy, r * scale, 0, Math.PI * 2);
     ctx.stroke();
@@ -25571,6 +25781,19 @@ function updateRadarHUD(camPos, yaw) {
   ctx.moveTo(cx, cy);
   ctx.lineTo(cx + Math.cos(sweepAngle) * (w / 2 - 4), cy + Math.sin(sweepAngle) * (h / 2 - 4));
   ctx.stroke();
+
+  // Environmental interference: stable, bounded noise tied to the world profile/condition.
+  if (radarNoise > 0.08) {
+    const noiseCount = Math.min(24, Math.floor(radarNoise * 26));
+    const bucket = Math.floor(performance.now() / 350);
+    let seed = WorldConditionDirector._hashSeed('radar:' + getGameplayWorldKey(currentLocation) + ':' + bucket);
+    ctx.fillStyle = `rgba(27, 231, 255, ${Math.min(0.24, radarNoise * 0.26)})`;
+    for (let i = 0; i < noiseCount; i++) {
+      const rx = WorldConditionDirector._next(seed); seed = rx.seed;
+      const ry = WorldConditionDirector._next(seed); seed = ry.seed;
+      ctx.fillRect(rx.value * w, ry.value * h, 1.2, 1.2);
+    }
+  }
 
   // Player center blip with heading arrow
   ctx.fillStyle = '#f5b700';
@@ -25965,6 +26188,19 @@ function scanForNearbyPOIs() {
   const scope = currentLocation === 'base' ? 'base' : currentLocation;
   if (SpatialHashGrid.activeScope !== scope) SpatialHashGrid.rebuildForScope(scope);
   const candidates = SpatialHashGrid.queryNear(p.x, p.z, 50.0);
+  const environmentalScan = FieldInstrumentModel.getEnvironmentalScan(getGameplayWorldKey(currentLocation));
+  WorldEvents.emit('scanner:environment', environmentalScan);
+  ExpeditionRecord.recordObservation({
+    type: 'environmental-scan',
+    worldKey: environmentalScan.worldKey,
+    conditionId: environmentalScan.conditionId,
+    title: environmentalScan.worldKey.toUpperCase() + ' ENVIRONMENTAL SCAN',
+    classification: 'FIELD ENVIRONMENT',
+    channels: environmentalScan.channels,
+    signal: environmentalScan.signal,
+    summary: environmentalScan.text,
+    position: [p.x, p.y, p.z]
+  });
   let closestPOI = null;
   let minDist = 50.0;
   candidates.forEach(candidate => {
@@ -25990,16 +26226,28 @@ function scanForNearbyPOIs() {
       reticle.style.top = coords.y + 'px';
       if (distEl) distEl.innerText = `${closestPOI.dist.toFixed(1)} M`;
       if (titleEl) titleEl.innerText = closestPOI.title;
-      if (detailsEl) detailsEl.innerText = `CLASS: ${closestPOI.classification} // [M] OPEN TARGET IN CODEX`;
+      if (detailsEl) detailsEl.innerText = `CLASS: ${closestPOI.classification} // ${environmentalScan.text} // [M] OPEN TARGET IN CODEX`;
       playTargetLockedBeep();
       WorldEvents.emit('scanner:lock', { key: closestPOI.key, scope, distance: closestPOI.dist });
+      ExpeditionRecord.recordObservation({
+        type: 'poi-scan',
+        worldKey: environmentalScan.worldKey,
+        conditionId: environmentalScan.conditionId,
+        subjectKey: closestPOI.key,
+        title: closestPOI.title,
+        classification: closestPOI.classification,
+        channels: environmentalScan.channels,
+        signal: environmentalScan.signal,
+        summary: `POI ${closestPOI.title} // ${environmentalScan.text}`,
+        position: [p.x, p.y, p.z]
+      });
       return;
     }
   }
 
   if (reticle) reticle.style.display = 'none';
-  if (titleEl) titleEl.innerText = `NO ${scope.toUpperCase()} ANOMALIES IN RANGE`;
-  if (detailsEl) detailsEl.innerText = 'ACOUSTIC SONAR SCAN COMPLETED // 0 TARGETS LOCKED';
+  if (titleEl) titleEl.innerText = `FIELD ENVIRONMENT // ${getGameplayWorldKey(currentLocation).toUpperCase()}`;
+  if (detailsEl) detailsEl.innerText = `${environmentalScan.text} // 0 POI TARGETS LOCKED`;
 }
 
 function playSonarPulseChirp() {
@@ -26050,6 +26298,7 @@ let codexAnimFrame = null;
 let codexDragging = false;
 let codexPrevMouseX = 0;
 let codexPrevMouseY = 0;
+let codexMode = 'reference';
 
 function initCodex3DViewer() {
   const container = document.getElementById('codex3DContainer');
@@ -26099,10 +26348,43 @@ function openCodexModal(selectedKey = null) {
   if (m) m.classList.add('active');
 
   initCodex3DViewer();
+  if (selectedKey && LORE_DATABASE[selectedKey]) codexMode = 'reference';
   populateCodexList();
-  selectCodexEntry(selectedKey || Object.keys(LORE_DATABASE)[0]);
+  if (codexMode === 'field') {
+    const firstField = ExpeditionRecord.list()[0];
+    if (firstField) selectCodexEntry('field:' + firstField.id);
+  } else {
+    selectCodexEntry(selectedKey || Object.keys(LORE_DATABASE)[0]);
+  }
   startCodexAnimationLoop();
   playTorchClick();
+}
+
+function setCodexMode(mode) {
+  codexMode = mode === 'field' ? 'field' : 'reference';
+  const input = document.getElementById('codexSearchInput');
+  if (input) input.value = '';
+  const refTab = document.getElementById('codex-tab-reference');
+  const fieldTab = document.getElementById('codex-tab-field');
+  if (refTab) refTab.style.opacity = codexMode === 'reference' ? '1' : '0.55';
+  if (fieldTab) fieldTab.style.opacity = codexMode === 'field' ? '1' : '0.55';
+  populateCodexList();
+  if (codexMode === 'field') {
+    const firstField = ExpeditionRecord.list()[0];
+    if (firstField) selectCodexEntry('field:' + firstField.id);
+    else showEmptyFieldRecord();
+  } else {
+    selectCodexEntry(Object.keys(LORE_DATABASE)[0]);
+  }
+}
+
+function showEmptyFieldRecord() {
+  document.getElementById('codexEntryTitle').innerText = 'FIELD RECORD // NO OBSERVATIONS';
+  document.getElementById('codexObjClass').innerText = 'EXPEDITION DATA';
+  document.getElementById('codexCoords').innerText = '--';
+  document.getElementById('codexIntegrity').innerText = 'EMPTY';
+  document.getElementById('codexClearance').innerText = 'FIELD';
+  document.getElementById('codexEntryBody').innerText = 'Use the scanner in any world to record environmental and POI observations.';
 }
 
 function closeCodexModal() {
@@ -26131,11 +26413,27 @@ function populateCodexList() {
   if (!container) return;
   container.innerHTML = '';
 
+  if (codexMode === 'field') {
+    const observations = ExpeditionRecord.list();
+    observations.forEach(observation => {
+      const key = 'field:' + observation.id;
+      const item = document.createElement('div');
+      item.className = 'codex-entry-item';
+      item.id = `codex-item-${observation.id}`;
+      item.dataset.codexMode = 'field';
+      item.innerText = `${observation.worldKey.toUpperCase()} // ${observation.title}`;
+      item.onclick = () => selectCodexEntry(key);
+      container.appendChild(item);
+    });
+    return;
+  }
+
   Object.keys(LORE_DATABASE).forEach(key => {
     const lore = LORE_DATABASE[key];
     const item = document.createElement('div');
     item.className = 'codex-entry-item';
     item.id = `codex-item-${key}`;
+    item.dataset.codexMode = 'reference';
     item.innerText = lore.title.split('//')[0].trim();
     item.onclick = () => selectCodexEntry(key);
     container.appendChild(item);
@@ -26146,6 +26444,15 @@ function filterCodexEntries() {
   const input = document.getElementById('codexSearchInput');
   if (!input) return;
   const q = input.value.toLowerCase();
+  if (codexMode === 'field') {
+    ExpeditionRecord.list().forEach(observation => {
+      const el = document.getElementById(`codex-item-${observation.id}`);
+      if (!el) return;
+      const haystack = [observation.title, observation.classification, observation.worldKey, observation.conditionId, observation.summary].join(' ').toLowerCase();
+      el.style.display = haystack.includes(q) ? 'block' : 'none';
+    });
+    return;
+  }
   Object.keys(LORE_DATABASE).forEach(key => {
     const el = document.getElementById(`codex-item-${key}`);
     const lore = LORE_DATABASE[key];
@@ -26157,9 +26464,27 @@ function filterCodexEntries() {
 }
 
 function selectCodexEntry(key) {
+  if (String(key).startsWith('field:')) {
+    const observation = ExpeditionRecord.get(String(key).slice(6));
+    if (!observation) return;
+    codexMode = 'field';
+    document.querySelectorAll('.codex-entry-item').forEach(el => el.classList.remove('active'));
+    const activeEl = document.getElementById(`codex-item-${observation.id}`);
+    if (activeEl) activeEl.classList.add('active');
+    const pos = observation.position || [];
+    document.getElementById('codexEntryTitle').innerText = observation.title;
+    document.getElementById('codexObjClass').innerText = observation.classification;
+    document.getElementById('codexCoords').innerText = `${observation.worldKey.toUpperCase()}${pos.length >= 3 ? ` // X ${pos[0].toFixed(1)} Z ${pos[2].toFixed(1)}` : ''}`;
+    document.getElementById('codexIntegrity').innerText = observation.signal;
+    document.getElementById('codexClearance').innerText = 'FIELD';
+    document.getElementById('codexEntryBody').innerText = `${observation.summary}\n\nCONDITION: ${observation.conditionId.toUpperCase()}\nOBSERVED: ${observation.count || 1} TIME(S)`;
+    buildCodex3DModel(String(observation.subjectKey || observation.type || 'field'));
+    return;
+  }
+
   const lore = LORE_DATABASE[key];
   if (!lore) return;
-
+  codexMode = 'reference';
   document.querySelectorAll('.codex-entry-item').forEach(el => el.classList.remove('active'));
   const activeEl = document.getElementById(`codex-item-${key}`);
   if (activeEl) activeEl.classList.add('active');

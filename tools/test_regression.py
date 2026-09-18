@@ -295,6 +295,28 @@ check("Environmental force field exists", "const EnvironmentalForceField = {" in
 check("Environmental force uses condition state", "EnvironmentalForceField.sample(_gameplayWorldKey, WorldConditionDirector.getSnapshot())" in index_html, "Condition-driven environmental force not sampled")
 check("Environmental force preserves collision authority", "resolvePlayerMovement(camera.position, environmentForce.x * delta, environmentForce.z * delta, currentLocation);" in index_html, "Environmental force bypasses collision resolver")
 
+# INV-14: WS-GAME-04 Field Instrument Layer
+check("Field instrument model exists", "const FieldInstrumentModel = {" in index_html, "FieldInstrumentModel missing")
+check("Scanner consumes environmental readings", "FieldInstrumentModel.getEnvironmentalScan" in index_html and "scanner:environment" in index_html, "Scanner environmental reading path missing")
+check("Scanner POI to Codex path remains intact", "lastScannedPOIKey = closestPOI.key;" in index_html and "[M] OPEN TARGET IN CODEX" in index_html and "scanner:lock" in index_html, "Scanner POI/Codex path regressed")
+check("Radar range consumes world profile", "instrumentProfile.instruments.radarRange" in index_html and "FieldInstrumentModel.getConditionNoise()" in index_html, "Radar profile integration missing")
+check("Radar interference consumes condition state", "WorldConditionDirector._hashSeed('radar:'" in index_html and "radarNoise > 0.08" in index_html, "Radar environmental interference missing")
+check("Compass consumes world reliability", "FieldInstrumentModel.getCompassReading(yaw)" in index_html and "compassReliability" in index_html and "uncertainty >= 2" in index_html, "Compass reliability integration missing")
+check("Environmental scan exposes configured channels", "profile.instruments.scannerChannels" in index_html and "CHANNELS " in index_html, "Scanner channel exposure missing")
+check("Instrument conditions are shared with traversal condition state", "this.getCondition()" in index_html and "EnvironmentalForceField._conditionStrength" in index_html, "Instrument condition-state composition missing")
+
+# INV-15: WS-GAME-05 Expedition Record and Codex Field Journal
+check("Expedition record exists", "const ExpeditionRecord = {" in index_html and "storageKey: 'expedition_record_v1'" in index_html, "ExpeditionRecord missing")
+check("Expedition record is bounded", "maxObservations: 160" in index_html and "slice(-this.maxObservations)" in index_html, "Expedition record bound missing")
+check("Expedition record normalizes persisted data", "_normalizeObservation(item)" in index_html and ".map(item => this._normalizeObservation(item))" in index_html and "item.position.slice(0, 3).every(Number.isFinite)" in index_html and "version: 2" in index_html, "Expedition persisted-data normalization missing")
+check("Expedition observations deduplicate semantically", "_semanticKey(observation)" in index_html and "observation-updated" in index_html, "Expedition semantic dedupe missing")
+check("Scanner records environmental observations", "type: 'environmental-scan'" in index_html and "ExpeditionRecord.recordObservation({" in index_html, "Environmental observation recording missing")
+check("Scanner records POI observations", "type: 'poi-scan'" in index_html and "subjectKey: closestPOI.key" in index_html, "POI observation recording missing")
+check("Codex exposes reference and field modes", "codex-tab-reference" in index_html and "codex-tab-field" in index_html and "function setCodexMode(" in index_html, "Codex mode controls missing")
+check("Codex field list consumes expedition record", "ExpeditionRecord.list()" in index_html and "field:' + observation.id" in index_html, "Codex field list integration missing")
+check("Codex can render field observations", "String(key).startsWith('field:')" in index_html and "ExpeditionRecord.get(" in index_html and "OBSERVED:" in index_html, "Codex field detail rendering missing")
+check("Existing lore Codex path remains", "Object.keys(LORE_DATABASE).forEach" in index_html and "const lore = LORE_DATABASE[key];" in index_html, "Reference Codex path regressed")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")
