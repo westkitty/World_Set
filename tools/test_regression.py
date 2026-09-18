@@ -285,6 +285,16 @@ check("Condition Director updates from render loop", "WorldConditionDirector.upd
 check("Condition Director emits lifecycle events", all(evt in index_html for evt in ["condition:started", "condition:changed", "condition:ended"]), "Condition lifecycle events incomplete")
 check("Condition Director exposes snapshot/restore", "getSnapshot()" in index_html and "restore(snapshot)" in index_html, "Condition snapshot/restore surface missing")
 
+# INV-13: WS-GAME-03 Traversal and Environmental Force
+check("Surface response registry exists", "const SurfaceResponseRegistry = {" in index_html, "SurfaceResponseRegistry missing")
+check("Surface selection is centralized", "function getPlayerSurfaceType(" in index_html and "playSurfaceFootstep(_activeSurfaceType);" in index_html, "Central surface selection not on footstep path")
+check("Traversal model exists", "const TraversalModel = {" in index_html and "TraversalModel.update(delta" in index_html, "TraversalModel missing from movement path")
+check("Traversal uses world profile and surface response", "profile.traversal.surfaceFriction" in index_html and "surface.speedMultiplier" in index_html, "Traversal profile/surface composition missing")
+check("Stamina consumes traversal/surface cost", "TraversalModel.getStaminaCostMultiplier" in index_html and "updateStamina(delta, _isMoving, _staminaCostMultiplier)" in index_html, "Stamina cost integration missing")
+check("Environmental force field exists", "const EnvironmentalForceField = {" in index_html and "_conditionStrength(conditionId)" in index_html, "EnvironmentalForceField missing")
+check("Environmental force uses condition state", "EnvironmentalForceField.sample(_gameplayWorldKey, WorldConditionDirector.getSnapshot())" in index_html, "Condition-driven environmental force not sampled")
+check("Environmental force preserves collision authority", "resolvePlayerMovement(camera.position, environmentForce.x * delta, environmentForce.z * delta, currentLocation);" in index_html, "Environmental force bypasses collision resolver")
+
 print("\n-------------------------------------------------------")
 if not failures:
     print(">>> REGRESSION SUITE RESULT: 100% PASS — ALL INVARIANTS PROTECTED <<<")

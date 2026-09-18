@@ -24056,7 +24056,10 @@ function animate() {
   // Forensic Uplift Systems Integration Updates (BACK-15, GAME-04, GAME-08, GAME-07, GAME-19):
   if (typeof GamepadAPISubsystem !== 'undefined') GamepadAPISubsystem.poll(delta);
   const _isMoving = moveState.forward || moveState.backward || moveState.left || moveState.right;
-  if (typeof updateStamina === 'function') updateStamina(delta, _isMoving);
+  const _gameplayWorldKey = getGameplayWorldKey(currentLocation);
+  const _activeSurfaceType = getPlayerSurfaceType(currentLocation, camera && camera.position);
+  const _staminaCostMultiplier = TraversalModel.getStaminaCostMultiplier(_gameplayWorldKey, _activeSurfaceType);
+  if (typeof updateStamina === 'function') updateStamina(delta, _isMoving, _staminaCostMultiplier);
   if (typeof updateJumpPhysics === 'function') updateJumpPhysics(delta);
   if (typeof updateFlashlightTorch === 'function') updateFlashlightTorch();
   if (typeof CameraTrauma !== 'undefined' && camera) CameraTrauma.update(delta, camera);
@@ -24078,7 +24081,8 @@ function animate() {
     if (!moveState.forward && !moveState.backward && !moveState.left && !moveState.right) {
       camera.position.y += Math.sin(time * 1.5) * 0.0018 * delta * 60.0;
     }
-    const speed = (moveState.sprint ? 8.0 : 4.0) * delta;
+    const traversalSpeed = TraversalModel.update(delta, _isMoving, moveState.sprint, _gameplayWorldKey, _activeSurfaceType);
+    const speed = traversalSpeed * delta;
     
     // Calculate pure horizontal forward and right directions cleanly from playerYaw (Zero-Allocation)
     // This completely eliminates pitch-induced slowdowns, jitter, or vector degradation
@@ -24108,50 +24112,13 @@ function animate() {
       const stepInterval = moveState.sprint ? 0.28 : 0.44;
       if (time - lastFootstepTime > stepInterval) {
         lastFootstepTime = time;
-        let surface = 'concrete';
-        if (currentLocation === 'base') {
-          if ((camera.position.x < -2.5 && camera.position.x > -5.0 && camera.position.y > 2.5) ||
-              (camera.position.x < -5.5 && camera.position.x > -8.0 && camera.position.y > 4.0)) {
-            surface = 'metal_grate';
-          } else {
-            surface = 'concrete';
-          }
-        } else if (currentLocation === 'desert') {
-          surface = 'sand';
-        } else if (currentLocation === 'mountain') {
-          surface = 'snow';
-        } else if (currentLocation === 'city') {
-          surface = 'concrete';
-        } else if (currentLocation === 'stonehenge') {
-          surface = 'grass';
-        } else if (currentLocation === 'island') {
-          surface = camera.position.y < 0.8 ? 'water' : 'sand';
-        } else if (currentLocation === 'space') {
-          surface = 'space_boot';
-        }
-        else if (currentLocation === 'volcano') {
-          surface = 'basalt';
-        } else if (currentLocation === 'biolum') {
-          surface = 'mycelium';
-        } else if (currentLocation === 'abyss') {
-          surface = 'wading';
-        } else if (currentLocation === 'mars') {
-          surface = 'ferric_sand';
-        } else if (currentLocation === 'crystal') {
-          surface = 'crystal_res';
-        } else if (currentLocation === 'swamp') {
-          surface = 'mud';
-        } else if (currentLocation === 'cavern') {
-          surface = 'flowstone';
-        } else if (currentLocation === 'acid') {
-          surface = 'sludge';
-        } else if (currentLocation === 'taiga') {
-          surface = 'pine_needles';
-        } else if (currentLocation === 'sky') {
-          surface = 'aerolite';
-        }
-        playSurfaceFootstep(surface);
+        playSurfaceFootstep(_activeSurfaceType);
       }
+    }
+
+    const environmentForce = EnvironmentalForceField.sample(_gameplayWorldKey, WorldConditionDirector.getSnapshot());
+    if (environmentForce.magnitude > 0) {
+      resolvePlayerMovement(camera.position, environmentForce.x * delta, environmentForce.z * delta, currentLocation);
     }
 
     // Zero-G Jump Physics Simulation in Space
@@ -25145,6 +25112,120 @@ const StateSnapshotEngine = {
 };
 
 // =============================================================
+// WS-GAME-03: TRAVERSAL, SURFACE RESPONSE, AND ENVIRONMENTAL FORCE
+// Shared movement substrate; existing collision remains authoritative.
+// =============================================================
+const SurfaceResponseRegistry = {
+  concrete: { speedMultiplier: 1.0, staminaMultiplier: 1.0 },
+  metal_grate: { speedMultiplier: 1.0, staminaMultiplier: 1.0 },
+  sand: { speedMultiplier: 0.94, staminaMultiplier: 1.08 },
+  snow: { speedMultiplier: 0.91, staminaMultiplier: 1.12 },
+  grass: { speedMultiplier: 0.98, staminaMultiplier: 1.02 },
+  water: { speedMultiplier: 0.78, staminaMultiplier: 1.2 },
+  space_boot: { speedMultiplier: 0.98, staminaMultiplier: 0.96 },
+  basalt: { speedMultiplier: 0.99, staminaMultiplier: 1.04 },
+  mycelium: { speedMultiplier: 0.95, staminaMultiplier: 1.06 },
+  wading: { speedMultiplier: 0.8, staminaMultiplier: 1.18 },
+  ferric_sand: { speedMultiplier: 0.95, staminaMultiplier: 1.05 },
+  crystal_res: { speedMultiplier: 1.02, staminaMultiplier: 1.0 },
+  mud: { speedMultiplier: 0.82, staminaMultiplier: 1.22 },
+  flowstone: { speedMultiplier: 0.96, staminaMultiplier: 1.04 },
+  sludge: { speedMultiplier: 0.84, staminaMultiplier: 1.18 },
+  pine_needles: { speedMultiplier: 0.93, staminaMultiplier: 1.08 },
+  aerolite: { speedMultiplier: 1.03, staminaMultiplier: 0.98 },
+  default: { speedMultiplier: 1.0, staminaMultiplier: 1.0 }
+};
+
+function getGameplayWorldKey(location = currentLocation) {
+  return location === 'base' ? 'aquifer' : location;
+}
+
+function getPlayerSurfaceType(location = currentLocation, position = camera && camera.position) {
+  if (location === 'base') {
+    if (position && ((position.x < -2.5 && position.x > -5.0 && position.y > 2.5) ||
+        (position.x < -5.5 && position.x > -8.0 && position.y > 4.0))) return 'metal_grate';
+    return 'concrete';
+  }
+  const surfaceByWorld = {
+    desert: 'sand',
+    mountain: 'snow',
+    city: 'concrete',
+    stonehenge: 'grass',
+    space: 'space_boot',
+    volcano: 'basalt',
+    biolum: 'mycelium',
+    abyss: 'wading',
+    mars: 'ferric_sand',
+    crystal: 'crystal_res',
+    swamp: 'mud',
+    cavern: 'flowstone',
+    acid: 'sludge',
+    taiga: 'pine_needles',
+    sky: 'aerolite'
+  };
+  if (location === 'island') return position && position.y < 0.8 ? 'water' : 'sand';
+  return surfaceByWorld[location] || 'concrete';
+}
+
+function getSurfaceResponse(surfaceType) {
+  return SurfaceResponseRegistry[surfaceType] || SurfaceResponseRegistry.default;
+}
+
+const TraversalModel = {
+  currentSpeed: 0,
+  lastWorldKey: 'aquifer',
+  reset(worldKey = getGameplayWorldKey()) {
+    this.currentSpeed = 0;
+    this.lastWorldKey = worldKey;
+  },
+  update(delta, isMoving, sprinting, worldKey, surfaceType) {
+    const profile = WORLD_GAMEPLAY_PROFILES[worldKey] || WORLD_GAMEPLAY_PROFILES.aquifer;
+    if (this.lastWorldKey !== worldKey) this.reset(worldKey);
+    const surface = getSurfaceResponse(surfaceType);
+    const desiredBase = sprinting ? profile.traversal.sprintSpeed : profile.traversal.walkSpeed;
+    const targetSpeed = isMoving ? desiredBase * surface.speedMultiplier * profile.traversal.surfaceFriction : 0;
+    const rate = targetSpeed > this.currentSpeed ? profile.traversal.acceleration : profile.traversal.deceleration;
+    const maxStep = Math.max(0, rate * Math.max(0, delta));
+    const difference = targetSpeed - this.currentSpeed;
+    if (Math.abs(difference) <= maxStep) this.currentSpeed = targetSpeed;
+    else this.currentSpeed += Math.sign(difference) * maxStep;
+    return this.currentSpeed;
+  },
+  getStaminaCostMultiplier(worldKey, surfaceType) {
+    const profile = WORLD_GAMEPLAY_PROFILES[worldKey] || WORLD_GAMEPLAY_PROFILES.aquifer;
+    return profile.traversal.sprintCost * getSurfaceResponse(surfaceType).staminaMultiplier;
+  }
+};
+
+const EnvironmentalForceField = {
+  _out: { x: 0, y: 0, z: 0, magnitude: 0 },
+  _conditionStrength(conditionId) {
+    const id = String(conditionId || '');
+    if (/heavy-dust|supercell|squall|whiteout|ashfall|regional-dust-wall/.test(id)) return 1.0;
+    if (/dust-front|crosswind|gusting|plume|current|storm|wind/.test(id)) return 0.65;
+    if (/dust-rising|haze|mist|rain|snowfall|sporefall/.test(id)) return 0.3;
+    return 0;
+  },
+  sample(worldKey, conditionState = null) {
+    const out = this._out;
+    out.x = 0; out.y = 0; out.z = 0; out.magnitude = 0;
+    const profile = WORLD_GAMEPLAY_PROFILES[worldKey];
+    if (!profile || !conditionState || conditionState.worldKey !== worldKey) return out;
+    const response = profile.traversal.windResponse || 0;
+    const conditionStrength = this._conditionStrength(conditionState.conditionId);
+    const intensity = Number.isFinite(conditionState.intensity) ? conditionState.intensity : 0;
+    if (response <= 0 || conditionStrength <= 0 || intensity <= 0) return out;
+    const seed = WorldConditionDirector._hashSeed(worldKey + ':' + conditionState.conditionId);
+    const angle = (seed / 4294967296) * Math.PI * 2;
+    const magnitude = response * conditionStrength * intensity * 0.42;
+    out.x = Math.cos(angle) * magnitude;
+    out.z = Math.sin(angle) * magnitude;
+    out.magnitude = magnitude;
+    return out;
+  }
+};
+
+// =============================================================
 // GAMEPLAY MECHANICS (GAME-01 TO GAME-20)
 // =============================================================
 
@@ -25155,10 +25236,11 @@ const MAX_STAMINA = 100.0;
 const STAMINA_DRAIN_RATE = 20.0; // 5 seconds of continuous sprint
 const STAMINA_RECHARGE_RATE = 15.0;
 
-function updateStamina(delta, isMoving) {
+function updateStamina(delta, isMoving, costMultiplier = 1.0) {
   const bar = document.getElementById('stamina-bar');
   if (isSprinting && isMoving && playerStamina > 0) {
-    playerStamina = Math.max(0, playerStamina - STAMINA_DRAIN_RATE * delta);
+    const safeCostMultiplier = Number.isFinite(costMultiplier) ? Math.max(0.25, Math.min(3.0, costMultiplier)) : 1.0;
+    playerStamina = Math.max(0, playerStamina - STAMINA_DRAIN_RATE * safeCostMultiplier * delta);
     if (playerStamina === 0) isSprinting = false;
   } else {
     playerStamina = Math.min(MAX_STAMINA, playerStamina + STAMINA_RECHARGE_RATE * delta);
